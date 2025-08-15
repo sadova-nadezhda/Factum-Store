@@ -1,0 +1,45 @@
+.catalog {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    min-height: 70vh;
+  }
+  &__wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+  }
+  &__filter {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    input, select {
+      width: max-content;
+    }
+    input {
+      flex-grow: 1;
+    }
+    select {
+      width: 23.5%;
+    }
+  }
+  &__caption {
+    color: rgba(2, 2, 2, 0.5);
+  }
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+}
+
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  max-width: 50%;
+  min-width: 50%;
+  margin-bottom: 40px;
+  margin-left: auto;
+}

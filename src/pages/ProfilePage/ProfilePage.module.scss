@@ -1,0 +1,57 @@
+.profile {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 994px;
+    margin: 0 auto;
+  }
+  &__aside {
+    display: flex;
+    gap: 30px;
+  }
+  &__list {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    li {
+      flex-grow: 1;
+    }
+    a {
+      display: block;
+      width: 100%;
+      padding: 30px;
+      border-radius: 30px;
+      border: 1px solid var(--dark);
+      text-align: center;
+      font-weight: 600;
+      transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
+      &.active {
+        border-color: var(--primary);
+        color: var(--white);
+        background-color: var(--primary);
+        pointer-events: none;
+      }
+      &:hover {
+        cursor: pointer;
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+    }
+  }
+  &__wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+  }
+}
+
+.active {
+  color: var(--primary);
+  pointer-events: none;
+}

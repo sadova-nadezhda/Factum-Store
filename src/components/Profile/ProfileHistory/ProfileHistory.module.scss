@@ -1,0 +1,13 @@
+.history {
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  &__caption {
+    font-size: 24px;
+    font-family: Onest;
+    font-weight: 600;
+    line-height: 1;
+  }
+}

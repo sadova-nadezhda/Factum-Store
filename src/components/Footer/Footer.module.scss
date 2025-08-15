@@ -1,0 +1,10 @@
+.footer {
+  margin-top: auto;
+  color: var(--white);
+  background-color: #DD5500;
+  &__container {
+    display: flex;
+    justify-content: end;
+    padding: 20px 0;
+  }
+}

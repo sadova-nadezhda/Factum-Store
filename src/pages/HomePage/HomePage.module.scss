@@ -1,0 +1,75 @@
+.hero {
+  &__container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    height: 700px;
+    padding: 70px;
+    border-radius: 80px;
+    border: 10px solid #020202;
+    overflow: hidden;
+    img {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+  }
+  &__title {
+    max-width: 50%;
+    width: 100%;
+    margin-left: auto;
+    font-weight: 700;
+    strong {
+      color: var(--white);
+      font-weight: 700;
+    }
+  }
+  &__desc {
+    max-width: 50%;
+    width: 100%;
+    margin-left: auto;
+    color: var(--white);
+  }
+}
+
+.catalog {
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+  &__link {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: Unbounded;
+    text-transform: lowercase;
+    transition: color 0.3s ease-in-out;
+    &:hover {
+      color: var(--primary);
+    }
+  }
+}
+
+.faq {
+  background: url('assets/img/faq-back.png') 0 50% / contain no-repeat;
+  &__accordion {
+    max-width: 75%;
+    margin-left: auto;
+  }
+}
+
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  max-width: 50%;
+  margin-bottom: 40px;
+  margin-left: auto;
+}

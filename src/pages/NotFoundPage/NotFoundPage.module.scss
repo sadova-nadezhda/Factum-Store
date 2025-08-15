@@ -1,0 +1,21 @@
+.container {
+  max-width: 1312px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.error {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 620px;
+    min-height: calc(100vh - 176px);
+    margin: 0 auto;
+  }
+  &__title {
+    margin-bottom: 40px;
+    text-align: center;
+  }
+}

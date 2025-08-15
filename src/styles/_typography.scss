@@ -1,0 +1,133 @@
+@font-face {
+	font-family: Onest;
+	font-display: swap;
+	src: url("/assets/fonts/Onest-ExtraBold.ttf") format("truetype");
+	font-weight: 800;
+	font-style: normal;}
+@font-face {
+	font-family: Onest;
+	font-display: swap;
+	src: url("/assets/fonts/Onest-Black.ttf") format("truetype");
+	font-weight: 900;
+	font-style: normal;}
+@font-face {
+	font-family: Onest;
+	font-display: swap;
+	src: url("/assets/fonts/Onest-Bold.ttf") format("truetype");
+	font-weight: 700;
+	font-style: normal;}
+@font-face {
+	font-family: Onest;
+	font-display: swap;
+	src: url("/assets/fonts/Onest-Medium.ttf") format("truetype");
+	font-weight: 500;
+	font-style: normal;}
+@font-face {
+	font-family: Onest;
+	font-display: swap;
+	src: url("/assets/fonts/Onest-Light.ttf") format("truetype");
+	font-weight: 300;
+	font-style: normal;}
+@font-face {
+	font-family: Unbounded;
+	font-display: swap;
+	src: url("/assets/fonts/Unbounded-Black.ttf") format("truetype");
+	font-weight: 900;
+	font-style: normal;}
+@font-face {
+	font-family: Unbounded;
+	font-display: swap;
+	src: url("/assets/fonts/Unbounded-Bold.ttf") format("truetype");
+	font-weight: 700;
+	font-style: normal;}
+@font-face {
+	font-family: Unbounded;
+	font-display: swap;
+	src: url("/assets/fonts/Unbounded-Light.ttf") format("truetype");
+	font-weight: 300;
+	font-style: normal;}
+@font-face {
+	font-family: Onest;
+	font-display: swap;
+	src: url("/assets/fonts/Onest-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;}
+@font-face {
+	font-family: Unbounded;
+	font-display: swap;
+	src: url("/assets/fonts/Unbounded-Medium.ttf") format("truetype");
+	font-weight: 500;
+	font-style: normal;}
+@font-face {
+	font-family: Unbounded;
+	font-display: swap;
+	src: url("/assets/fonts/Unbounded-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;}
+@font-face {
+	font-family: ZonaPro;
+	font-display: swap;
+	src: url("/assets/fonts/ZonaPro-Light.ttf") format("truetype");
+	font-weight: 300;
+	font-style: normal;}
+@font-face {
+	font-family: ZonaPro;
+	font-display: swap;
+	src: url("/assets/fonts/ZonaPro-ExtraBold.ttf") format("truetype");
+	font-weight: 800;
+	font-style: normal;}
+@font-face {
+	font-family: ZonaPro;
+	font-display: swap;
+	src: url("/assets/fonts/ZonaPro-Bold.ttf") format("truetype");
+	font-weight: 700;
+	font-style: normal;}
+@font-face {
+	font-family: ZonaPro;
+	font-display: swap;
+	src: url("/assets/fonts/ZonaPro-SemiBold.ttf") format("truetype");
+	font-weight: 600;
+	font-style: normal;}
+@font-face {
+	font-family: ZonaPro;
+	font-display: swap;
+	src: url("/assets/fonts/ZonaPro-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;}
+
+
+
+  h1, h2 {
+    font: 700 64px/1 Unbounded;
+    @media (max-width: 980px) {
+      font-size: 48px;
+    }
+    @media (max-width: 767px) {
+      font-size: 32px;
+    }
+  }
+  
+  h3 {
+    font: 700 30px/1 Unbounded;
+    @media (max-width: 980px) {
+      font-size: 24px;
+    }
+    @media (max-width: 767px) {
+      font-size: 22px;
+    }
+  }
+  
+  h4 {
+    font: 700 24px/1 Unbounded;
+    @media (max-width: 980px) {
+      font-size: 22px;
+    }
+    @media (max-width: 767px) {
+      font-size: 20px;
+    }
+  }
+  
+  h5, h6 {
+    font-family: Unbounded;
+    font-weight: 700;
+  }
