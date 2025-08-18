@@ -13,10 +13,17 @@ const options = [
   { value: 'user4', label: 'Амир Максутов' },
 ];
 
+const wallets = [
+  { value: 'default', label: 'Выберите кошелек', disabled: true },
+  { value: 'uwallet1', label: 'Кошелек' },
+  { value: 'wallet2', label: 'Кошелек HR' },
+];
+
 export default function TransferForm() {
   const [formData, setFormData] = useState({
     sum: '',
     employee: 'default',
+    wallets: 'default'
   });
 
   useEffect(() => {
@@ -34,7 +41,7 @@ export default function TransferForm() {
     if (formData.employee === 'default' || !formData.sum) return;
 
     localStorage.setItem('formData', JSON.stringify(formData));
-    setFormData({ sum: '', employee: 'user1' });
+    setFormData({ sum: '', employee: 'default' });
   };
 
   return (
@@ -43,6 +50,13 @@ export default function TransferForm() {
         name="employee"
         options={options}
         value={formData.employee}
+        onChange={handleChange}
+        required
+      />
+      <Select
+        name="wallets"
+        options={wallets}
+        value={formData.wallets}
         onChange={handleChange}
         required
       />
@@ -57,7 +71,7 @@ export default function TransferForm() {
       />
       <div className={s.form__footer}>
         <Button type="submit" className={classNames(s.form__button, 'button button-orange')}>
-          Передать
+          Отправить
         </Button>
       </div>
     </form>

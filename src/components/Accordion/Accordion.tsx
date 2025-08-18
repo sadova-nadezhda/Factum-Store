@@ -54,7 +54,7 @@ export default function Accordion({
               aria-expanded={isOpen}
             >
               {item.title}
-              <span className={s.icon}>{isOpen ? '−' : '+'}</span>
+              {/* <span className={s.icon}>{isOpen ? '−' : '+'}</span> */}
             </button>
             <div
               ref={(el) => (contentRefs.current[index] = el)}

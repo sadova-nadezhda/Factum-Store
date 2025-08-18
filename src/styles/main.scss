@@ -66,7 +66,7 @@ input, select, textarea {
   background-color: var(--white);
   font: 400 16px/1 Onest;
   &::placeholder {
-    color: var(--dark);
+    color: rgba(0, 0, 0, 0.5);
   }
   &:focus {
     outline: none;
@@ -75,7 +75,28 @@ input, select, textarea {
 
 textarea {
   resize: none;
-  height: 140px;
+  height: 90px;
+}
+
+select {
+  -moz-appearance: none;
+  appearance: none;
+  width: max-content;
+  padding-right: calc(46 * var(--width-multiplier));
+  background: url("/assets/img/select-arrow.svg") calc(100% - calc(16 * var(--width-multiplier)) ) 50% / calc(16 * var(--width-multiplier)) no-repeat;
+  background-color: var(--white);
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.search {
+  padding-right: calc(46 * var(--width-multiplier));
+  background: url("/assets/img/search.svg") calc(100% - 16 * var(--width-multiplier)) 50% / calc(16 * var(--width-multiplier)) no-repeat;
+  background-color: var(--white);
 }
 
 // Button
@@ -86,15 +107,12 @@ textarea {
   justify-content: center;
   width: max-content;
   padding: 20px 50px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 30px;
   background-color: transparent;
-  font: 500 14px/1 Onest;
+  font: 600 16px/1 Onest;
   text-transform: uppercase;
   transition: all 0.4s;
-  @media (max-width: 980px) {
-    font-size: 12px;
-  }
   &:hover:not(:disabled) {
     cursor: pointer;
   }
@@ -129,27 +147,6 @@ textarea {
   }
   &-down {
     text-transform: lowercase;
-  }
-  &-sm {
-    font-size: 14px;
-    line-height: 1.2em;
-  }
-  &-md {
-    font-size: 24px;
-    line-height: 1.2em;
-    @media (max-width: 980px) {
-      font-size: 20px;
-    }
-  }
-  &-lg {
-    font-size: 32px;
-    line-height: 1.25em;
-    @media (max-width: 980px) {
-      font-size: 24px;
-    }
-    @media (max-width: 767px) {
-      font-size: 20px;
-    }
   }
 }
 

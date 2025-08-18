@@ -11,22 +11,28 @@ export default function ProfileNotif() {
       <Title component='h4' className={s.notif__caption}>Уведомления</Title>
       <div className={s.notif__cards}>
         <NotificationsCard
-          sender="Надежда Садова"
-          receiver="Аскар Джумагулов"
-          amount={100}
+          caption='Вы купили Свитшот “FACTUM basic”'
+          desc='Поздравляем с покупкой!'
+          amount='-200'
           date="2025-04-03"
         />
         <NotificationsCard
           sender="Амир Максутов"
-          receiver="Надежда Садова"
-          amount={50}
+          receiver="Вы"
+          amount='+50'
           date="2025-04-05"
         />
         <NotificationsCard
-          sender="Тимур Кульжабаев"
-          receiver="Надежда Садова"
-          amount={50}
+          caption='Вы получили вознаграждение! '
+          desc='Ежемесячные бонусы'
+          amount='+50'
           date="2025-04-07"
+        />
+        <NotificationsCard
+          sender="Вы"
+          receiver="Аскар Джумагулов"
+          amount='-50'
+          date="2025-04-05"
         />
       </div>
     </>

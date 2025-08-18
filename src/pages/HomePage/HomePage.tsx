@@ -31,7 +31,9 @@ export default function HomePage() {
         <div className={s.hero__container}>
           <img src="/assets/img/hero-img.png" alt="" />
           <Title className={s.hero__title}><strong>factum</strong>.merch</Title>
-          <div className={s.hero__desc}>С учётом сложившейся международной обстановки, перспективное планирование предоставляет широкие возможности для вывода текущих активов.</div>
+          <div className={s.hero__desc}>
+            <p>С учётом сложившейся международной обстановки, перспективное планирование предоставляет широкие возможности для вывода текущих активов.</p>
+          </div>
         </div>
       </Section>
       <Section className={`${s.catalog} section-pad section-hidden`}>

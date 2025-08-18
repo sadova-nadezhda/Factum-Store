@@ -4,6 +4,23 @@
   --grey: #686F7B;
   --light-grey: #A3A3A3;
   --primary: #F96100;
+  --width-base: 1440;
+  --width-current: 100vw;
+  --width-multiplier: var(--width-current) / var(--width-base);
+}
+
+@media(max-width: 1024px) {
+    :root {
+      --width-base: 768;
+      --width-current: 100vmin;
+    }
+}
+
+@media(max-width: 767px) {
+    :root {
+      --width-base: 375;
+      --width-current: 100vmin;
+    }
 }
 
 *,

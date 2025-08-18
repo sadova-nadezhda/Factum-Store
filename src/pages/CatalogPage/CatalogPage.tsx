@@ -14,14 +14,14 @@ export default function CatalogPage() {
       <div className={s.catalog__container}>
         <div className={s.catalog__top}>
           <Title className={s.heading}>каталог</Title>
-          <div className={s.catalog__filter}>
-            <input type="search" name="search" placeholder='Поиск' />
-            <select name="filter">
+          <form className={s.catalog__filter}>
+            <input className='search' type="search" name="search" placeholder='Поиск' />
+            <select className='filter' name="filter">
               <option value="">Сортировка</option>
               <option value="">По возврастанию</option>
               <option value="">По убыванию</option>
             </select>
-          </div>
+          </form>
         </div>
         <div className={s.catalog__wrap}>
           <div className={s.catalog__row}>

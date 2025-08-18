@@ -77,7 +77,7 @@ export default function ProfileForm() {
           </label>
         </div>
       </div>
-      <div className={s.form__box}>
+      <div className={s.form__wrap}>
         <div className={s.form__top}>
           <Title component='h4' className={s.form__caption}>Мой профиль</Title>
           <Button type="button" className={s.form__link} onClick={handleChange}>
@@ -85,25 +85,27 @@ export default function ProfileForm() {
           </Button>
         </div>
         {/* Блок поля формы */}
-        <div className={s.form__fields}>
-          <Input
-            value={form.name}
-            placeholder="ФИО"
-            name="name"
-            type="text"
-          />
-          <Input
-            value={form.email}
-            placeholder="Email"
-            name="email"
-            type="email"
-          />
-          <Input
-            value={form.password}
-            placeholder="Пароль"
-            name="password"
-            type="password"
-          />
+        <div className={s.form__box}>
+          <div className={s.form__fields}>
+            <Input
+              value={form.name}
+              placeholder="ФИО"
+              name="name"
+              type="text"
+            />
+            <Input
+              value={form.email}
+              placeholder="Email"
+              name="email"
+              type="email"
+            />
+            <Input
+              value={form.password}
+              placeholder="Пароль"
+              name="password"
+              type="password"
+            />
+          </div>
 
           {isChanged && (
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: 16 }}>

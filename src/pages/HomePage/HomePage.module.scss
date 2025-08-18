@@ -1,4 +1,5 @@
 .hero {
+  padding-top: 60px;
   &__container {
     position: relative;
     display: flex;
@@ -25,10 +26,8 @@
     max-width: 50%;
     width: 100%;
     margin-left: auto;
-    font-weight: 700;
     strong {
       color: var(--white);
-      font-weight: 700;
     }
   }
   &__desc {
@@ -36,6 +35,10 @@
     width: 100%;
     margin-left: auto;
     color: var(--white);
+    line-height: 1;
+    p {
+      max-width: 424px;
+    }
   }
 }
 

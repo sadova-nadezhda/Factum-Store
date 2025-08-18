@@ -1,15 +1,17 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
   padding: 30px;
   border-radius: 30px;
   background-color: var(--white);
+  &__caption {
+    font-family: Onest;
+    font-weight: 600;
+  }
   &__balance {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-weight: 600;
-    font-family: Onest;
+    gap: 8px;
   }
 }
