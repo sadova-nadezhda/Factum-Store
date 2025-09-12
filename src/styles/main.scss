@@ -22,7 +22,7 @@ main {
 .section {
   &-pad {
     padding: calc(100 * var(--width-multiplier)) 0;
-    @media (max-width: 980px) {
+    @media (max-width: 1024px) {
       padding: calc(80 * var(--width-multiplier)) 0;
     }
     @media (max-width: 767px) {
@@ -30,7 +30,7 @@ main {
     }
     &-top {
       padding-top: calc(100 * var(--width-multiplier));
-      @media (max-width: 980px) {
+      @media (max-width: 1024px) {
         padding-top: calc(80 * var(--width-multiplier));
       }
       @media (max-width: 767px) {
@@ -39,7 +39,7 @@ main {
     }
     &-bottom {
       padding-bottom: calc(100 * var(--width-multiplier));
-      @media (max-width: 980px) {
+      @media (max-width: 1024px) {
         padding-bottom: calc(80 * var(--width-multiplier));
       }
       @media (max-width: 767px) {
