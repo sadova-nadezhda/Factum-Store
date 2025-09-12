@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 30px;
+  gap: calc(30 * var(--width-multiplier));
   width: 100%;
 }
 
 .accordionItem {
-  padding: 20px 30px;
-  border-radius: 30px;
-  border: 1px solid #020202;
+  padding: calc(20 * var(--width-multiplier)) calc(30 * var(--width-multiplier));
+  border-radius: calc(30 * var(--width-multiplier));
+  border: calc(1 * var(--width-multiplier)) solid #020202;
   background-color: var(--white);
   width: 67%;
   transition: width 0.3s ease-in-out;
@@ -25,18 +25,19 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 600px;
-  padding: 10px 0;
+  max-width: calc(600 * var(--width-multiplier));
+  padding: calc(10 * var(--width-multiplier)) 0;
   text-align: left;
-  font-size: 24px;
+  font-size: calc(24 * var(--width-multiplier));
   font-weight: 600;
   background: none;
   border: none;
   cursor: pointer;
+  transition: color 0.3s ease-in-out;
 }
 
 .icon {
-  font-size: 24px;
+  font-size: calc(24 * var(--width-multiplier));
   line-height: 1;
 }
 
@@ -46,8 +47,8 @@
 }
 
 .accordionContent {
-  padding-bottom: 20px;
-  font-size: 14px;
+  padding-bottom: calc(20 * var(--width-multiplier));
+  font-size: calc(14 * var(--width-multiplier));
   line-height: 1.5;
 }
 

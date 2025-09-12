@@ -2,18 +2,18 @@
   &__container {
     display: flex;
     flex-direction: column;
-    gap: 40px;
-    max-width: 994px;
+    gap: calc(40 * var(--width-multiplier));
+    max-width: calc(994 * var(--width-multiplier));
     min-height: 70vh;
     margin: 0 auto;
   }
   &__aside {
     display: flex;
-    gap: 30px;
+    gap: calc(30 * var(--width-multiplier));
   }
   &__list {
     display: flex;
-    gap: 30px;
+    gap: calc(30 * var(--width-multiplier));
     width: 100%;
     li {
       flex-grow: 1;
@@ -21,9 +21,10 @@
     a {
       display: block;
       width: 100%;
-      padding: 30px;
-      border-radius: 30px;
-      border: 1px solid var(--dark);
+      padding: calc(30 * var(--width-multiplier));
+      border-radius: calc(30 * var(--width-multiplier));
+      border: calc(5 * var(--width-multiplier)) solid var(--dark);
+      background-color: var(--white);
       text-align: center;
       font-weight: 600;
       transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
@@ -43,7 +44,7 @@
   &__wrap {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: calc(30 * var(--width-multiplier));
     .buttons {
       display: flex;
       align-items: center;

@@ -10,7 +10,7 @@ import s from './LoginPage.module.scss';
 
 export default function RegisterPage() {
   return (
-    <Section className={classNames(s.login, 'section-pad section-hidden')}>
+    <Section className={classNames(s.login, 'section-hidden')}>
       <div className={s.login__container}>
         <Title className={s.login__title}>Регистрация</Title>
         <div className={s.login__wrap}>

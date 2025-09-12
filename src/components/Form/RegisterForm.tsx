@@ -1,5 +1,5 @@
 import React, { FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 
 import Input from './parts/Input';
 import Button from '../Button';
@@ -16,7 +16,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={s.form}>
+    <form onSubmit={handleSubmit} className={classNames(s.form, s.form__login)}>
       <Input type="text" onChange={handleChange} value={values.name} name="name" placeholder="Имя" />
       <Input type="email" onChange={handleChange} value={values.email} name="email" placeholder="Email" />
       <Input type="password" onChange={handleChange} value={values.password} name="password" placeholder="Пароль" />

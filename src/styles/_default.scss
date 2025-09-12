@@ -41,20 +41,17 @@ body {
   min-height: 100vh;
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
-  font: 400 16px/1.4 Onest;
+  font: 400 calc(16 * var(--width-multiplier))/1.4 Onest;
   color: var(--dark);
   background-color: #F6F6F6;
 }
 
-body::-webkit-scrollbar {
-  width: 12px;
-  background-color: transparent;
+:-webkit-scrollbar {
+  width: 4px;
 }
 
-body::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-  background-color: #f96100;
+::-webkit-scrollbar {
+  width: 0px;
 }
 
 body,

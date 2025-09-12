@@ -2,7 +2,7 @@
   &__container {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: calc(40 * var(--width-multiplier));
     min-height: 70vh;
   }
 }

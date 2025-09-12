@@ -82,32 +82,32 @@
 
 
   h1, h2 {
-    font: 700 64px/1 Unbounded;
+    font: 700 calc(64 * var(--width-multiplier))/1 Unbounded;
     @media (max-width: 980px) {
-      font-size: 48px;
+      font-size: calc(48 * var(--width-multiplier));
     }
     @media (max-width: 767px) {
-      font-size: 32px;
+      font-size: calc(32 * var(--width-multiplier));
     }
   }
   
   h3 {
-    font: 700 30px/1 Unbounded;
+    font: 700 calc(30 * var(--width-multiplier))/1 Unbounded;
     @media (max-width: 980px) {
-      font-size: 24px;
+      font-size: calc(24 * var(--width-multiplier));
     }
     @media (max-width: 767px) {
-      font-size: 22px;
+      font-size: calc(22 * var(--width-multiplier));
     }
   }
   
   h4 {
-    font: 700 24px/1 Unbounded;
+    font: 700 calc(24 * var(--width-multiplier))/1 Unbounded;
     @media (max-width: 980px) {
-      font-size: 22px;
+      font-size: calc(22 * var(--width-multiplier));
     }
     @media (max-width: 767px) {
-      font-size: 20px;
+      font-size: calc(20 * var(--width-multiplier));
     }
   }
   

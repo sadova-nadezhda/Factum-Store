@@ -1,9 +1,9 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 30px;
-  border-radius: 30px;
+  gap: calc(12 * var(--width-multiplier));
+  padding: calc(30 * var(--width-multiplier));
+  border-radius: calc(30 * var(--width-multiplier));
   background-color: var(--white);
   &__caption {
     font-family: Onest;
@@ -12,6 +12,6 @@
   &__balance {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: calc(8 * var(--width-multiplier));
   }
 }

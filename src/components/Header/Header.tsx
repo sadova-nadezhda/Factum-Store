@@ -12,7 +12,7 @@ export default function Header() {
           <Link to="/" className={s.header__logo}>
             <img src="/assets/img/logo.svg" alt="Логотип" />
           </Link>
-          <div className={s.header__box}>
+          <nav className={s.header__nav}>
             <ul className={s.header__menu}>
               <li><Link to='/catalog'>Каталог</Link></li>
               <li><HashLink smooth to="/#faq">FAQ</HashLink></li>
@@ -27,7 +27,7 @@ export default function Header() {
                 </svg>
               </div>
             </div>
-          </div>
+          </nav>
         </div>
       </div>
     </header>

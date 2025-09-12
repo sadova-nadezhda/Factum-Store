@@ -11,7 +11,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <main>
-      <Section className={classNames(s.login, 'section-pad section-hidden')}>
+      <Section className={classNames(s.login, 'section-hidden')}>
         <div className={s.login__container}>
           <Title className={s.login__title}>Восстановление пароля</Title>
           <div className={s.login__wrap}>

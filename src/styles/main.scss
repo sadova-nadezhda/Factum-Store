@@ -11,12 +11,9 @@ main {
 // Container
 .container {
   width: 100%;
-  max-width: calc(1340px + 32px);
-  padding: 0 16px;
-  margin: 0 auto;
-
-  @media(max-width: 980px) {
-    max-width: none;
+  padding: 0 calc(60 * var(--width-multiplier));
+  @media(max-width: 1024px) {
+    padding: 0 calc(16 * var(--width-multiplier));
   }
 }
 
@@ -24,29 +21,29 @@ main {
 
 .section {
   &-pad {
-    padding: 100px 0;
+    padding: calc(100 * var(--width-multiplier)) 0;
     @media (max-width: 980px) {
-      padding: 80px 0;
+      padding: calc(80 * var(--width-multiplier)) 0;
     }
     @media (max-width: 767px) {
-      padding: 64px 0;
+      padding: calc(64 * var(--width-multiplier)) 0;
     }
     &-top {
-      padding-top: 100px;
+      padding-top: calc(100 * var(--width-multiplier));
       @media (max-width: 980px) {
-        padding-top: 80px;
+        padding-top: calc(80 * var(--width-multiplier));
       }
       @media (max-width: 767px) {
-        padding-top: 64px;
+        padding-top: calc(64 * var(--width-multiplier));
       }
     }
     &-bottom {
-      padding-bottom: 100px;
+      padding-bottom: calc(100 * var(--width-multiplier));
       @media (max-width: 980px) {
-        padding-bottom: 80px;
+        padding-bottom: calc(80 * var(--width-multiplier));
       }
       @media (max-width: 767px) {
-        padding-bottom: 64px;
+        padding-bottom: calc(64 * var(--width-multiplier));
       }
     }
   }
@@ -59,12 +56,12 @@ main {
 
 input, select, textarea {
   width: 100%;
-  padding: 30px;
-  border: 1px solid #020202;
-  border-radius: 30px;
+  padding: calc(30 * var(--width-multiplier));
+  border: calc(1 * var(--width-multiplier)) solid #020202;
+  border-radius: calc(30 * var(--width-multiplier));
   color: var(--dark);
   background-color: var(--white);
-  font: 400 16px/1 Onest;
+  font: 400 calc(16 * var(--width-multiplier))/1 Onest;
   &::placeholder {
     color: rgba(0, 0, 0, 0.5);
   }
@@ -75,7 +72,7 @@ input, select, textarea {
 
 textarea {
   resize: none;
-  height: 90px;
+  height: calc(90 * var(--width-multiplier));
 }
 
 select {
@@ -106,11 +103,11 @@ select {
   align-items: center;
   justify-content: center;
   width: max-content;
-  padding: 20px 50px;
-  border: 1px solid transparent;
-  border-radius: 30px;
+  padding: calc(20 * var(--width-multiplier)) calc(50 * var(--width-multiplier));
+  border: calc(1 * var(--width-multiplier)) solid transparent;
+  border-radius: calc(30 * var(--width-multiplier));
   background-color: transparent;
-  font: 600 16px/1 Onest;
+  font: 600 calc(16 * var(--width-multiplier))/1 Onest;
   text-transform: uppercase;
   transition: all 0.4s;
   &:hover:not(:disabled) {
@@ -123,12 +120,12 @@ select {
     width: 100%;
   }
   &-orange {
-    border: 1px solid var(--primary);
+    border: calc(1 * var(--width-multiplier)) solid var(--primary);
     color: var(--white);
     background-color: var(--primary);
   }
   &-border {
-    border: 1px solid var(--dark);
+    border: calc(1 * var(--width-multiplier)) solid var(--dark);
   }
 }
 
@@ -136,7 +133,7 @@ select {
 
 .title {
   &-sm {
-    font-size: 24px;
+    font-size: calc(24 * var(--width-multiplier));
     line-height: 1.1em;
   }
 }
@@ -154,14 +151,14 @@ select {
   position: relative;
   display: block;
   width: max-content;
-  padding-bottom: 2px;
+  padding-bottom: calc(2 * var(--width-multiplier));
   font-family: Onest;
   &::before {
     content: "";
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 1px;
+    height: calc(1 * var(--width-multiplier));
     width: 100%;
     background-color: var(--dark);
     transform-origin: 100% 50%;

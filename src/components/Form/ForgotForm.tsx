@@ -1,4 +1,5 @@
 import React, { FormEvent } from 'react';
+import classNames from 'classnames';
 
 import Input from './parts/Input';
 import Button from '../Button';
@@ -15,7 +16,7 @@ export default function ForgotForm() {
   };  
 
   return (
-    <form onSubmit={handleSubmit} className={s.form}>
+    <form onSubmit={handleSubmit} className={classNames(s.form, s.form__login)}>
       <Input
         type="email"
         onChange={handleChange}

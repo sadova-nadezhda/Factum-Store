@@ -2,42 +2,59 @@
   &__container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding-top: 60px;
-    font-size: 30px;
+    gap: calc(20 * var(--width-multiplier));
+    padding-top: calc(60 * var(--width-multiplier));
+    font-size: calc(30 * var(--width-multiplier));
     font-weight: 700;
     line-height: 1;
     text-transform: lowercase;
   }
   &__logo {
-    width: 182px;
-    height: 29px;
+    width: calc(182 * var(--width-multiplier));
+    height: calc(30 * var(--width-multiplier));
     img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
   }
-  &__box {
+  &__nav {
     display: grid;
     grid-template-columns: repeat(2, auto);
     justify-content: space-between;
-    gap: 20px;
+    gap: calc(20 * var(--width-multiplier));
   }
   &__menu, &__profile {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: calc(20 * var(--width-multiplier));
     a {
-      transition: color 0.3s ease-in-out;
+      position: relative;
+      display: block;
+      width: max-content;
+      line-height: 1;
+      &::after {
+        content: '';
+        position: absolute;
+        left: calc(100% + calc(2 * var(--width-multiplier)));
+        bottom: calc(5 * var(--width-multiplier));
+        width: calc(8 * var(--width-multiplier));
+        height: calc(8 * var(--width-multiplier));
+        border-radius: 100%;
+        background-color: var(--primary);
+        transform: scale(0);
+        transition: transform 0.3s ease-in-out;
+      }
       &:hover {
-        color: var(--primary);
+        &::after {
+          transform: scale(1);
+        }
       }
     }
   }
   &__balance {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: calc(8 * var(--width-multiplier));
   }
 }

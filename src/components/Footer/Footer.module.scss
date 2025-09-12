@@ -5,6 +5,6 @@
   &__container {
     display: flex;
     justify-content: end;
-    padding: 20px 0;
+    padding: calc(20 * var(--width-multiplier)) 0;
   }
 }

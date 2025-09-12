@@ -1,15 +1,15 @@
 .hero {
-  padding-top: 60px;
+  padding-top: calc(60 * var(--width-multiplier));
   &__container {
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 16px;
-    height: 700px;
-    padding: 70px;
-    border-radius: 80px;
-    border: 10px solid #020202;
+    gap: calc(16 * var(--width-multiplier));
+    height: calc(700 * var(--width-multiplier));
+    padding: calc(70 * var(--width-multiplier));
+    border-radius: calc(80 * var(--width-multiplier));
+    border: calc(10 * var(--width-multiplier)) solid #020202;
     overflow: hidden;
     img {
       position: absolute;
@@ -37,7 +37,7 @@
     color: var(--white);
     line-height: 1;
     p {
-      max-width: 424px;
+      max-width: calc(424 * var(--width-multiplier));
     }
   }
 }
@@ -46,16 +46,32 @@
   &__cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 32px;
+    gap: calc(32 * var(--width-multiplier));
   }
   &__link {
-    font-size: 24px;
+    position: relative;
+    width: max-content;
+    font-size: calc(24 * var(--width-multiplier));
     font-weight: 700;
     font-family: Unbounded;
     text-transform: lowercase;
-    transition: color 0.3s ease-in-out;
+    line-height: 1;
+    &::after {
+      content: '';
+      position: absolute;
+      left: calc(100% + calc(2 * var(--width-multiplier)));
+      bottom: calc(5 * var(--width-multiplier));
+      width: calc(8 * var(--width-multiplier));
+      height: calc(8 * var(--width-multiplier));
+      border-radius: 100%;
+      background-color: var(--primary);
+      transform: scale(0);
+      transition: transform 0.3s ease-in-out;
+    }
     &:hover {
-      color: var(--primary);
+      &::after {
+        transform: scale(1);
+      }
     }
   }
 }
@@ -73,6 +89,6 @@
   align-items: flex-end;
   justify-content: space-between;
   max-width: 50%;
-  margin-bottom: 40px;
+  margin-bottom: calc(40 * var(--width-multiplier));
   margin-left: auto;
 }

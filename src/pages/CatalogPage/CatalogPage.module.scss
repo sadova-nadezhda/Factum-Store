@@ -2,18 +2,18 @@
   &__container {
     display: flex;
     flex-direction: column;
-    gap: 60px;
+    gap: calc(60 * var(--width-multiplier));
     min-height: 70vh;
   }
   &__wrap {
     display: flex;
     flex-direction: column;
-    gap: 100px;
+    gap: calc(100 * var(--width-multiplier));
   }
   &__filter {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: calc(24 * var(--width-multiplier));
     input, select {
       width: max-content;
     }
@@ -30,7 +30,7 @@
   &__cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    gap: calc(24 * var(--width-multiplier));
   }
 }
 
@@ -40,6 +40,6 @@
   justify-content: space-between;
   max-width: 50%;
   min-width: 50%;
-  margin-bottom: 40px;
+  margin-bottom: calc(40 * var(--width-multiplier));
   margin-left: auto;
 }

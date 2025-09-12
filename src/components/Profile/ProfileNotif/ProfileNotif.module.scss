@@ -2,10 +2,10 @@
   &__cards {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: calc(20 * var(--width-multiplier));
   }
   &__caption {
-    font-size: 24px;
+    font-size: calc(24 * var(--width-multiplier));
     font-family: Onest;
     font-weight: 600;
     line-height: 1;

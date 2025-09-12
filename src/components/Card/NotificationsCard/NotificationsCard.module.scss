@@ -2,11 +2,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 30px;
-  border-radius: 30px;
+  gap: calc(16 * var(--width-multiplier));
+  padding: calc(30 * var(--width-multiplier));
+  border-radius: calc(30 * var(--width-multiplier));
   background-color: var(--white);
-  font-size: 20px;
+  font-size: calc(20 * var(--width-multiplier));
   line-height: 1;
   &__caption {
     font-family: Onest;
@@ -15,7 +15,7 @@
   &__details {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: calc(16 * var(--width-multiplier));
   }
   &__date {
     color: rgba(2, 2, 2, 0.5);
@@ -23,9 +23,9 @@
   &__amount {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: calc(8 * var(--width-multiplier));
     span {
-      margin-top: 3px;
+      margin-top: calc(3 * var(--width-multiplier));
     }
   }
 }

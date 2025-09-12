@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
   return (
-    <Section className={classNames(s.login, 'section-pad section-hidden')}>
+    <Section className={classNames(s.login, 'section-hidden')}>
       <div className={s.login__container}>
         <Title className={s.login__title}>Авторизация</Title>
         <div className={s.login__wrap}>

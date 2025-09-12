@@ -1,17 +1,17 @@
 .coins {
   &__wrap {
     &:first-child {
-      margin-bottom: 40px;
+      margin-bottom: calc(40 * var(--width-multiplier));
     }
   }
   &__title {
-    margin-bottom: 20px;
+    margin-bottom: calc(20 * var(--width-multiplier));
     font-family: Onest;
     font-weight: 600;
   }
   &__cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 60px;
+    gap: calc(60 * var(--width-multiplier));
   }
 }

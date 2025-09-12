@@ -2,14 +2,15 @@
   position: relative; 
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
+  border-radius: calc(10 * var(--width-multiplier));
   &__img {
-    height: 380px;
+    height: calc(380 * var(--width-multiplier));
     width: 100%;
-    margin-bottom: 20px;
-    border-radius: 40px;
-    border: 10px solid #020202;
+    margin-bottom: calc(20 * var(--width-multiplier));
+    border-radius: calc(40 * var(--width-multiplier));
+    border: calc(10 * var(--width-multiplier)) solid #020202;
     overflow: hidden;
+    transition: border-color 0.3s ease-in-out;
     img {
       width: 100%;
       height: 100%;
@@ -19,12 +20,12 @@
   &__box {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 16px;
+    gap: calc(16 * var(--width-multiplier));
   }
   &__info {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: calc(8 * var(--width-multiplier));
   }
   &__caption {
     font-weight: 600;
@@ -36,30 +37,30 @@
   &__price {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: calc(5 * var(--width-multiplier));
     font-weight: 600;
-    font-size: 30px;
+    font-size: calc(30 * var(--width-multiplier));
   }
   &__bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: calc(8 * var(--width-multiplier));
     margin-top: auto;
   }
   &__right {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 12px;
+    gap: calc(12 * var(--width-multiplier));
   }
   &__amount {
-    padding: 8px 16px;
-    border-radius: 12px;
+    padding: calc(8 * var(--width-multiplier)) calc(16 * var(--width-multiplier));
+    border-radius: calc(12 * var(--width-multiplier));
     color: #FFF;
     background: #f96100;
     font-weight: 500;
-    font-size: 12px;
+    font-size: calc(12 * var(--width-multiplier));
     line-height: 1;
   }
   &__button {
@@ -67,10 +68,22 @@
     padding: 0;
     border: 0;
     background: transparent;
-    transition: transform 0.3s ease-in-out;
+    rect, path {
+      transition: fill 0.3s ease-in-out;
+    }
     &:hover {
       cursor: pointer;
-      transform: scale(1.1);
+      rect {
+        fill: var(--primary);
+      }
+      path {
+        fill: #020202;
+      }
+    }
+  }
+  &:hover {
+    .card__img {
+      border-color: var(--primary);
     }
   }
 }

@@ -1,10 +1,10 @@
 import React, { FormEvent } from 'react';
+import classNames from 'classnames';
 
 import Input from './parts/Input';
 import Button from '../Button';
 
 import { useForm } from '../../hooks/useForm';
-
 
 import s from './Form.module.scss';
 
@@ -16,7 +16,7 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={s.form}>
+    <form onSubmit={handleSubmit} className={classNames(s.form, s.form__login)}>
       <Input type="email" onChange={handleChange} value={values.email} name="email" placeholder="Email" />
       <Input type="password" onChange={handleChange} value={values.password} name="password" placeholder="Пароль" />
       <Button className='button button-full button-orange'>Войти</Button>

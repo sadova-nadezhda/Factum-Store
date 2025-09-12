@@ -3,30 +3,31 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    max-width: 480px;
-    min-height: calc(100vh - 200px);
+    max-width: calc(480 * var(--width-multiplier));
+    min-height: calc(100vh - calc(140 * var(--width-multiplier)));
+    padding: calc(50 * var(--width-multiplier)) 0;
     margin: 0 auto;
   }
   &__title {
-    margin-bottom: 24px;
-    font-size: 32px;
+    margin-bottom: calc(24 * var(--width-multiplier));
+    font-size: calc(32 * var(--width-multiplier));
     text-align: center;
   }
   &__wrap {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: calc(24 * var(--width-multiplier));
   }
   &__bottom {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: calc(8 * var(--width-multiplier));
   }
   &__link {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: calc(8 * var(--width-multiplier));
     a {
       transition: color 0.3s ease-in-out;
       &:hover {
