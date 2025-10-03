@@ -19,11 +19,7 @@ export default function HomePage() {
     isError: catalogError,
   } = useGetProductsQuery({ q: '', sort: 'price_asc' });
 
-  const {
-    data: faq,
-    isLoading: faqLoading,
-    isError: faqError,
-  } = useGetFaqQuery();
+  const { data: faq = [], isLoading: faqLoading, isError: faqError } = useGetFaqQuery();
 
   return (
     <>
@@ -67,11 +63,17 @@ export default function HomePage() {
         <div className={s.faq__container}>
           <Title component='h2' className={s.heading}>faq</Title>
 
-          {faqLoading && <div className={s.faq__state}>Загрузка...</div>}
-          {faqError && <div className={s.faq__state}>Ошибка загрузки FAQ</div>}
+          {faqLoading && <div>Загрузка...</div>}
+          {faqError && <div>Ошибка загрузки FAQ</div>}
 
-          {faq?.items && (
-            <Accordion className={s.faq__accordion} items={faq.items} />
+          {faq.length > 0 && (
+            <Accordion
+              className={s.faq__accordion}
+              items={faq.map(item => ({
+                title: item.question,
+                content: item.answer,
+              }))}
+            />
           )}
         </div>
       </Section>

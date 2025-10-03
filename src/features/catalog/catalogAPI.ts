@@ -5,9 +5,8 @@ export const catalogApi = createApi({
   reducerPath: 'catalogApi',
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.DEV
-      ? '/api'                       // уйдет на Vite-прокси -> CORS нет
-      : 'https://merch.factum.work/api', // прод — прямой URL
-    // credentials: 'include', // включай, если нужны куки; тогда на бэке нужен Allow-Credentials
+      ? '/api'
+      : 'https://merch.factum.work/api',
   }),
   endpoints: (builder) => ({
     getProducts: builder.query<Product[], { q?: string; sort?: 'price_asc' | 'price_desc' } | void>({

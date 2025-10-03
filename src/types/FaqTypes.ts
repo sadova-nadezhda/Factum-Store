@@ -1,8 +1,7 @@
-export type AccordionItem = {
-  title: string;
-  content: string;
+export type FaqItem = {
+  id: number | string;
+  question: string;
+  answer: string;
 };
 
-export type FaqResponse = {
-  items: AccordionItem[];
-};
+export type FaqResponse = FaqItem[];
