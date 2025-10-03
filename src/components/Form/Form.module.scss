@@ -4,11 +4,24 @@
   gap: calc(16 * var(--width-multiplier));
   button {
     margin-top: calc(16 * var(--width-multiplier));
+    @media (max-width: 1024px) {
+      margin-top: calc(8 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      margin-top: calc(4 * var(--width-multiplier));
+    }
   }
   &__profile {
     display: grid;
     grid-template-columns: calc(220 * var(--width-multiplier)) 1fr;
     gap: calc(30 * var(--width-multiplier));
+    @media (max-width: 1024px) {
+      gap: calc(20 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      grid-template-columns: 1fr;
+      gap: calc(16 * var(--width-multiplier));
+    }
   }
   &__avatar {
     position: relative;
@@ -42,6 +55,13 @@
         background-color: rgba(0, 0, 0, 0.3);
       }
     }
+    @media (max-width: 1024px) {
+      border-radius: calc(16 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      height: calc(320 * var(--width-multiplier));
+      border-radius: calc(12 * var(--width-multiplier));
+    }
   }
   &__top {
     display: flex;
@@ -55,6 +75,12 @@
     font-family: Onest;
     font-weight: 600;
     line-height: 1;
+    @media (max-width: 1024px) {
+      font-size: calc(20 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      font-size: calc(18 * var(--width-multiplier));
+    }
   }
   &__link {
     padding: 0;
@@ -65,6 +91,9 @@
     &:hover {
       cursor: pointer;
       color: var(--primary);
+    }
+    @media (max-width: 767px) {
+      font-size: calc(14 * var(--width-multiplier));
     }
   }
   &__fields {
@@ -82,6 +111,14 @@
       border-bottom: calc(1 * var(--width-multiplier)) solid rgba(2, 2, 2, 0.5);
       border-radius: 0;
       background-color: transparent;
+    }
+    @media (max-width: 1024px) {
+      padding: calc(20 * var(--width-multiplier));
+      border-radius: calc(16 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      padding: calc(16 * var(--width-multiplier));
+      border-radius: calc(12 * var(--width-multiplier));
     }
   }
   &__file {
@@ -111,6 +148,9 @@
   &__login {
     input {
       padding: calc(20 * var(--width-multiplier));
+      @media (max-width: 767px) {
+        padding: calc(16 * var(--width-multiplier));
+      }
     }
   }
 }

@@ -12,11 +12,20 @@
     margin-bottom: calc(24 * var(--width-multiplier));
     font-size: calc(32 * var(--width-multiplier));
     text-align: center;
+    @media (max-width: 1024px) {
+      font-size: calc(24 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      font-size: calc(20 * var(--width-multiplier));
+    }
   }
   &__wrap {
     display: flex;
     flex-direction: column;
     gap: calc(24 * var(--width-multiplier));
+    @media (max-width: 767px) {
+      gap: calc(20 * var(--width-multiplier));
+    }
   }
   &__bottom {
     display: flex;
@@ -33,6 +42,9 @@
       &:hover {
         color: var(--primary);
       }
+    }
+    @media (max-width: 767px) {
+      font-size: calc(14 * var(--width-multiplier));
     }
   }
 }

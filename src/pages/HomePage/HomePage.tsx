@@ -6,25 +6,25 @@ import Title from '../../components/Title';
 import Accordion from '../../components/Accordion';
 
 import { CatalogCard } from '../../components/Card';
-import type { AccordionItem } from '../../components/Accordion/Accordion';
+
+import { useGetProductsQuery } from '../../features/catalog/catalogApi';
+import { useGetFaqQuery } from '../../features/faq/faqAPI';
 
 import s from './HomePage.module.scss';
 
 export default function HomePage() {
-  const faqItems: AccordionItem[] = [
-    {
-      title: 'Как сделать заказ?',
-      content: 'Оформите заказ через сайт, добавив товары в корзину и заполнив форму доставки.'
-    },
-    {
-      title: 'Сколько времени занимает доставка?',
-      content: 'Доставка обычно занимает от 2 до 5 рабочих дней в зависимости от региона.'
-    },
-    {
-      title: 'Можно ли вернуть товар?',
-      content: 'Да, в течение 14 дней при сохранении товарного вида и упаковки.'
-    }
-  ];
+  const {
+    data: catalog,
+    isLoading: catalogLoading,
+    isError: catalogError,
+  } = useGetProductsQuery({ q: '', sort: 'price_asc' });
+
+  const {
+    data: faq,
+    isLoading: faqLoading,
+    isError: faqError,
+  } = useGetFaqQuery();
+
   return (
     <>
       <Section className={`${s.hero} section-hidden`}>
@@ -36,50 +36,45 @@ export default function HomePage() {
           </div>
         </div>
       </Section>
+
       <Section className={`${s.catalog} section-pad section-hidden`}>
         <div className={s.catalog__container}>
           <div className={`${s.catalog__top} ${s.heading}`}>
             <Title component='h2'>каталог</Title>
             <Link className={s.catalog__link} to='/catalog'>смотреть все</Link>
           </div>
+
+          {catalogLoading && <div className={s.catalog__state}>Загрузка...</div>}
+          {catalogError && <div className={s.catalog__state}>Ошибка загрузки каталога</div>}
+
           <div className={s.catalog__cards}>
-            <CatalogCard
-              img='/assets/img/product-1.png'
-              title='Футболка'
-              desc='Простая белая футболка'
-              price={150}
-              amount={10}
-            />
-            <CatalogCard
-              img='/assets/img/product-2.png'
-              title='Кружка'
-              desc='Керамическая кружка с логотипом компании'
-              price={50}
-              amount={5}
-            />
-            <CatalogCard
-              img='/assets/img/product-3.png'
-              title='Бейсболка'
-              desc='Бейсболка с эмблемой компании'
-              price={100}
-              amount={5}
-            />
-            <CatalogCard
-              img='/assets/img/product-4.png'
-              title='Блокнот'
-              desc='Блокнот с логотипом компании'
-              price={100}
-              amount={0}
-            />
+            {catalog?.map(p => (
+              <CatalogCard
+                key={p.id}
+                id={p.id}
+                img={p.image && p.image.trim() !== '' ? p.image : '/assets/img/product.jpg'}
+                title={p.name}
+                desc={p.description}
+                price={p.price}
+                amount={p.stock}
+              />
+            ))}
           </div>
         </div>
       </Section>
+
       <Section id="faq" className={`${s.faq} section-pad-bottom section-hidden`}>
         <div className={s.faq__container}>
           <Title component='h2' className={s.heading}>faq</Title>
-          <Accordion className={s.faq__accordion} items={faqItems} />
+
+          {faqLoading && <div className={s.faq__state}>Загрузка...</div>}
+          {faqError && <div className={s.faq__state}>Ошибка загрузки FAQ</div>}
+
+          {faq?.items && (
+            <Accordion className={s.faq__accordion} items={faq.items} />
+          )}
         </div>
       </Section>
     </>
-  )
+  );
 }

@@ -8,6 +8,11 @@
     font-weight: 700;
     line-height: 1;
     text-transform: lowercase;
+    @media (max-width: 767px) {
+      gap: calc(16 * var(--width-multiplier));
+      padding-top: calc(40 * var(--width-multiplier));
+      font-size: calc(20 * var(--width-multiplier));
+    }
   }
   &__logo {
     width: calc(182 * var(--width-multiplier));
@@ -17,12 +22,19 @@
       height: 100%;
       object-fit: contain;
     }
+    @media (max-width: 767px) {
+      width: calc(120 * var(--width-multiplier));
+      height: calc(20 * var(--width-multiplier));
+    }
   }
   &__nav {
     display: grid;
     grid-template-columns: repeat(2, auto);
     justify-content: space-between;
     gap: calc(20 * var(--width-multiplier));
+    @media (max-width: 767px) {
+      grid-template-columns: 1fr;
+    }
   }
   &__menu, &__profile {
     display: flex;
@@ -51,10 +63,28 @@
         }
       }
     }
+    @media (max-width: 767px) {
+      gap: calc(10 * var(--width-multiplier));
+    }
+  }
+  &__menu {
+    @media (max-width: 767px) {
+      display: none;
+    }
+  }
+  &__profile {
+    @media (max-width: 767px) {
+      align-items: flex-end;
+    }
   }
   &__balance {
     display: flex;
     align-items: center;
     gap: calc(8 * var(--width-multiplier));
+    span {
+      @media (max-width: 767px) {
+        display: none;
+      }
+    }
   }
 }

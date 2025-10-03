@@ -7,6 +7,17 @@
   border-radius: calc(30 * var(--width-multiplier));
   background-color: var(--white);
   line-height: 1;
+  @media (max-width: 1024px) {
+    gap: calc(40 * var(--width-multiplier));
+    padding: calc(20 * var(--width-multiplier));
+    border-radius: calc(16 * var(--width-multiplier));
+  }
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+    gap: calc(30 * var(--width-multiplier));
+    padding: calc(16 * var(--width-multiplier));
+    border-radius: calc(12 * var(--width-multiplier));
+  }
   &__img {
     height: calc(150 * var(--width-multiplier));
     img {
@@ -20,6 +31,10 @@
     flex-direction: column;
     gap: calc(20 * var(--width-multiplier));
     font-size: calc(20 * var(--width-multiplier));
+    @media (max-width: 767px) {
+      gap: calc(16 * var(--width-multiplier));
+      font-size: calc(16 * var(--width-multiplier));
+    }
   }
   &__info {
     display: flex;
@@ -29,6 +44,12 @@
   &__num {
     font-size: calc(24 * var(--width-multiplier));
     font-weight: 600;
+    @media (max-width: 1024px) {
+      font-size: calc(20 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      font-size: calc(18 * var(--width-multiplier));
+    }
   }
   &__price {
     display: flex;

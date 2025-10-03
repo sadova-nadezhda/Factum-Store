@@ -13,5 +13,12 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: calc(60 * var(--width-multiplier));
+    @media (max-width: 1024px) {
+      gap: calc(40 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      grid-template-columns: 1fr;
+      gap: calc(16 * var(--width-multiplier));
+    }
   }
 }

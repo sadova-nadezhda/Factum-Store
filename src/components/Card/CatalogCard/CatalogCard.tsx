@@ -6,9 +6,9 @@ import type { Product } from '../../../types/ProductTypes';
 import s from './CatalogCard.module.scss';
 
 
-export default function CatalogCard({img, title, desc, price, amount} :Product) {
+export default function CatalogCard({id, img, title, desc, price, amount} :Product) {
   return (
-    <div className={s.card}>
+    <div id={id} className={s.card}>
       <div className={s.card__img}><img src={img} alt="" /></div>
       <div className={s.card__box}>
         <div className={s.card__info}>

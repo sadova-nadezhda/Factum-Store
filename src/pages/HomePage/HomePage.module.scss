@@ -21,6 +21,17 @@
       object-fit: cover;
       z-index: -1;
     }
+    @media (max-width: 1024px) {
+      height: calc(600 * var(--width-multiplier));
+      padding: calc(40 * var(--width-multiplier));
+      border-radius: calc(40 * var(--width-multiplier));
+      border: calc(6 * var(--width-multiplier)) solid #020202;
+    }
+    @media (max-width: 767px) {
+      padding: calc(16 * var(--width-multiplier));
+      border-radius: calc(16 * var(--width-multiplier));
+      border: calc(4 * var(--width-multiplier)) solid #020202;
+    }
   }
   &__title {
     max-width: 50%;
@@ -28,6 +39,9 @@
     margin-left: auto;
     strong {
       color: var(--white);
+    }
+    @media (max-width: 1024px) {
+      max-width: unset;
     }
   }
   &__desc {
@@ -38,6 +52,13 @@
     line-height: 1;
     p {
       max-width: calc(424 * var(--width-multiplier));
+      @media (max-width: 767px) {
+        max-width: unset;
+      }
+    }
+    @media (max-width: 1024px) {
+      max-width: unset;
+      font-size: calc(14 * var(--width-multiplier));
     }
   }
 }
@@ -47,6 +68,14 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: calc(32 * var(--width-multiplier));
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: calc(20 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      grid-template-columns: 1fr;
+      gap: calc(16 * var(--width-multiplier));
+    }
   }
   &__link {
     position: relative;
@@ -73,6 +102,12 @@
         transform: scale(1);
       }
     }
+    @media (max-width: 1024px) {
+      font-size: calc(20 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      font-size: calc(18 * var(--width-multiplier));
+    }
   }
 }
 
@@ -81,6 +116,9 @@
   &__accordion {
     max-width: 75%;
     margin-left: auto;
+    @media (max-width: 1024px) {
+      max-width: unset;
+    }
   }
 }
 
@@ -88,7 +126,16 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  gap: calc(8 * var(--width-multiplier));
   max-width: 50%;
   margin-bottom: calc(40 * var(--width-multiplier));
   margin-left: auto;
+  @media (max-width: 1024px) {
+    max-width: unset;
+    margin-bottom: calc(30 * var(--width-multiplier));
+  }
+  @media (max-width: 767px) {
+    flex-wrap: wrap;
+    margin-bottom: calc(20 * var(--width-multiplier));
+  }
 }

@@ -17,11 +17,11 @@ export default function LoginPage() {
           <LoginForm />
           <div className={s.login__bottom}>
             <div className={s.login__link}>
-              <span className='text_color_inactive'>Вы — новый пользователь?</span>
+              <span>Вы — новый пользователь?</span>
               <Link to={`/register`} className='link'>Зарегистрироваться</Link>
             </div>
             <div className={s.login__link}>
-              <span className='text_color_inactive'>Забыли пароль?</span>
+              <span>Забыли пароль?</span>
               <Link to={`/forgot-password `} className='link'>Восстановить пароль</Link>
             </div>
           </div>

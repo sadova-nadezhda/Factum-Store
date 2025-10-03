@@ -83,7 +83,7 @@
 
   h1, h2 {
     font: 700 calc(64 * var(--width-multiplier))/1 Unbounded;
-    @media (max-width: 980px) {
+    @media (max-width: 1024px) {
       font-size: calc(48 * var(--width-multiplier));
     }
     @media (max-width: 767px) {
@@ -93,7 +93,7 @@
   
   h3 {
     font: 700 calc(30 * var(--width-multiplier))/1 Unbounded;
-    @media (max-width: 980px) {
+    @media (max-width: 1024px) {
       font-size: calc(24 * var(--width-multiplier));
     }
     @media (max-width: 767px) {
@@ -103,7 +103,7 @@
   
   h4 {
     font: 700 calc(24 * var(--width-multiplier))/1 Unbounded;
-    @media (max-width: 980px) {
+    @media (max-width: 1024px) {
       font-size: calc(22 * var(--width-multiplier));
     }
     @media (max-width: 767px) {

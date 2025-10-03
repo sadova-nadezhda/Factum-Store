@@ -68,6 +68,12 @@ input, select, textarea {
   &:focus {
     outline: none;
   }
+  @media (max-width: 1024px) {
+    padding: calc(20 * var(--width-multiplier));
+  }
+  @media (max-width: 767px) {
+    padding: calc(16 * var(--width-multiplier));
+  }
 }
 
 textarea {
@@ -126,6 +132,10 @@ select {
   }
   &-border {
     border: calc(1 * var(--width-multiplier)) solid var(--dark);
+  }
+  @media (max-width: 767px) {
+    padding: calc(12 * var(--width-multiplier)) calc(32 * var(--width-multiplier));
+    font-size: calc(14 * var(--width-multiplier));
   }
 }
 

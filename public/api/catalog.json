@@ -1,0 +1,36 @@
+{
+  "items": [
+    {
+      "id": "tshirt",
+      "image": "/assets/img/product-1.png",
+      "name": "Футболка",
+      "description": "Простая белая футболка",
+      "price": 150,
+      "stock": 10
+    },
+    {
+      "id": "mug",
+      "image": "/assets/img/product-2.png",
+      "name": "Кружка",
+      "description": "Керамическая кружка с логотипом компании",
+      "price": 50,
+      "stock": 5
+    },
+    {
+      "id": "cap",
+      "image": "/assets/img/product-3.png",
+      "name": "Бейсболка",
+      "description": "Бейсболка с эмблемой компании",
+      "price": 100,
+      "stock": 5
+    },
+    {
+      "id": "notebook",
+      "image": "",
+      "name": "Блокнот",
+      "description": "Блокнот с логотипом компании",
+      "price": 100,
+      "stock": 0
+    }
+  ]
+}

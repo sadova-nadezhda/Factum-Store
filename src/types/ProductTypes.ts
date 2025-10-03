@@ -1,7 +1,12 @@
-export interface Product {
-  title: string;
-  img: string;
-  desc: string;
+export type Product = {
+  id: string;
+  image: string;
+  name: string;
+  description: string;
   price: number;
-  amount: number;
-}
+  stock: number;
+};
+
+export type CatalogResponse = {
+  items: Product[];
+};
