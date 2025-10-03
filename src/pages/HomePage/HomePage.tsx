@@ -7,7 +7,7 @@ import Accordion from '../../components/Accordion';
 
 import { CatalogCard } from '../../components/Card';
 
-import { useGetProductsQuery } from '../../features/catalog/catalogApi';
+import { useGetProductsQuery } from '../../features/catalog/catalogAPI';
 import { useGetFaqQuery } from '../../features/faq/faqAPI';
 
 import s from './HomePage.module.scss';
