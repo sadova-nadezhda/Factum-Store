@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer  from '../features/auth/authSlice';
-import { catalogApi } from '../features/catalog/catalogApi';
+import { catalogApi } from '../features/catalog/catalogAPI';
 import { faqApi } from '../features/faq/faqAPI';
 
 export const store = configureStore({
