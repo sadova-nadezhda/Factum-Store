@@ -44,15 +44,15 @@ export default function HomePage() {
           {catalogError && <div className={s.catalog__state}>Ошибка загрузки каталога</div>}
 
           <div className={s.catalog__cards}>
-            {catalog?.map(p => (
+            {catalog?.slice(-4).map(p => (
               <CatalogCard
                 key={p.id}
                 id={p.id}
-                img={p.image && p.image.trim() !== '' ? p.image : '/assets/img/product.jpg'}
-                title={p.name}
-                desc={p.description}
+                image={p.image && p.image.trim() !== '' ? p.image : '/assets/img/product.jpg'}
+                name={p.name}
+                description={p.description}
                 price={p.price}
-                amount={p.stock}
+                stock={p.stock}
               />
             ))}
           </div>

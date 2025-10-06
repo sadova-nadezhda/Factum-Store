@@ -1,77 +1,168 @@
-import React, { useState, useEffect } from 'react';
-import Input from "./parts/Input";
-import Select from './parts/Select';
-import Button from '../Button';
-import s from './Form.module.scss';
+// src/components/Form/TransferForm.tsx
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 
-const options = [
-  { value: 'default', label: 'Выберите сотрудника', disabled: true },
-  { value: 'user1', label: 'Надежда Садова' },
-  { value: 'user2', label: 'Аскар Джумагулов' },
-  { value: 'user3', label: 'Тимур Кульжабаев' },
-  { value: 'user4', label: 'Амир Максутов' },
-];
+import Input from './parts/Input';
+import Select from './parts/Select';
+import Button from '../Button';
 
-const wallets = [
-  { value: 'default', label: 'Выберите кошелек', disabled: true },
-  { value: 'uwallet1', label: 'Кошелек' },
-  { value: 'wallet2', label: 'Кошелек HR' },
-];
+import { useCreateTransferMutation, useGetUsersForTransfersQuery } from '../../features/auth/authAPI';
+import type { Wallet, WalletType } from '../../types/WalletTypes';
 
-export default function TransferForm() {
-  const [formData, setFormData] = useState({
+import s from './Form.module.scss';
+
+
+type Props = { wallets: Wallet[] };
+
+type Opt = { value: string; label: string; disabled?: boolean };
+
+export default function TransferForm({ wallets }: Props) {
+  const transferableWallets = useMemo(
+    () => wallets.filter((w) => w.transferable),
+    [wallets]
+  );
+
+  const [form, setForm] = useState({
     sum: '',
     employee: 'default',
-    wallets: 'default'
+    wallet: 'default' as 'default' | WalletType,
   });
 
   useEffect(() => {
-    const savedData = localStorage.getItem('formData');
-    if (savedData) setFormData(JSON.parse(savedData));
-  }, []);
+    if (transferableWallets.length === 1 && form.wallet === 'default') {
+      setForm((p) => ({ ...p, wallet: transferableWallets[0].type }));
+    }
+  }, [transferableWallets, form.wallet]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const {
+    data: users = [],
+    isLoading: usersLoading,
+    isError: usersError,
+  } = useGetUsersForTransfersQuery();
+
+  const userOptions: Opt[] = useMemo(() => {
+    const head: Opt[] = [{ value: 'default', label: 'Выберите сотрудника', disabled: true }];
+    if (!users.length) {
+      const empty: Opt = { value: '', label: 'Пользователи не найдены', disabled: true };
+      return [...head, ...[empty]];
+    }
+    const items: Opt[] = users.map((u) => ({
+      value: String(u.id),
+      label: `${u.full_name || 'Без имени'} (${u.email})`,
+    }));
+    return [...head, ...items];
+  }, [users]);
+
+  const walletOptions: Opt[] = useMemo(() => {
+    const label = (t: WalletType) =>
+      t === 'main'
+        ? 'Кошелёк'
+        : t === 'manager_pool'
+        ? 'Кошелёк Руководителя'
+        : 'Кошелёк HR';
+    const head: Opt[] = [{ value: 'default', label: 'Выберите кошелёк', disabled: true }];
+    const items: Opt[] = transferableWallets.map((w) => ({
+      value: w.type,
+      label: label(w.type),
+    }));
+    return [...head, ...items];
+  }, [transferableWallets]);
+
+  const [createTransfer, { isLoading, error, isSuccess }] = useCreateTransferMutation();
+
+  const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (e) => {
+    const { name, value } = e.target as HTMLInputElement & HTMLSelectElement;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (formData.employee === 'default' || !formData.sum) return;
 
-    localStorage.setItem('formData', JSON.stringify(formData));
-    setFormData({ sum: '', employee: 'default' });
+    const to_user_id = Number(form.employee);
+    const amount = Number(form.sum);
+    const from_type = form.wallet === 'default'
+      ? (transferableWallets[0]?.type ?? 'main')
+      : form.wallet;
+
+    if (!to_user_id || !amount || amount <= 0) return;
+
+    try {
+      await createTransfer({ to_user_id, amount, from_type }).unwrap();
+      setForm({
+        sum: '',
+        employee: 'default',
+        wallet:
+          transferableWallets.length === 1 ? transferableWallets[0].type : 'default',
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  const apiError =
+    (error as any)?.data?.error ||
+    (error as any)?.error ||
+    undefined;
+
+  const limit = (error as any)?.data?.limit;
+  const used = (error as any)?.data?.used;
+
+  const disabled =
+    isLoading ||
+    usersLoading ||
+    usersError ||
+    form.employee === 'default' ||
+    Number(form.sum) <= 0 ||
+    (transferableWallets.length > 1 && form.wallet === 'default');
 
   return (
     <form onSubmit={handleSubmit} className={classNames(s.form, s.form__transfer)}>
       <Select
         name="employee"
-        options={options}
-        value={formData.employee}
+        options={userOptions}
+        value={form.employee}
         onChange={handleChange}
         required
+        disabled={usersLoading || usersError}
       />
-      <Select
-        name="wallets"
-        options={wallets}
-        value={formData.wallets}
-        onChange={handleChange}
-        required
-      />
+
+      {transferableWallets.length > 1 && (
+        <Select
+          name="wallet"
+          options={walletOptions}
+          value={form.wallet}
+          onChange={handleChange}
+          required
+        />
+      )}
+
       <Input
         type="number"
         name="sum"
-        value={formData.sum}
+        value={form.sum}
         onChange={handleChange}
         placeholder="Введите сумму"
         min="1"
         required
       />
+
+      {apiError && (
+        <div className={s.form__error}>
+          {apiError}
+          {typeof limit === 'number' && typeof used === 'number' && (
+            <> (лимит: {limit}, использовано: {used})</>
+          )}
+        </div>
+      )}
+      {isSuccess && <div className={s.form__ok}>Перевод выполнен</div>}
+
       <div className={s.form__footer}>
-        <Button type="submit" className={classNames(s.form__button, 'button button-orange')}>
-          Отправить
+        <Button
+          type="submit"
+          disabled={disabled}
+          className={classNames(s.form__button, 'button button-orange')}
+        >
+          {isLoading ? 'Отправляю…' : 'Отправить'}
         </Button>
       </div>
     </form>

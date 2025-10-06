@@ -1,125 +1,157 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 
-import Input from "./parts/Input";
+import Input from './parts/Input';
 import Title from '../Title';
 import Button from '../Button';
 
-import type { FormValues } from '../../types/FormTypes';
+import { useGetMeQuery, useUpdateMeMutation, useUploadAvatarMutation  } from '../../features/auth/authAPI';
 
 import s from './Form.module.scss';
 
-interface ExtendedFormValues extends FormValues {
-  avatar: string; // URL или base64
-}
 
 export default function ProfileForm() {
-  const initialForm: ExtendedFormValues = {
-    name: 'Садова Надежда',
-    email: 'test@factum.agensy',
-    password: '',
-    avatar: 'assets/img/avatar.jpg'
-  };
+  const { data: me, isLoading, isError } = useGetMeQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const [updateMe, { isLoading: savingInfo }] = useUpdateMeMutation();
+  const [uploadAvatar, { isLoading: savingAvatar }] = useUploadAvatarMutation();
 
-  const [form, setForm] = useState<ExtendedFormValues>(initialForm);
-  const [savedForm, setSavedForm] = useState<ExtendedFormValues>(initialForm);
+  const [form, setForm] = useState({
+    full_name: '',
+    email: '',
+    password: '',
+    avatar: 'assets/img/avatar.jpg',
+  });
+  const [saved, setSaved] = useState(form);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null); 
+
+useEffect(() => {
+    if (!me) return;
+    const next = {
+      full_name: me.full_name ?? '',
+      email: me.email ?? '',
+      password: '',
+      avatar: me.avatar || 'assets/img/avatar.jpg',
+    };
+    setForm(next);
+    setSaved(next);
+    setAvatarFile(null);
+  }, [me?.id]);
 
   const isChanged = useMemo(
-    () => JSON.stringify(form) !== JSON.stringify(savedForm),
-    [form, savedForm]
+    () => JSON.stringify({ ...form, password: '' }) !== JSON.stringify(saved) || !!avatarFile,
+    [form, saved, avatarFile]
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((p) => ({ ...p, [name]: value }));
   };
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm((prev) => ({ ...prev, avatar: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    setAvatarFile(file);  
+    const preview = URL.createObjectURL(file);  
+    setForm((p) => ({ ...p, avatar: preview }));
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      if (avatarFile) {
+        const res = await uploadAvatar({ file: avatarFile }).unwrap(); // { avatar, status: 'ok' }
+        setForm((p) => ({ ...p, avatar: res.avatar }));
+      }
+
+      const payload: { email?: string; full_name?: string; password?: string } = {};
+      if (form.full_name !== saved.full_name) payload.full_name = form.full_name;
+      if (form.email !== saved.email) payload.email = form.email;
+      if (form.password) payload.password = form.password;
+
+      if (Object.keys(payload).length > 0) {
+        await updateMe(payload).unwrap();
+      }
+
+      setSaved({ ...form, password: '' });
+      setForm((p) => ({ ...p, password: '' }));
+      setAvatarFile(null);
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: сохранить на бэкенд
-    setSavedForm(form);
-    setForm((prev) => ({ ...prev, password: '' })); // очистка только поля пароля
+  const handleCancel = () => {
+    setForm(saved);
+    setAvatarFile(null);
   };
 
-  const handleCancel = () => {
-    setForm(savedForm);
-  };
+  if (isLoading) return <div>Загрузка…</div>;
+  if (isError) return <div>Не удалось загрузить профиль</div>;
+  if (!me) return <div>Профиль пуст</div>;
 
   return (
     <form onSubmit={handleSave} className={s.form__profile}>
-      {/* Блок аватара */}
       <div className={s.form__avatar}>
-        <img
-          src={form.avatar}
-          alt="Аватар"
-        />
+        <img src={form.avatar} alt="Аватар" />
         <div className={s.form__file}>
           <input
+            id="avatar-upload"
             type="file"
             accept="image/*"
             onChange={handleAvatarChange}
-            id="avatar-upload"
             style={{ display: 'none' }}
           />
           <label htmlFor="avatar-upload">
-            Загрузить фото
+            {savingAvatar ? 'Загружаю…' : 'Загрузить фото'}
           </label>
         </div>
       </div>
+
       <div className={s.form__wrap}>
         <div className={s.form__top}>
-          <Title component='h4' className={s.form__caption}>Мой профиль</Title>
-          <Button type="button" className={s.form__link} onClick={handleChange}>
-            Редактировать профиль
-          </Button>
+          <Title component="h4" className={s.form__caption}>Мой профиль</Title>
         </div>
-        {/* Блок поля формы */}
+
         <div className={s.form__box}>
           <div className={s.form__fields}>
             <Input
-              value={form.name}
-              placeholder="ФИО"
-              name="name"
+              name="full_name"
               type="text"
+              placeholder="ФИО"
+              value={form.full_name}
+              onChange={handleChange}
             />
             <Input
-              value={form.email}
-              placeholder="Email"
               name="email"
               type="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange}
             />
             <Input
-              value={form.password}
-              placeholder="Пароль"
               name="password"
               type="password"
+              placeholder="Пароль (новый)"
+              value={form.password}
+              onChange={handleChange}
             />
           </div>
 
           {isChanged && (
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: 16 }}>
-              <Button type="button" className={classNames("button button-border")} onClick={handleCancel}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16, marginTop: 16 }}>
+              <Button type="button" className={classNames('button button-border')} onClick={handleCancel}>
                 Отмена
               </Button>
-              <Button type="submit" className={classNames("button button-orange")}>
-                Сохранить
+              <Button type="submit" disabled={savingInfo || savingAvatar} className={classNames('button button-orange')}>
+                {savingInfo || savingAvatar ? 'Сохраняю…' : 'Сохранить'}
               </Button>
             </div>
           )}
         </div>
       </div>
-
     </form>
   );
 }

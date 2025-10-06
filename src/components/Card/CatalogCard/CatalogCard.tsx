@@ -6,14 +6,14 @@ import type { Product } from '../../../types/ProductTypes';
 import s from './CatalogCard.module.scss';
 
 
-export default function CatalogCard({id, img, title, desc, price, amount} :Product) {
+export default function CatalogCard({id, image, name, description, price, stock} :Product) {
   return (
     <div id={id} className={s.card}>
-      <div className={s.card__img}><img src={img} alt="" /></div>
+      <div className={s.card__img}><img src={image} alt="" /></div>
       <div className={s.card__box}>
         <div className={s.card__info}>
-          <h4 className={s.card__caption}>{title}</h4>
-          <div className={s.card__desc}>{desc}</div>
+          <h4 className={s.card__caption}>{name}</h4>
+          <div className={s.card__desc}>{description}</div>
           <div className={s.card__bottom}>
           <div className={s.card__price}>
             {price}
@@ -26,11 +26,11 @@ export default function CatalogCard({id, img, title, desc, price, amount} :Produ
       </div>
       <div className={s.card__right}>
         <div className={s.card__amount}>
-          {amount > 0 ? `Кол-во: ${amount}` : 'Нет в наличии'}
+          {stock > 0 ? `Кол-во: ${stock}` : 'Нет в наличии'}
         </div>
         <button
-          className={classNames(s.card__button, { [s.disabled]: !amount })}
-          disabled={!amount}
+          className={classNames(s.card__button, { [s.disabled]: !stock })}
+          disabled={!stock}
         >
           <svg
             width="51"

@@ -153,4 +153,9 @@
       }
     }
   }
+  &__error {
+    color: rgba(235, 87, 87, 1);
+    font-size: calc(14 * var(--width-multiplier));
+    text-align: center;
+  }
 }

@@ -1,31 +1,128 @@
-// Заглушка для регистрации пользователя
-export const registerAPI = async ({ email, password, name }: { email: string, password: string, name: string }) => {
-  return new Promise<{ token: string; user: { email: string; name: string } }>((resolve, reject) => {
-    setTimeout(() => {
-      if (email === 'test@test.com') {
-        reject('Email уже используется');
-      } else {
-        resolve({
-          token: 'fake-token', // В будущем здесь будет настоящий токен
-          user: { email, name },
-        });
-      }
-    }, 1000);
-  });
-};
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-// Заглушка для логина
-export const loginAPI = async ({ email, password }: { email: string; password: string }) => {
-  return new Promise<{ token: string; user: { email: string; name: string } }>((resolve, reject) => {
-    setTimeout(() => {
-      if (email === 'test@test.com' && password === 'password') {
-        resolve({
-          token: 'fake-token',
-          user: { email, name: 'Test User' },
-        });
-      } else {
-        reject('Неверный email или пароль');
-      }
-    }, 1000);
-  });
-};
+import type {
+  AuthResponse, LoginDto, User, UpdateMeDto,
+  RegisterDto, RegisterResponse, ForgotDto, ForgotResponse, ResetDto, ResetResponse
+} from '../../types/UserTypes';
+import type { UserLite } from '../../types/UserLite';
+import type {
+  AdminUser, GetUsersParams, UpdateUserDto, OkResponse
+} from '../../types/AdminUserTypes';
+import type { CreateTransferDto, CreateTransferResponse, WalletsMyResponse } from '../../types/WalletTypes';
+import type { RootState } from '../../app/store';
+
+
+export const authApi = createApi({
+  reducerPath: 'authApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.DEV ? '/api' : 'https://merch.factum.work/api',
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState)?.auth?.token ?? localStorage.getItem('token');
+      if (token) headers.set('authorization', `Bearer ${token}`);
+      return headers;
+    },
+  }),
+  tagTypes: ['Me', 'Wallets', 'Users'],
+  endpoints: (builder) => ({
+    login: builder.mutation<AuthResponse, LoginDto>({
+      query: (body) => ({ url: '/auth/login', method: 'POST', body }),
+    }),
+    register: builder.mutation<RegisterResponse, RegisterDto>({
+      query: (body) => ({ url: '/auth/register', method: 'POST', body }),
+    }),
+    forgot: builder.mutation<ForgotResponse, ForgotDto>({
+      query: (body) => ({ url: '/auth/forgot', method: 'POST', body }),
+    }),
+    reset: builder.mutation<ResetResponse, ResetDto>({
+      query: (body) => ({ url: '/auth/reset', method: 'POST', body }),
+    }),
+
+    getMe: builder.query<User, void>({
+      query: () => ({ url: '/me', method: 'GET' }),
+      providesTags: ['Me'],
+    }),
+    updateMe: builder.mutation<{ status: 'ok' | 'noop' }, UpdateMeDto>({
+      query: (body) => ({ url: '/me', method: 'PATCH', body }),
+      invalidatesTags: ['Me'],
+    }),
+    uploadAvatar: builder.mutation<{ status: 'ok'; avatar: string }, { file: File }>({
+      query: ({ file }) => {
+        const form = new FormData();
+        form.append('avatar', file);
+        return { url: '/me/avatar', method: 'POST', body: form };
+      },
+      invalidatesTags: ['Me'],
+    }),
+
+    getMyWallets: builder.query<WalletsMyResponse, void>({
+      query: () => ({ url: '/wallets/my', method: 'GET' }),
+      providesTags: ['Wallets'],
+    }),
+
+    createTransfer: builder.mutation<CreateTransferResponse, CreateTransferDto>({
+      query: (body) => ({ url: '/transfers', method: 'POST', body }),
+      invalidatesTags: ['Wallets'],
+    }),
+
+    getUsers: builder.query<AdminUser[], GetUsersParams | void>({
+      query: (params) => {
+        const search = new URLSearchParams();
+        if (params?.q)        search.set('q', params.q);
+        if (params?.page)     search.set('page', String(params.page));
+        if (params?.per_page) search.set('per_page', String(params.per_page));
+        const qs = search.toString();
+        return { url: `/users${qs ? `?${qs}` : ''}`, method: 'GET' };
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Users' as const, id })),
+              { type: 'Users' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Users' as const, id: 'LIST' }],
+    }),
+
+    updateUser: builder.mutation<OkResponse, { id: number; data: UpdateUserDto }>({
+      query: ({ id, data }) => ({ url: `/users/${id}`, method: 'PATCH', body: data }),
+      invalidatesTags: (_res, _err, arg) => [
+        { type: 'Users', id: arg.id },
+        { type: 'Users', id: 'LIST' },
+      ],
+    }),
+
+    activateUser: builder.mutation<OkResponse, { id: number }>({
+      query: ({ id }) => ({ url: `/users/${id}/activate`, method: 'POST' }),
+      invalidatesTags: (_res, _err, arg) => [
+        { type: 'Users', id: arg.id },
+        { type: 'Users', id: 'LIST' },
+      ],
+    }),
+
+    getUsersForTransfers: builder.query<UserLite[], { q?: string } | void>({
+      query: (arg) => {
+        const q = arg?.q?.trim() ?? '';
+        return {
+          url: '/users/for-transfers',
+          method: 'GET',
+          params: q ? { q } : undefined,
+        };
+      },
+    }),
+  }),
+});
+
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useForgotMutation,
+  useResetMutation,
+  useGetMeQuery,
+  useUpdateMeMutation,
+  useGetMyWalletsQuery,
+  useCreateTransferMutation,
+  useGetUsersQuery,
+  useUpdateUserMutation,
+  useActivateUserMutation,
+  useGetUsersForTransfersQuery,
+  useUploadAvatarMutation,
+} = authApi;

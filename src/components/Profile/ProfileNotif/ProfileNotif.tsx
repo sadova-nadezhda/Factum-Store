@@ -1,40 +1,86 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import Title from '../../Title';
 import { NotificationsCard } from '../../Card';
 
+import { useGetMyWalletsQuery } from '../../../features/auth/authAPI';
+
 import s from './ProfileNotif.module.scss';
 
+type Notif =
+  | { kind: 'order'; caption: string; desc?: string; amount: string; date: string }
+  | { kind: 'transfer_in' | 'transfer_out'; sender: string; receiver: string; amount: string; date: string };
+
 export default function ProfileNotif() {
+  const { data, isLoading, isError } = useGetMyWalletsQuery();
+
+  const items: Notif[] = useMemo(() => {
+    if (!data) return [];
+
+    const orderNotifs: Notif[] = (data.orders || []).map(o => ({
+      kind: 'order',
+      caption: `Вы купили "${o.product_name}"`,
+      desc: 'Поздравляем с покупкой!',
+      amount: `-${o.price_at_purchase}`,
+      date: o.created_at,
+    }));
+
+    const inNotifs: Notif[] = (data.transfers_in || []).map(t => ({
+      kind: 'transfer_in',
+      sender: t.from_user,
+      receiver: 'Вы',
+      amount: `+${t.amount}`,
+      date: t.created_at,
+    }));
+
+    const outNotifs: Notif[] = (data.transfers_out || []).map(t => ({
+      kind: 'transfer_out',
+      sender: 'Вы',
+      receiver: t.to_user,
+      amount: `-${t.amount}`,
+      date: t.created_at,
+    }));
+
+    return [...orderNotifs, ...inNotifs, ...outNotifs].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  }, [data]);
+
+  if (isLoading) return <div>Загрузка уведомлений…</div>;
+  if (isError) return <div>Не удалось загрузить уведомления</div>;
+  if (!items.length) {
+    return (
+      <>
+        <Title component="h4" className={s.notif__caption}>Уведомления</Title>
+        <div className={s.notif__empty}>Пока нет уведомлений</div>
+      </>
+    );
+  }
+
   return (
     <>
-      <Title component='h4' className={s.notif__caption}>Уведомления</Title>
+      <Title component="h4" className={s.notif__caption}>Уведомления</Title>
       <div className={s.notif__cards}>
-        <NotificationsCard
-          caption='Вы купили Свитшот “FACTUM basic”'
-          desc='Поздравляем с покупкой!'
-          amount='-200'
-          date="2025-04-03"
-        />
-        <NotificationsCard
-          sender="Амир Максутов"
-          receiver="Вы"
-          amount='+50'
-          date="2025-04-05"
-        />
-        <NotificationsCard
-          caption='Вы получили вознаграждение! '
-          desc='Ежемесячные бонусы'
-          amount='+50'
-          date="2025-04-07"
-        />
-        <NotificationsCard
-          sender="Вы"
-          receiver="Аскар Джумагулов"
-          amount='-50'
-          date="2025-04-05"
-        />
+        {items.map((n, i) =>
+          n.kind === 'order' ? (
+            <NotificationsCard
+              key={`order-${i}`}
+              caption={n.caption}
+              desc={n.desc}
+              amount={n.amount}
+              date={n.date}
+            />
+          ) : (
+            <NotificationsCard
+              key={`${n.kind}-${i}`}
+              sender={n.sender}
+              receiver={n.receiver}
+              amount={n.amount}
+              date={n.date}
+            />
+          )
+        )}
       </div>
     </>
-  )
+  );
 }

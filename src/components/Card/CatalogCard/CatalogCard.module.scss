@@ -37,6 +37,7 @@
     gap: calc(8 * var(--width-multiplier));
   }
   &__caption {
+    max-width: calc(240 * var(--width-multiplier));
     font-weight: 600;
     font-family: Onest;
   }

@@ -1,19 +1,23 @@
 import React from 'react';
 import classNames from 'classnames';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 
 import Section from '../../components/Section';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 
+import { logout } from '../../features/auth/authSlice';
+
 import s from './ProfilePage.module.scss';
 
 export default function ProfilePage() {
-  // const { user, token } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    
+   const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
