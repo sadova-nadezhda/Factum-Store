@@ -7,6 +7,7 @@ import Button from '../Button';
 
 import { useForm } from '../../hooks/useForm';
 import { useForgotMutation } from '../../features/auth/authAPI';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 
 import s from './Form.module.scss';
 
@@ -39,7 +40,7 @@ export default function ForgotForm() {
       </Button>
 
       {isSuccess && <div className={s.form__ok}>Проверьте почту</div>}
-      {error && <div className={s.form__error}>Не удалось отправить письмо</div>}
+      {error && <div className={s.form__error}>{getErrorMessage(error)}</div>}
     </form>
   );
 }

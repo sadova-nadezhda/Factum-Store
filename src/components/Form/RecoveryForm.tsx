@@ -7,6 +7,7 @@ import Button from '../Button';
 
 import { useForm } from '../../hooks/useForm';
 import { useResetMutation } from '../../features/auth/authAPI';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 
 import s from './Form.module.scss';
 
@@ -36,11 +37,6 @@ export default function RecoveryForm() {
     }
   };
 
-  const errorText =
-    (error as any)?.data?.error ||
-    (error as any)?.error ||
-    'Ошибка сброса пароля';
-
   const disabled =
     isLoading || !(tokenFromQuery || values.token) || values.password.length < 6;
 
@@ -69,7 +65,7 @@ export default function RecoveryForm() {
         />
       )}
 
-      {error && <div className={s.form__error}>{errorText}</div>}
+      {error && <div className={s.form__error}>{getErrorMessage(error)}</div>}
 
       <Button
         type="submit"

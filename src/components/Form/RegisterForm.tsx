@@ -7,8 +7,10 @@ import Button from '../Button';
 
 import { useForm } from '../../hooks/useForm';
 import { useRegisterMutation } from '../../features/auth/authAPI';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 
 import s from './Form.module.scss';
+
 
 export default function RegisterForm() {
   const { values, handleChange } = useForm({ name: '', email: '', password: '' });
@@ -37,7 +39,7 @@ export default function RegisterForm() {
       <Button disabled={isLoading} className="button button-full button-orange">
         {isLoading ? 'Отправляю…' : 'Зарегистрироваться'}
       </Button>
-      {error && <div className={s.form__error}>Не удалось зарегистрироваться</div>}
+      {error && <div className={s.form__error}>{getErrorMessage(error)}</div>}
     </form>
   );
 }

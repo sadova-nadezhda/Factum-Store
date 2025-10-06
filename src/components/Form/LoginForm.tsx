@@ -10,6 +10,7 @@ import { setToken } from '../../features/auth/authSlice';
 
 import { useLoginMutation } from '../../features/auth/authAPI';
 import { useAppDispatch } from '../../hooks/store';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 
 import s from './Form.module.scss';
 
@@ -54,11 +55,7 @@ export default function LoginForm() {
         {isLoading ? 'Входим…' : 'Войти'}
       </Button>
 
-      {error && (
-        <div className={s.form__error}>
-          Неверный email или пароль
-        </div>
-      )}
+      {error && <div className={s.form__error}>{getErrorMessage(error)}</div>}
     </form>
   );
 }
