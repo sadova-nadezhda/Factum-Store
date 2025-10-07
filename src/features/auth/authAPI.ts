@@ -25,10 +25,26 @@ export const authApi = createApi({
   tagTypes: ['Me', 'Wallets', 'Users'],
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginDto>({
-      query: (body) => ({ url: '/auth/login', method: 'POST', body }),
+      query: (body) => ({ 
+        url: '/auth/login', 
+        method: 'POST', 
+        body, 
+        validateStatus: (response, result) =>
+          response.status >= 200 &&
+          response.status < 300 &&
+          !(result as any)?.error, 
+      }),
     }),
     register: builder.mutation<RegisterResponse, RegisterDto>({
-      query: (body) => ({ url: '/auth/register', method: 'POST', body }),
+      query: (body) => ({ 
+        url: '/auth/register', 
+        method: 'POST', 
+        body,
+        validateStatus: (response, result) =>
+          response.status >= 200 &&
+          response.status < 300 &&
+          !(result as any)?.error,  
+      }),
     }),
     forgot: builder.mutation<ForgotResponse, ForgotDto>({
       query: (body) => ({ url: '/auth/forgot', method: 'POST', body }),
@@ -59,8 +75,29 @@ export const authApi = createApi({
       providesTags: ['Wallets'],
     }),
 
-    createTransfer: builder.mutation<CreateTransferResponse, CreateTransferDto>({
-      query: (body) => ({ url: '/transfers', method: 'POST', body }),
+    createOrder: builder.mutation<{ status: 'ok' }, { product_id: number | string; qty: number }>({
+      query: (body) => ({
+        url: '/orders',
+        method: 'POST',
+        body,
+        responseHandler: 'text',
+      }),
+      transformResponse: (raw: string) => {
+        if (!raw) return { status: 'ok' as const };
+        try { return JSON.parse(raw); } catch { return { status: 'ok' as const }; }
+      },
+      invalidatesTags: ['Wallets', 'Me'],
+    }),
+
+    createTransfer: builder.mutation<CreateTransferResponse | { status: 'ok' }, CreateTransferDto>({
+      query: (body) => ({
+        url: '/transfers',
+        method: 'POST',
+        body,
+        responseHandler: 'text',
+        validateStatus: (resp) => resp.status >= 200 && resp.status < 300,
+      }),
+      transformResponse: (_raw: string) => ({ status: 'ok' as const }),
       invalidatesTags: ['Wallets'],
     }),
 
@@ -119,6 +156,7 @@ export const {
   useGetMeQuery,
   useUpdateMeMutation,
   useGetMyWalletsQuery,
+  useCreateOrderMutation,
   useCreateTransferMutation,
   useGetUsersQuery,
   useUpdateUserMutation,

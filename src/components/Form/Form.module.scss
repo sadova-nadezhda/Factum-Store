@@ -153,6 +153,9 @@
       }
     }
   }
+  &__ok {
+    color: rgb(61, 166, 82);
+  }
   &__error {
     color: rgba(235, 87, 87, 1);
     font-size: calc(14 * var(--width-multiplier));

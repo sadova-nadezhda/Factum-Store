@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -14,10 +14,14 @@ import AdminUsersPage from './pages/AdminPage/AdminUsersPage';
 
 import { ProfileInfo, ProfileHistory, ProfileNotif, ProfileCoins } from './components/Profile';
 
+import ProductModal from './components/Modal/ProductModal';
+
 import './styles/main.scss';
 
 
 function App() {
+  const location = useLocation();
+  const background = useMemo(() => location.state?.background, [location]);
   return (
     <main>
       <Header />
