@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
   resolve: {
     alias: {
@@ -15,8 +15,19 @@ export default defineConfig({
       '/api': {
         target: 'https://merch.factum.work',
         changeOrigin: true,
-        secure: false,  
+        secure: true,
       },
     },
   },
-});
+  build: {
+    sourcemap: mode === 'production' ? false : true,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom', '@reduxjs/toolkit', 'react-redux']
+        }
+      }
+    }
+  }
+}));

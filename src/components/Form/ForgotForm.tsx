@@ -7,7 +7,6 @@ import Button from '../Button';
 
 import { useForm } from '../../hooks/useForm';
 import { useForgotMutation } from '../../features/auth/authAPI';
-import { getErrorMessage } from '../../utils/getErrorMessage';
 
 import s from './Form.module.scss';
 
@@ -26,6 +25,11 @@ export default function ForgotForm() {
     }
   };
 
+  const apiError =
+    (error as any)?.data?.error ||
+    (error as any)?.error ||
+    undefined;
+
   return (
     <form onSubmit={handleSubmit} className={classNames(s.form, s.form__login)}>
       <Input
@@ -35,12 +39,12 @@ export default function ForgotForm() {
         value={values.email}
         onChange={handleChange}
       />
-      <Button disabled={isLoading} className="button button-full button-orange">
+      <Button disabled={isLoading} type="submit" className="button button-full button-orange">
         {isLoading ? 'Отправляю…' : 'Восстановить'}
       </Button>
 
       {isSuccess && <div className={s.form__ok}>Проверьте почту</div>}
-      {error && <div className={s.form__error}>{getErrorMessage(error)}</div>}
+      {apiError && ( <div className={s.form__error}> {apiError} </div> )}
     </form>
   );
 }

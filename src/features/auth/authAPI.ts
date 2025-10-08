@@ -1,78 +1,103 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from '@/shared/baseQuery';
+import { setToken } from './authSlice';
+import { okIfNoError } from '@/shared/rtkValidate';
 
 import type {
   AuthResponse, LoginDto, User, UpdateMeDto,
   RegisterDto, RegisterResponse, ForgotDto, ForgotResponse, ResetDto, ResetResponse
-} from '../../types/UserTypes';
-import type { UserLite } from '../../types/UserLite';
-import type {
-  AdminUser, GetUsersParams, UpdateUserDto, OkResponse
-} from '../../types/AdminUserTypes';
-import type { CreateTransferDto, CreateTransferResponse, WalletsMyResponse } from '../../types/WalletTypes';
-import type { RootState } from '../../app/store';
-
+} from '@/types/UserTypes';
+import type { UserLite } from '@/types/UserLite';
+import type { AdminUser, GetUsersParams, UpdateUserDto, OkResponse } from '@/types/AdminUserTypes';
+import type { CreateTransferDto, CreateTransferResponse, WalletsMyResponse } from '@/types/WalletTypes';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.DEV ? '/api' : 'https://merch.factum.work/api',
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState)?.auth?.token ?? localStorage.getItem('token');
-      if (token) headers.set('authorization', `Bearer ${token}`);
-      return headers;
-    },
-  }),
+  baseQuery,
   tagTypes: ['Me', 'Wallets', 'Users'],
+
+  refetchOnFocus: true,
+  refetchOnReconnect: true,
+
   endpoints: (builder) => ({
+
+    // ---------- auth ----------
     login: builder.mutation<AuthResponse, LoginDto>({
-      query: (body) => ({ 
-        url: '/auth/login', 
-        method: 'POST', 
-        body, 
-        validateStatus: (response, result) =>
-          response.status >= 200 &&
-          response.status < 300 &&
-          !(result as any)?.error, 
+      query: (body) => ({
+        url: '/auth/login',
+        method: 'POST',
+        body,
+        validateStatus: okIfNoError,
       }),
+      async onQueryStarted(_body, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if ((data as any)?.token) {
+            dispatch(setToken((data as any).token));
+          }
+          dispatch(authApi.util.invalidateTags(['Me', 'Wallets']));
+        } catch {}
+      },
     }),
+
     register: builder.mutation<RegisterResponse, RegisterDto>({
       query: (body) => ({ 
         url: '/auth/register', 
         method: 'POST', 
         body,
-        validateStatus: (response, result) =>
-          response.status >= 200 &&
-          response.status < 300 &&
-          !(result as any)?.error,  
+        validateStatus: okIfNoError,
       }),
     }),
+
     forgot: builder.mutation<ForgotResponse, ForgotDto>({
-      query: (body) => ({ url: '/auth/forgot', method: 'POST', body }),
-    }),
-    reset: builder.mutation<ResetResponse, ResetDto>({
-      query: (body) => ({ url: '/auth/reset', method: 'POST', body }),
+      query: (body) => ({ 
+        url: '/auth/forgot', 
+        method: 'POST', 
+        body,
+        validateStatus: okIfNoError,
+      }),
     }),
 
-    getMe: builder.query<User, void>({
-      query: () => ({ url: '/me', method: 'GET' }),
-      providesTags: ['Me'],
+    reset: builder.mutation<ResetResponse, ResetDto>({
+      query: (body) => ({ 
+        url: '/auth/reset', 
+        method: 'POST', 
+        body,
+        validateStatus: okIfNoError,
+       }),
     }),
+
+    // ---------- profile ----------
+    getMe: builder.query<User, void>({
+      query: () => ({ url: '/me', method: 'GET', validateStatus: okIfNoError }),
+      providesTags: ['Me'],
+      keepUnusedDataFor: 60,
+    }),
+
     updateMe: builder.mutation<{ status: 'ok' | 'noop' }, UpdateMeDto>({
-      query: (body) => ({ url: '/me', method: 'PATCH', body }),
+      query: (body) => ({ 
+        url: '/me', 
+        method: 'PATCH', 
+        body,
+        validateStatus: okIfNoError, 
+      }),
       invalidatesTags: ['Me'],
     }),
+
     uploadAvatar: builder.mutation<{ status: 'ok'; avatar: string }, { file: File }>({
       query: ({ file }) => {
         const form = new FormData();
         form.append('avatar', file);
-        return { url: '/me/avatar', method: 'POST', body: form };
+        return { url: '/me/avatar', method: 'POST', body: form, validateStatus: okIfNoError };
       },
       invalidatesTags: ['Me'],
     }),
 
+    // ---------- wallets/orders/transfers ----------
     getMyWallets: builder.query<WalletsMyResponse, void>({
-      query: () => ({ url: '/wallets/my', method: 'GET' }),
+      query: () => ({ url: '/wallets/my', method: 'GET', validateStatus: okIfNoError }),
       providesTags: ['Wallets'],
+      keepUnusedDataFor: 60,
     }),
 
     createOrder: builder.mutation<{ status: 'ok' }, { product_id: number | string; qty: number }>({
@@ -81,6 +106,14 @@ export const authApi = createApi({
         method: 'POST',
         body,
         responseHandler: 'text',
+        validateStatus: (resp, raw) => {
+          try {
+            const parsed = raw ? JSON.parse(String(raw)) : null;
+            return resp.ok && !(parsed as any)?.error;
+          } catch {
+            return resp.ok;
+          }
+        }
       }),
       transformResponse: (raw: string) => {
         if (!raw) return { status: 'ok' as const };
@@ -89,26 +122,39 @@ export const authApi = createApi({
       invalidatesTags: ['Wallets', 'Me'],
     }),
 
-    createTransfer: builder.mutation<CreateTransferResponse | { status: 'ok' }, CreateTransferDto>({
+    createTransfer: builder.mutation<CreateTransferResponse, CreateTransferDto>({
       query: (body) => ({
         url: '/transfers',
         method: 'POST',
         body,
-        responseHandler: 'text',
-        validateStatus: (resp) => resp.status >= 200 && resp.status < 300,
+        validateStatus: okIfNoError,
       }),
-      transformResponse: (_raw: string) => ({ status: 'ok' as const }),
       invalidatesTags: ['Wallets'],
     }),
 
+    // ---------- admin/users ----------
     getUsers: builder.query<AdminUser[], GetUsersParams | void>({
       query: (params) => {
+        const q = params?.q?.trim();
+        const page = params?.page;
+        const per_page = params?.per_page;
+
+        const has = (v: unknown) => v !== undefined && v !== null && v !== '';
         const search = new URLSearchParams();
-        if (params?.q)        search.set('q', params.q);
-        if (params?.page)     search.set('page', String(params.page));
-        if (params?.per_page) search.set('per_page', String(params.per_page));
+        if (has(q)) search.set('q', String(q));
+        if (has(page)) search.set('page', String(page));
+        if (has(per_page)) search.set('per_page', String(per_page));
+
         const qs = search.toString();
-        return { url: `/users${qs ? `?${qs}` : ''}`, method: 'GET' };
+        return { url: `/users${qs ? `?${qs}` : ''}`, method: 'GET', validateStatus: okIfNoError };
+      },
+      serializeQueryArgs: ({ queryArgs }) => {
+        const a = queryArgs ?? {};
+        return JSON.stringify({
+          q: a.q ?? '',
+          page: a.page ?? '',
+          per_page: a.per_page ?? '',
+        });
       },
       providesTags: (result) =>
         result
@@ -117,10 +163,11 @@ export const authApi = createApi({
               { type: 'Users' as const, id: 'LIST' },
             ]
           : [{ type: 'Users' as const, id: 'LIST' }],
+      keepUnusedDataFor: 60,
     }),
 
     updateUser: builder.mutation<OkResponse, { id: number; data: UpdateUserDto }>({
-      query: ({ id, data }) => ({ url: `/users/${id}`, method: 'PATCH', body: data }),
+      query: ({ id, data }) => ({ url: `/users/${id}`, method: 'PATCH', body: data, validateStatus: okIfNoError }),
       invalidatesTags: (_res, _err, arg) => [
         { type: 'Users', id: arg.id },
         { type: 'Users', id: 'LIST' },
@@ -128,7 +175,7 @@ export const authApi = createApi({
     }),
 
     activateUser: builder.mutation<OkResponse, { id: number }>({
-      query: ({ id }) => ({ url: `/users/${id}/activate`, method: 'POST' }),
+      query: ({ id }) => ({ url: `/users/${id}/activate`, method: 'POST', validateStatus: okIfNoError }),
       invalidatesTags: (_res, _err, arg) => [
         { type: 'Users', id: arg.id },
         { type: 'Users', id: 'LIST' },
@@ -137,13 +184,15 @@ export const authApi = createApi({
 
     getUsersForTransfers: builder.query<UserLite[], { q?: string } | void>({
       query: (arg) => {
-        const q = arg?.q?.trim() ?? '';
+        const q = arg?.q?.trim();
         return {
           url: '/users/for-transfers',
           method: 'GET',
-          params: q ? { q } : undefined,
+          ...(q ? { params: { q } } : {}),
+          validateStatus: okIfNoError
         };
       },
+      keepUnusedDataFor: 30,
     }),
   }),
 });

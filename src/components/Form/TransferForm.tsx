@@ -1,4 +1,3 @@
-// src/components/Form/TransferForm.tsx
 import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 
@@ -6,14 +5,16 @@ import Input from './parts/Input';
 import Select from './parts/Select';
 import Button from '../Button';
 
-import { useCreateTransferMutation, useGetUsersForTransfersQuery } from '../../features/auth/authAPI';
-import type { Wallet, WalletType } from '../../types/WalletTypes';
+import {
+  useCreateTransferMutation,
+  useGetUsersForTransfersQuery,
+} from '@/features/auth/authAPI';
+
+import type { Wallet, WalletType } from '@/types/WalletTypes';
 
 import s from './Form.module.scss';
 
-
 type Props = { wallets: Wallet[] };
-
 type Opt = { value: string; label: string; disabled?: boolean };
 
 export default function TransferForm({ wallets }: Props) {
@@ -22,10 +23,14 @@ export default function TransferForm({ wallets }: Props) {
     [wallets]
   );
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    sum: string;
+    employee: string;
+    wallet: 'default' | WalletType;
+  }>({
     sum: '',
     employee: 'default',
-    wallet: 'default' as 'default' | WalletType,
+    wallet: 'default',
   });
 
   useEffect(() => {
@@ -43,32 +48,38 @@ export default function TransferForm({ wallets }: Props) {
   const userOptions: Opt[] = useMemo(() => {
     const head: Opt[] = [{ value: 'default', label: 'Выберите сотрудника', disabled: true }];
     if (!users.length) {
-      const empty: Opt = { value: '', label: 'Пользователи не найдены', disabled: true };
-      return [...head, ...[empty]];
+      return [...head, { value: '', label: 'Пользователи не найдены', disabled: true }];
     }
-    const items: Opt[] = users.map((u) => ({
-      value: String(u.id),
-      label: `${u.full_name || 'Без имени'} (${u.email})`,
-    }));
-    return [...head, ...items];
+    return [
+      ...head,
+      ...users.map((u) => ({
+        value: String(u.id),
+        label: `${u.full_name || 'Без имени'} (${u.email})`,
+      })),
+    ];
   }, [users]);
 
   const walletOptions: Opt[] = useMemo(() => {
-    const label = (t: WalletType) =>
-      t === 'main'
-        ? 'Кошелёк'
-        : t === 'manager_pool'
-        ? 'Кошелёк Руководителя'
-        : 'Кошелёк HR';
+    const title = (t: WalletType) =>
+      t === 'main' ? 'Кошелёк' : t === 'manager_pool' ? 'Кошелёк Руководителя' : 'Кошелёк HR';
+
     const head: Opt[] = [{ value: 'default', label: 'Выберите кошелёк', disabled: true }];
-    const items: Opt[] = transferableWallets.map((w) => ({
-      value: w.type,
-      label: label(w.type),
-    }));
-    return [...head, ...items];
+    return [
+      ...head,
+      ...transferableWallets.map((w) => ({ value: w.type, label: title(w.type) })),
+    ];
   }, [transferableWallets]);
 
   const [createTransfer, { isLoading, error, isSuccess }] = useCreateTransferMutation();
+
+  const selectedWallet =
+    (form.wallet !== 'default'
+      ? transferableWallets.find((w) => w.type === form.wallet)
+      : transferableWallets[0]) ?? null;
+
+  const available = Number(selectedWallet?.balance ?? 0);
+  const amountNum = Number(form.sum);
+  const overLimit = Number.isFinite(amountNum) && amountNum > available;
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (e) => {
     const { name, value } = e.target as HTMLInputElement & HTMLSelectElement;
@@ -80,19 +91,20 @@ export default function TransferForm({ wallets }: Props) {
 
     const to_user_id = Number(form.employee);
     const amount = Number(form.sum);
-    const from_type = form.wallet === 'default'
-      ? (transferableWallets[0]?.type ?? 'main')
-      : form.wallet;
+    const from_type: WalletType =
+      form.wallet === 'default'
+        ? (transferableWallets[0]?.type ?? 'main')
+        : form.wallet;
 
     if (!to_user_id || !amount || amount <= 0) return;
+    if (overLimit) return;
 
     try {
       await createTransfer({ to_user_id, amount, from_type }).unwrap();
       setForm({
         sum: '',
         employee: 'default',
-        wallet:
-          transferableWallets.length === 1 ? transferableWallets[0].type : 'default',
+        wallet: transferableWallets.length === 1 ? transferableWallets[0].type : 'default',
       });
     } catch (err) {
       console.error(err);
@@ -112,8 +124,9 @@ export default function TransferForm({ wallets }: Props) {
     usersLoading ||
     usersError ||
     form.employee === 'default' ||
-    Number(form.sum) <= 0 ||
-    (transferableWallets.length > 1 && form.wallet === 'default');
+    amountNum <= 0 ||
+    (transferableWallets.length > 1 && form.wallet === 'default') ||
+    overLimit;
 
   return (
     <form onSubmit={handleSubmit} className={classNames(s.form, s.form__transfer)}>
@@ -141,10 +154,18 @@ export default function TransferForm({ wallets }: Props) {
         name="sum"
         value={form.sum}
         onChange={handleChange}
-        placeholder="Введите сумму"
+        placeholder={`Введите сумму (доступно: ${available})`}
         min="1"
+        step="1"
+        inputMode="numeric"
         required
       />
+
+      {overLimit && (
+        <div className={s.form__error}>
+          Недостаточно средств. Доступно: {available}
+        </div>
+      )}
 
       {apiError && (
         <div className={s.form__error}>
@@ -154,6 +175,7 @@ export default function TransferForm({ wallets }: Props) {
           )}
         </div>
       )}
+
       {isSuccess && <div className={s.form__ok}>Перевод выполнен</div>}
 
       <div className={s.form__footer}>

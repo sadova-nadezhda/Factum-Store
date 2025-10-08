@@ -32,7 +32,7 @@ export default function ProfileHistory() {
   if (!orders.length) {
     return (
       <>
-        <Title component="h4" className={s.history__caption}>История</Title>
+        <Title as="h4" className={s.history__caption}>История</Title>
         <div className={s.history__empty}>Пока нет заказов</div>
       </>
     );
@@ -40,7 +40,7 @@ export default function ProfileHistory() {
 
   return (
     <>
-      <Title component="h4" className={s.history__caption}>История</Title>
+      <Title as="h4" className={s.history__caption}>История</Title>
       <div className={s.history__cards}>
         {orders.map((o) => (
           <HistoryCard

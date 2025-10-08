@@ -1,16 +1,24 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { FaqResponse } from '../../types/FaqTypes';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from '@/shared/baseQuery';
+
+export type FaqItem = { id: string; question: string; answer: string };
 
 export const faqApi = createApi({
   reducerPath: 'faqApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.DEV
-      ? '/api'                          
-      : 'https://merch.factum.work/api'
-  }),
-  endpoints: (builder) => ({
-    getFaq: builder.query<FaqResponse, void>({
+  baseQuery,
+  tagTypes: ['Faq'],
+  refetchOnMountOrArgChange: false,
+  endpoints: (build) => ({
+    getFaq: build.query<FaqItem[], void>({
       query: () => 'faq',
+      providesTags: (result) =>
+        result?.length
+          ? [
+              ...result.map((i) => ({ type: 'Faq' as const, id: i.id })),
+              { type: 'Faq' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Faq' as const, id: 'LIST' }],
+      keepUnusedDataFor: 300,
     }),
   }),
 });

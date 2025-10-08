@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 
@@ -6,18 +6,27 @@ import Section from '../../components/Section';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 
-import { logout } from '../../features/auth/authSlice';
+import { logout } from '@/features/auth/authSlice';
+import { catalogApi } from '@/features/catalog/catalogAPI';
+import { faqApi } from '@/features/faq/faqAPI';
+import { authApi } from '@/features/auth/authAPI';
 
 import s from './ProfilePage.module.scss';
+import Button from '@/components/Button';
+
 
 export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-   const handleLogout = () => {
+const onLogout = () => {
     dispatch(logout());
-    localStorage.removeItem('token');
-    navigate('/login');
+
+    dispatch(authApi.util.resetApiState());
+    dispatch(catalogApi.util.resetApiState());
+    dispatch(faqApi.util.resetApiState());
+
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -61,7 +70,9 @@ export default function ProfilePage() {
                 История
               </NavLink>
             </li>
-            <li><a onClick={handleLogout}>Выйти</a></li>
+            <li>
+              <Button onClick={onLogout} className={s.profile__logout}>Выйти</Button>
+            </li>
           </ul>
         </div>
         <div className={s.profile__wrap}>

@@ -1,4 +1,25 @@
 .profile {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: calc(480 * var(--width-multiplier));
+    height: calc(440 * var(--width-multiplier));
+    background: url('assets/img/profile-back-1.png') center / contain no-repeat;
+    z-index: -1;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: calc(50 * var(--width-multiplier));
+    width: calc(370 * var(--width-multiplier));
+    height: calc(580 * var(--width-multiplier));
+    background: url('assets/img/profile-back-2.png') center / contain no-repeat;
+    z-index: -1;
+  }
   &__container {
     display: flex;
     flex-direction: column;
@@ -59,6 +80,38 @@
     @media (max-width: 767px) {
       flex-direction: column;
       gap: calc(16 * var(--width-multiplier));
+    }
+  }
+  &__logout {
+    display: block;
+    width: 100%;
+    padding: calc(30 * var(--width-multiplier));
+    border-radius: calc(30 * var(--width-multiplier));
+    border: calc(5 * var(--width-multiplier)) solid var(--dark);
+    background-color: var(--white);
+    text-align: center;
+    font-weight: 600;
+    transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    &.active {
+      border-color: var(--primary);
+      color: var(--white);
+      background-color: var(--primary);
+      pointer-events: none;
+    }
+    &:not(.active):hover {
+      cursor: pointer;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    @media (max-width: 1024px) {
+      padding: calc(20 * var(--width-multiplier));
+      border-radius: calc(16 * var(--width-multiplier));
+      border: calc(3 * var(--width-multiplier)) solid var(--dark);
+    }
+    @media (max-width: 767px) {
+      padding: calc(16 * var(--width-multiplier));
+      border-radius: calc(12 * var(--width-multiplier));
+      border: calc(2 * var(--width-multiplier)) solid var(--dark);
     }
   }
   &__wrap {

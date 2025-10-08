@@ -1,5 +1,16 @@
 .hero {
+  position: relative;
   padding-top: calc(60 * var(--width-multiplier));
+  &::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 95%;
+    transform: translateY(-50%);
+    width: calc(430 * var(--width-multiplier));
+    height: calc(720 * var(--width-multiplier));
+    background: url('assets/img/hero-back.png') center / contain no-repeat;
+  }
   &__container {
     position: relative;
     display: flex;
@@ -112,7 +123,18 @@
 }
 
 .faq {
-  background: url('assets/img/faq-back.png') 0 50% / contain no-repeat;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: calc(550 * var(--width-multiplier));
+    height: calc(680 * var(--width-multiplier));
+    background: url('assets/img/faq-back.png') center / contain no-repeat;
+    z-index: -1;
+  }
   &__accordion {
     max-width: 75%;
     margin-left: auto;

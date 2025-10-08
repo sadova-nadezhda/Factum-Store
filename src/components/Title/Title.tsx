@@ -1,21 +1,31 @@
-import React, { JSX } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
-import BaseTitle from './BaseTitle';
-
-type TitleProps = React.ComponentPropsWithoutRef<'h1'> & {
-  component?: keyof JSX.IntrinsicElements;
-  className?: string;
+type AsProp<C extends React.ElementType> = {
+  as?: C;
+  className?: string | undefined;
 };
 
-const Title: React.FC<TitleProps> = ({ className, component: Component = 'h1', ...props }) => {
+type PolymorphicProps<C extends React.ElementType, P> =
+  P &
+  AsProp<C> &
+  Omit<React.ComponentPropsWithoutRef<C>, keyof (P & AsProp<C>)>;
+
+type TitleBaseProps = {
+  children?: React.ReactNode;
+};
+
+const defaultTag = 'h1';
+
+function Title<C extends React.ElementType = typeof defaultTag>(
+  { as, className, children, ...rest }: PolymorphicProps<C, TitleBaseProps>,
+) {
+  const Component = (as ?? defaultTag) as React.ElementType;
   return (
-    <BaseTitle
-      component={Component}
-      className={classNames(className)}
-      {...props}
-    />
+    <Component className={classNames(className)} {...rest}>
+      {children}
+    </Component>
   );
-};
+}
 
 export default Title;

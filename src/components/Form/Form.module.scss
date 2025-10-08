@@ -112,6 +112,9 @@
       border-radius: 0;
       background-color: transparent;
     }
+    .eyeBtn {
+      right: calc(4 * var(--width-multiplier));
+    }
     @media (max-width: 1024px) {
       padding: calc(20 * var(--width-multiplier));
       border-radius: calc(16 * var(--width-multiplier));
@@ -160,5 +163,25 @@
     color: rgba(235, 87, 87, 1);
     font-size: calc(14 * var(--width-multiplier));
     text-align: center;
+  }
+}
+
+.passwordField {
+  position: relative;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: calc(30 * var(--width-multiplier));
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0;
+  margin: 0 !important;
+  color: var(--dark);
+  background: none;
+  border: none;
+  cursor: pointer;
+  svg {
+    display: block;
   }
 }

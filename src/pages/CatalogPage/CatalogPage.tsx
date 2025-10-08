@@ -6,9 +6,11 @@ import Title from '../../components/Title';
 import { CatalogCard } from '../../components/Card';
 
 import { useGetProductsQuery } from '../../features/catalog/catalogAPI';
+import { useGetMeQuery } from '../../features/auth/authAPI';
 
 import s from './CatalogPage.module.scss';
 
+const safeImg = (img?: string | null) => (img?.trim() ? img : '/assets/img/product.jpg');
 
 function useDebounce<T>(value: T, delay = 400) {
   const [debounced, setDebounced] = useState(value);
@@ -24,10 +26,18 @@ export default function CatalogPage() {
   const [sort, setSort] = useState<'' | 'price_asc' | 'price_desc'>('');
   const q = useDebounce(qInput, 400);
 
-  const { data: catalog = [], isLoading, isError, isFetching } = useGetProductsQuery({
-    q,
-    sort: sort || 'price_asc',
-  });
+  const { data: me, isLoading: meLoading } = useGetMeQuery();
+  const isAuth = !!me && !meLoading;
+
+  const queryArgs = useMemo(() => {
+    const a: { q?: string; sort?: 'price_asc' | 'price_desc' } = {};
+    if (q) a.q = q;
+    if (sort) a.sort = sort;
+    return Object.keys(a).length ? a : undefined;
+  }, [q, sort]);
+
+  const { data: catalog = [], isLoading, isError, isFetching } =
+    useGetProductsQuery(queryArgs);
 
   const { grouped, distinctCategories } = useMemo(() => {
     const groups: Record<string, typeof catalog> = {};
@@ -45,8 +55,6 @@ export default function CatalogPage() {
   }, [catalog]);
 
   const hasCategories = distinctCategories.length > 0;
-
-  const safeImg = (img?: string | null) => (img && img.trim() !== '' ? img : '/assets/img/product.jpg');
 
   return (
     <Section className={`${s.catalog} section-pad section-hidden`}>
@@ -67,24 +75,24 @@ export default function CatalogPage() {
               className='filter'
               name='filter'
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) => setSort(e.target.value as any)}
             >
-              <option value=''>Сортировка</option>
+              <option value='' disabled>Сортировка</option>
               <option value='price_asc'>По возрастанию</option>
               <option value='price_desc'>По убыванию</option>
             </select>
           </form>
         </div>
 
-        {(isLoading || isFetching) && <div className={s.catalog__state}>Загрузка…</div>}
+        {!catalog.length && (isLoading || isFetching) && <div className={s.catalog__state}>Загрузка…</div>}
         {isError && <div className={s.catalog__state}>Ошибка загрузки каталога</div>}
 
-        {!isLoading && !isError && (
+        {!!catalog.length && !isError && (
           <div className={s.catalog__wrap}>
             {hasCategories ? (
               Object.entries(grouped).map(([category, items]) => (
                 <div key={category} className={s.catalog__row}>
-                  <Title component='h2' className={classNames(s.heading, s.catalog__caption)}>
+                  <Title as='h2' className={classNames(s.heading, s.catalog__caption)}>
                     {category}
                   </Title>
                   <div className={s.catalog__cards}>
@@ -97,6 +105,7 @@ export default function CatalogPage() {
                         description={p.description}
                         price={p.price}
                         stock={p.stock ?? 0}
+                        isAuth={isAuth}
                       />
                     ))}
                   </div>
@@ -114,6 +123,7 @@ export default function CatalogPage() {
                       description={p.description}
                       price={p.price}
                       stock={p.stock ?? 0}
+                      isAuth={isAuth}
                     />
                   ))}
                 </div>

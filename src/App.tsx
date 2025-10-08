@@ -1,23 +1,17 @@
 import React, { useMemo } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
+import ProtectedRoute from './components/ProtectedRoute'; 
 import Header from './components/Header';
 import Footer from './components/Footer';
-import ProtectedRoute from './components/ProtectedRoute'; 
-
+import { ProfileInfo, ProfileHistory, ProfileNotif, ProfileCoins } from './components/Profile';
 import { 
   ForgotPasswordPage, HomePage, LoginPage, NotFoundPage, 
   ProfilePage, RegisterPage, ResetPasswordPage, CatalogPage 
 } from './pages';
-
 import AdminUsersPage from './pages/AdminPage/AdminUsersPage';
 
-import { ProfileInfo, ProfileHistory, ProfileNotif, ProfileCoins } from './components/Profile';
-
-import ProductModal from './components/Modal/ProductModal';
-
 import './styles/main.scss';
-
 
 function App() {
   const location = useLocation();

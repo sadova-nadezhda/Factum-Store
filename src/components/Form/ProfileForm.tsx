@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
+import { Eye, EyeOff } from 'lucide-react';
 
 import Input from './parts/Input';
 import Title from '../Title';
@@ -8,7 +9,6 @@ import Button from '../Button';
 import { useGetMeQuery, useUpdateMeMutation, useUploadAvatarMutation  } from '../../features/auth/authAPI';
 
 import s from './Form.module.scss';
-
 
 export default function ProfileForm() {
   const { data: me, isLoading, isError } = useGetMeQuery(undefined, {
@@ -25,6 +25,7 @@ export default function ProfileForm() {
   });
   const [saved, setSaved] = useState(form);
   const [avatarFile, setAvatarFile] = useState<File | null>(null); 
+  const [showPassword, setShowPassword] = useState(false);
 
 useEffect(() => {
     if (!me) return;
@@ -112,7 +113,7 @@ useEffect(() => {
 
       <div className={s.form__wrap}>
         <div className={s.form__top}>
-          <Title component="h4" className={s.form__caption}>Мой профиль</Title>
+          <Title as="h4" className={s.form__caption}>Мой профиль</Title>
         </div>
 
         <div className={s.form__box}>
@@ -131,13 +132,23 @@ useEffect(() => {
               value={form.email}
               onChange={handleChange}
             />
-            <Input
-              name="password"
-              type="password"
-              placeholder="Пароль (новый)"
-              value={form.password}
-              onChange={handleChange}
-            />
+            <div className={s.passwordField}>
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="Пароль (новый)"
+                value={form.password}
+                onChange={handleChange}
+              />
+              <button
+                type="button"
+                className={s.eyeBtn}
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+              >
+                {showPassword ? <Eye size={24} /> : <EyeOff size={24} />}
+              </button>
+            </div>
           </div>
 
           {isChanged && (

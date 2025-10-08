@@ -51,7 +51,7 @@ export default function ProfileNotif() {
   if (!items.length) {
     return (
       <>
-        <Title component="h4" className={s.notif__caption}>Уведомления</Title>
+        <Title as="h4" className={s.notif__caption}>Уведомления</Title>
         <div className={s.notif__empty}>Пока нет уведомлений</div>
       </>
     );
@@ -59,7 +59,7 @@ export default function ProfileNotif() {
 
   return (
     <>
-      <Title component="h4" className={s.notif__caption}>Уведомления</Title>
+      <Title as="h4" className={s.notif__caption}>Уведомления</Title>
       <div className={s.notif__cards}>
         {items.map((n, i) =>
           n.kind === 'order' ? (

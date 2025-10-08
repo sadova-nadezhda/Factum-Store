@@ -22,7 +22,7 @@ export default function ProfileCoins() {
   return (
     <>
       <div className={s.coins__wrap}>
-        <Title component='h4' className={s.coins__title}>Мои коины</Title>
+        <Title as='h4' className={s.coins__title}>Мои коины</Title>
         <div className={s.coins__cards}>
           {main && <CoinsCard caption='Кошелек' balance={main.balance} />}
           {manager && <CoinsCard caption='Кошелек Руководителя' balance={manager.balance} />}
@@ -31,7 +31,7 @@ export default function ProfileCoins() {
       </div>
 
       <div className={s.coins__wrap}>
-        <Title component='h4' className={s.coins__title}>Подарить Коины</Title>
+        <Title as='h4' className={s.coins__title}>Подарить Коины</Title>
         <TransferForm wallets={data.wallets} />
       </div>
     </>

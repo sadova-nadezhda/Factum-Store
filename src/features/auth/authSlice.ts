@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { authApi } from './authAPI';
 
 type AuthState = { token: string | null };
 const initialState: AuthState = { token: localStorage.getItem('token') };
@@ -17,6 +18,10 @@ const authSlice = createSlice({
       localStorage.removeItem('token');
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(authSlice.actions.logout, (state, action) => {
+    });
+  }
 });
 
 export const { setToken, logout } = authSlice.actions;

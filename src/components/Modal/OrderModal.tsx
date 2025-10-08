@@ -13,7 +13,6 @@ type Props = {
   onClose: () => void;
   product: Product;
   qty?: number;
-  onConfirm?: (qty: number) => Promise<void> | void;
   isSubmitting?: boolean;
 };
 
@@ -22,7 +21,6 @@ export default function OrderModal({
   onClose,
   product,
   qty = 1,
-  onConfirm,
   isSubmitting = false,
 }: Props) {
   const [pending, setPending] = useState(false);
@@ -41,9 +39,10 @@ export default function OrderModal({
     setErrorText(null);
     setPending(true);
     try {
-      if (onConfirm) await onConfirm(qty);
-
-      await createOrder({ product_id: product.id }).unwrap();
+      await createOrder({
+        product_id: product.id,
+        qty: 1
+      }).unwrap();
 
       dispatch(authApi.util.invalidateTags(['Wallets']));
 

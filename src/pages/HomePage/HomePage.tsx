@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import Section from '../../components/Section';
@@ -9,21 +9,31 @@ import { CatalogCard } from '../../components/Card';
 
 import { useGetProductsQuery } from '../../features/catalog/catalogAPI';
 import { useGetFaqQuery } from '../../features/faq/faqAPI';
+import { useGetMeQuery } from '../../features/auth/authAPI';
 
 import s from './HomePage.module.scss';
 
+const safeImg = (img?: string | null) => (img?.trim() ? img : '/assets/img/product.jpg');
+
 export default function HomePage() {
-  const {
-    data: catalog,
-    isLoading: catalogLoading,
-    isError: catalogError,
-  } = useGetProductsQuery({ q: '', sort: 'price_asc' });
+  const { data: me, isLoading: meLoading } = useGetMeQuery();
+  const isAuth = !!me && !meLoading;
+
+  const { last4, isLoading: catalogLoading, isError: catalogError } =
+    useGetProductsQuery(undefined, {
+      selectFromResult: ({ data, isLoading, isError }) => ({
+        last4: (data ?? []).slice(-4),
+        isLoading,
+        isError,
+      }),
+    });
+
 
   const { data: faq = [], isLoading: faqLoading, isError: faqError } = useGetFaqQuery();
 
   return (
     <>
-      <Section className={`${s.hero} section-hidden`}>
+      <Section className={`${s.hero}`}>
         <div className={s.hero__container}>
           <img src="/assets/img/hero-img.png" alt="" />
           <Title className={s.hero__title}><strong>factum</strong>.merch</Title>
@@ -36,7 +46,7 @@ export default function HomePage() {
       <Section className={`${s.catalog} section-pad section-hidden`}>
         <div className={s.catalog__container}>
           <div className={`${s.catalog__top} ${s.heading}`}>
-            <Title component='h2'>каталог</Title>
+            <Title as='h2'>каталог</Title>
             <Link className={s.catalog__link} to='/catalog'>смотреть все</Link>
           </div>
 
@@ -44,15 +54,16 @@ export default function HomePage() {
           {catalogError && <div className={s.catalog__state}>Ошибка загрузки каталога</div>}
 
           <div className={s.catalog__cards}>
-            {catalog?.slice(-4).map(p => (
+            {last4.map(p => (
               <CatalogCard
                 key={p.id}
                 id={p.id}
-                image={p.image && p.image.trim() !== '' ? p.image : '/assets/img/product.jpg'}
+                image={safeImg(p.image)}
                 name={p.name}
                 description={p.description}
                 price={p.price}
                 stock={p.stock}
+                isAuth={isAuth}
               />
             ))}
           </div>
@@ -61,7 +72,7 @@ export default function HomePage() {
 
       <Section id="faq" className={`${s.faq} section-pad-bottom section-hidden`}>
         <div className={s.faq__container}>
-          <Title component='h2' className={s.heading}>faq</Title>
+          <Title as='h2' className={s.heading}>faq</Title>
 
           {faqLoading && <div>Загрузка...</div>}
           {faqError && <div>Ошибка загрузки FAQ</div>}
