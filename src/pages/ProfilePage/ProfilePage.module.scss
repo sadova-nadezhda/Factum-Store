@@ -7,7 +7,7 @@
     bottom: 0;
     width: calc(480 * var(--width-multiplier));
     height: calc(440 * var(--width-multiplier));
-    background: url('assets/img/profile-back-1.png') center / contain no-repeat;
+    background: url('https://factum-store.netlify.app/assets/img/profile-back-1.png') center / contain no-repeat;
     z-index: -1;
   }
   &::after {
@@ -17,7 +17,7 @@
     top: calc(50 * var(--width-multiplier));
     width: calc(370 * var(--width-multiplier));
     height: calc(580 * var(--width-multiplier));
-    background: url('assets/img/profile-back-2.png') center / contain no-repeat;
+    background: url('https://factum-store.netlify.app/assets/img/profile-back-2.png') center / contain no-repeat;
     z-index: -1;
   }
   &__container {
