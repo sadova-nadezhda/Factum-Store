@@ -9,7 +9,7 @@
     transform: translateY(-50%);
     width: calc(430 * var(--width-multiplier));
     height: calc(720 * var(--width-multiplier));
-    background: url('assets/img/hero-back.png') center / contain no-repeat;
+    background: url('https://factum-store.netlify.app/assets/img/hero-back.png') center / contain no-repeat;
   }
   &__container {
     position: relative;
@@ -132,7 +132,7 @@
     transform: translateY(-50%);
     width: calc(550 * var(--width-multiplier));
     height: calc(680 * var(--width-multiplier));
-    background: url('assets/img/faq-back.png') center / contain no-repeat;
+    background: url('https://factum-store.netlify.app/assets/img/faq-back.png') center / contain no-repeat;
     z-index: -1;
   }
   &__accordion {
