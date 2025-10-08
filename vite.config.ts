@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
       '/api': {
         target: 'https://merch.factum.work',
         changeOrigin: true,
-        secure: true,
+        secure: false,
       },
     },
   },
