@@ -1,75 +1,72 @@
 .hero {
   position: relative;
-  padding-top: calc(60 * var(--width-multiplier));
-  &::before {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 95%;
-    transform: translateY(-50%);
-    width: calc(430 * var(--width-multiplier));
-    height: calc(720 * var(--width-multiplier));
-    background: url('https://factum-store.netlify.app/assets/img/hero-back.png') center / contain no-repeat;
-  }
+  padding-top: calc(40 * var(--width-multiplier));
   &__container {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: calc(16 * var(--width-multiplier));
-    height: calc(700 * var(--width-multiplier));
-    padding: calc(70 * var(--width-multiplier));
-    border-radius: calc(80 * var(--width-multiplier));
-    border: calc(10 * var(--width-multiplier)) solid #020202;
+    height: calc(507 * var(--width-multiplier));
+    padding: calc(40 * var(--width-multiplier)) calc(60 * var(--width-multiplier));
+    border-radius: calc(30 * var(--width-multiplier));
+    color: var(--white);
+    background: url('/assets/img/hero-img-2.png') center / cover no-repeat;
     overflow: hidden;
-    img {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1;
-    }
     @media (max-width: 1024px) {
-      height: calc(600 * var(--width-multiplier));
       padding: calc(40 * var(--width-multiplier));
-      border-radius: calc(40 * var(--width-multiplier));
-      border: calc(6 * var(--width-multiplier)) solid #020202;
     }
     @media (max-width: 767px) {
       padding: calc(16 * var(--width-multiplier));
       border-radius: calc(16 * var(--width-multiplier));
-      border: calc(4 * var(--width-multiplier)) solid #020202;
     }
   }
   &__title {
-    max-width: 50%;
-    width: 100%;
-    margin-left: auto;
-    strong {
-      color: var(--white);
-    }
+    position: relative;
+    font-family: Onest;
+    font-size: calc(70 * var(--width-multiplier));
+    line-height: 1.1em;
+    text-align: center;
+    text-transform: uppercase;
+    z-index: 1;
     @media (max-width: 1024px) {
-      max-width: unset;
+      font-size: calc(40 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      font-size: calc(30 * var(--width-multiplier));
     }
   }
-  &__desc {
-    max-width: 50%;
-    width: 100%;
-    margin-left: auto;
-    color: var(--white);
+  &__caption {
+    position: relative;
+    margin-top: auto;
+    font-family: Unbounded;
+    font-size: calc(40 * var(--width-multiplier));
+    font-weight: 700;
     line-height: 1;
-    p {
-      max-width: calc(424 * var(--width-multiplier));
-      @media (max-width: 767px) {
-        max-width: unset;
-      }
+    z-index: 1;
+    span {
+      color: rgba(221, 85, 0, 1);
     }
     @media (max-width: 1024px) {
-      max-width: unset;
-      font-size: calc(14 * var(--width-multiplier));
+      font-size: calc(30 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      font-size: calc(20 * var(--width-multiplier));
+    }
+  }
+  &__img {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(700 * var(--width-multiplier));
+    height: auto;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: 50% 100%;
+    }
+    @media (max-width: 767px) {
+      width: calc(600 * var(--width-multiplier));
     }
   }
 }

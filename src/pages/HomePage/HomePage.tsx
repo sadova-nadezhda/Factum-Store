@@ -35,11 +35,11 @@ export default function HomePage() {
     <>
       <Section className={`${s.hero}`}>
         <div className={s.hero__container}>
-          <img src="/assets/img/hero-img.png" alt="" />
-          <Title className={s.hero__title}><strong>factum</strong>.merch</Title>
-          <div className={s.hero__desc}>
-            <p>С учётом сложившейся международной обстановки, перспективное планирование предоставляет широкие возможности для вывода текущих активов.</p>
+          <Title className={s.hero__title}>прокачивай корпоративный уровень — получай бонусы</Title>
+          <div className={s.hero__img}>
+            <img src="/assets/img/coins.png" alt="" />
           </div>
+          <div className={s.hero__caption}>factum<span>.coins</span></div>
         </div>
       </Section>
 

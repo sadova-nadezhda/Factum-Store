@@ -3,8 +3,9 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: calc(20 * var(--width-multiplier));
-    padding-top: calc(60 * var(--width-multiplier));
-    font-size: calc(30 * var(--width-multiplier));
+    padding-top: calc(40 * var(--width-multiplier));
+    font-size: calc(20 * var(--width-multiplier));
+    font-family: Unbounded;
     font-weight: 700;
     line-height: 1;
     text-transform: lowercase;
@@ -39,7 +40,7 @@
   &__menu, &__profile {
     display: flex;
     flex-direction: column;
-    gap: calc(20 * var(--width-multiplier));
+    gap: calc(12 * var(--width-multiplier));
     a {
       position: relative;
       display: block;
