@@ -12,7 +12,7 @@ type ProductInfoProps = {
   isAuth?: boolean;
   onAddToCart?: (qty: number) => void;
   onOpenOrder?: (qty: number) => void;
-  showQty?: boolean; 
+  showQty?: boolean;
 };
 
 export default function ProductInfo({
@@ -25,7 +25,8 @@ export default function ProductInfo({
   const { image, name, description, price, stock } = product;
   const [qty, setQty] = useState(1);
 
-  const canProceed = Boolean(stock) && isAuth;
+  const available = Number(stock) > 0;        
+  const canProceed = isAuth && available; 
 
   const handleClick = () => {
     if (!canProceed) return;
@@ -33,7 +34,7 @@ export default function ProductInfo({
     if (onAddToCart) return onAddToCart(qty);
   };
 
-  const maxQty = stock || 1;
+  const maxQty = available ? Number(stock) : 0;
 
   return (
     <div className={s.product__container}>
@@ -62,7 +63,13 @@ export default function ProductInfo({
             disabled={!canProceed}
             onClick={handleClick}
             aria-disabled={!canProceed}
-            title={!isAuth ? 'Войдите, чтобы добавить' : !stock ? 'Нет в наличии' : undefined}
+            title={
+              !isAuth
+                ? 'Войдите, чтобы купить'
+                : !available
+                ? 'Нет в наличии'
+                : undefined
+            }
           >
             <CartIcon />
           </Button>

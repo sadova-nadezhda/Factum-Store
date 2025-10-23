@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -6,7 +6,7 @@ import Input from './parts/Input';
 import Title from '../Title';
 import Button from '../Button';
 
-import { useGetMeQuery, useUpdateMeMutation, useUploadAvatarMutation  } from '../../features/auth/authAPI';
+import { useGetMeQuery, useUpdateMeMutation, useUploadAvatarMutation } from '../../features/auth/authAPI';
 
 import s from './Form.module.scss';
 
@@ -24,10 +24,12 @@ export default function ProfileForm() {
     avatar: 'assets/img/avatar.jpg',
   });
   const [saved, setSaved] = useState(form);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null); 
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-useEffect(() => {
+  const previewUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
     if (!me) return;
     const next = {
       full_name: me.full_name ?? '',
@@ -38,12 +40,21 @@ useEffect(() => {
     setForm(next);
     setSaved(next);
     setAvatarFile(null);
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = null;
+    }
   }, [me?.id]);
 
-  const isChanged = useMemo(
-    () => JSON.stringify({ ...form, password: '' }) !== JSON.stringify(saved) || !!avatarFile,
-    [form, saved, avatarFile]
-  );
+  const isChanged = useMemo(() => {
+    return (
+      !!avatarFile ||
+      form.full_name !== saved.full_name ||
+      form.email !== saved.email ||
+      form.avatar !== saved.avatar ||
+      form.password.length > 0
+    );
+  }, [avatarFile, form.full_name, form.email, form.avatar, form.password, saved.full_name, saved.email, saved.avatar]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,8 +64,16 @@ useEffect(() => {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setAvatarFile(file);  
-    const preview = URL.createObjectURL(file);  
+
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = null;
+    }
+
+    const preview = URL.createObjectURL(file);
+    previewUrlRef.current = preview;
+
+    setAvatarFile(file);
     setForm((p) => ({ ...p, avatar: preview }));
   };
 
@@ -62,9 +81,11 @@ useEffect(() => {
     e.preventDefault();
 
     try {
+      let finalAvatar = form.avatar;
+
       if (avatarFile) {
-        const res = await uploadAvatar({ file: avatarFile }).unwrap(); // { avatar, status: 'ok' }
-        setForm((p) => ({ ...p, avatar: res.avatar }));
+        const res = await uploadAvatar({ file: avatarFile }).unwrap();
+        finalAvatar = res.avatar;
       }
 
       const payload: { email?: string; full_name?: string; password?: string } = {};
@@ -76,9 +97,15 @@ useEffect(() => {
         await updateMe(payload).unwrap();
       }
 
-      setSaved({ ...form, password: '' });
-      setForm((p) => ({ ...p, password: '' }));
+      const nextSaved = { ...form, password: '', avatar: finalAvatar };
+      setSaved(nextSaved);
+      setForm((p) => ({ ...p, password: '', avatar: finalAvatar }));
       setAvatarFile(null);
+
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = null;
+      }
     } catch (err) {
       console.error(err);
     }
@@ -87,7 +114,21 @@ useEffect(() => {
   const handleCancel = () => {
     setForm(saved);
     setAvatarFile(null);
+
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = null;
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = null;
+      }
+    };
+  }, []);
 
   if (isLoading) return <div>Загрузка…</div>;
   if (isError) return <div>Не удалось загрузить профиль</div>;
@@ -139,6 +180,7 @@ useEffect(() => {
                 placeholder="Пароль (новый)"
                 value={form.password}
                 onChange={handleChange}
+                autoComplete="new-password"
               />
               <button
                 type="button"
@@ -156,7 +198,11 @@ useEffect(() => {
               <Button type="button" className={classNames('button button-border')} onClick={handleCancel}>
                 Отмена
               </Button>
-              <Button type="submit" disabled={savingInfo || savingAvatar} className={classNames('button button-orange')}>
+              <Button
+                type="submit"
+                disabled={savingInfo || savingAvatar}
+                className={classNames('button button-orange')}
+              >
                 {savingInfo || savingAvatar ? 'Сохраняю…' : 'Сохранить'}
               </Button>
             </div>

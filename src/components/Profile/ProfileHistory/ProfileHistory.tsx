@@ -1,12 +1,8 @@
-import React, { useMemo } from 'react';
-
+import React, { useEffect, useMemo } from 'react';
 import Title from '../../Title';
 import { HistoryCard } from '../../Card';
-
 import { useGetMyWalletsQuery } from '../../../features/auth/authAPI';
-
 import s from './ProfileHistory.module.scss';
-
 
 function formatDate(iso: string) {
   const d = new Date(iso);
@@ -17,14 +13,22 @@ function formatDate(iso: string) {
 }
 
 export default function ProfileHistory() {
-  const { data, isLoading, isError } = useGetMyWalletsQuery();
+  const { data, isLoading, isError } = useGetMyWalletsQuery(undefined, {
+    refetchOnFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMountOrArgChange: false,
+  });
 
   const orders = useMemo(() => {
     if (!data?.orders) return [];
     return [...data.orders].sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
-  }, [data]);
+  }, [data?.orders]);
+
+  // useEffect(() => {
+  //   if (orders.length) console.log('Заказы:', orders);
+  // }, [orders]);
 
   if (isLoading) return <div>Загрузка истории…</div>;
   if (isError) return <div>Не удалось загрузить историю</div>;
@@ -46,11 +50,11 @@ export default function ProfileHistory() {
           <HistoryCard
             key={o.id}
             id={o.id}
-            img={o.image && o.image.trim() !== '' ? o.image : '/assets/img/product.jpg'}
-            title={`${o.product_name}`}
+            img={o.image?.trim() || '/assets/img/product.jpg'}
+            title={o.product_name}
             price={o.price_at_purchase}
             date={formatDate(o.created_at)}
-            status="done" 
+            status="done"
           />
         ))}
       </div>

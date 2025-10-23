@@ -30,18 +30,18 @@ export default function OrderModal({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const sum = useMemo(
-    () => Number(product.price || 0) * (qty ?? 1),
-    [product.price, qty]
-  );
+  const safeQty = Math.max(1, Math.floor(qty || 1));
+
+  const sum = useMemo(() => (Number(product.price || 0) * safeQty), [product.price, safeQty]);
 
   const handleConfirm = async () => {
+    if (pending || buying) return;
     setErrorText(null);
     setPending(true);
     try {
       await createOrder({
         product_id: product.id,
-        qty: 1
+        qty: safeQty,
       }).unwrap();
 
       dispatch(authApi.util.invalidateTags(['Wallets']));
@@ -71,8 +71,22 @@ export default function OrderModal({
 
   return (
     <Modal isOpen={open} onClose={onClose}>
+      {errorText && (
+        <div style={{
+          background: '#FDECEC',
+          color: '#B00020',
+          padding: '10px 12px',
+          borderRadius: 8,
+          marginBottom: 12,
+          fontSize: 14,
+          lineHeight: 1.3,
+        }}>
+          {errorText}
+        </div>
+      )}
+
       <Basket
-        sum={Number(sum.toFixed(2))}
+        sum={sum}
         onConfirm={handleConfirm}
         onCancel={onClose}
         confirming={pending || isSubmitting || buying}

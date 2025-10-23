@@ -3,6 +3,8 @@ import { baseQuery } from '@/shared/baseQuery';
 import { setToken } from './authSlice';
 import { okIfNoError } from '@/shared/rtkValidate';
 
+import { catalogApi } from '@/features/catalog/catalogApi';
+
 import type {
   AuthResponse, LoginDto, User, UpdateMeDto,
   RegisterDto, RegisterResponse, ForgotDto, ForgotResponse, ResetDto, ResetResponse
@@ -118,6 +120,47 @@ export const authApi = createApi({
       transformResponse: (raw: string) => {
         if (!raw) return { status: 'ok' as const };
         try { return JSON.parse(raw); } catch { return { status: 'ok' as const }; }
+      },
+      async onQueryStarted({ product_id, qty }, { dispatch, getState, queryFulfilled }) {
+        const productId = String(product_id);
+        const patches: { undo: () => void }[] = [];
+
+        const state: any = getState();
+        const queries = state?.[catalogApi.reducerPath]?.queries ?? {};
+        for (const key of Object.keys(queries)) {
+          if (!key.startsWith('getProducts(')) continue;
+          const argsJson = key.slice(key.indexOf('(') + 1, -1);
+          let args: any = undefined;
+          try {
+            const parsed = JSON.parse(argsJson);
+            args = { q: parsed.q || undefined, sort: parsed.sort || undefined };
+            if (!parsed.q && !parsed.sort) args = undefined;
+          } catch {}
+          const p = dispatch(
+            catalogApi.util.updateQueryData('getProducts', args, (draft: any[]) => {
+              const item = draft.find(x => String(x.id) === productId);
+              if (item && typeof item.stock === 'number') item.stock = Math.max(0, item.stock - qty);
+            })
+          );
+          patches.push(p);
+        }
+
+        const pOne = dispatch(
+          catalogApi.util.updateQueryData('getProduct' as any, productId, (draft: any) => {
+            if (draft && typeof draft.stock === 'number') draft.stock = Math.max(0, draft.stock - qty);
+          })
+        );
+        patches.push(pOne);
+
+        try {
+          await queryFulfilled;
+          dispatch(catalogApi.util.invalidateTags([
+            { type: 'Products', id: 'LIST' },
+            { type: 'Product', id: productId },
+          ]));
+        } catch {
+          patches.forEach(p => p.undo());
+        }
       },
       invalidatesTags: ['Wallets', 'Me'],
     }),

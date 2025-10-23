@@ -44,7 +44,11 @@ export const catalogApi = createApi({
           : [{ type: 'Products' as const, id: 'LIST' }],
       keepUnusedDataFor: 60,
     }),
+    getProduct: build.query<Product, string>({
+      query: (id) => ({ url: `products/${id}` }),
+      providesTags: (_res, _err, id) => [{ type: 'Product', id }],
+    }),
   }),
 });
 
-export const { useGetProductsQuery } = catalogApi;
+export const { useGetProductsQuery, useGetProductQuery } = catalogApi;

@@ -37,7 +37,7 @@ export default function TransferForm({ wallets }: Props) {
     if (transferableWallets.length === 1 && form.wallet === 'default') {
       setForm((p) => ({ ...p, wallet: transferableWallets[0].type }));
     }
-  }, [transferableWallets, form.wallet]);
+  }, [transferableWallets.length, transferableWallets, form.wallet]);
 
   const {
     data: users = [],
@@ -72,14 +72,22 @@ export default function TransferForm({ wallets }: Props) {
 
   const [createTransfer, { isLoading, error, isSuccess }] = useCreateTransferMutation();
 
-  const selectedWallet =
-    (form.wallet !== 'default'
-      ? transferableWallets.find((w) => w.type === form.wallet)
-      : transferableWallets[0]) ?? null;
+  const hasSelectedWallet =
+    transferableWallets.length === 1 || form.wallet !== 'default';
 
-  const available = Number(selectedWallet?.balance ?? 0);
+  const selectedWallet = hasSelectedWallet
+    ? transferableWallets.find((w) =>
+        transferableWallets.length === 1 ? true : w.type === form.wallet
+      ) ?? null
+    : null;
+
+  const available = selectedWallet?.balance;
   const amountNum = Number(form.sum);
-  const overLimit = Number.isFinite(amountNum) && amountNum > available;
+  const overLimit =
+    hasSelectedWallet &&
+    typeof available === 'number' &&
+    Number.isFinite(amountNum) &&
+    amountNum > available;
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (e) => {
     const { name, value } = e.target as HTMLInputElement & HTMLSelectElement;
@@ -96,7 +104,8 @@ export default function TransferForm({ wallets }: Props) {
         ? (transferableWallets[0]?.type ?? 'main')
         : form.wallet;
 
-    if (!to_user_id || !amount || amount <= 0) return;
+    if (!to_user_id || !Number.isFinite(amount) || amount <= 0) return;
+    if (!hasSelectedWallet) return;
     if (overLimit) return;
 
     try {
@@ -124,8 +133,9 @@ export default function TransferForm({ wallets }: Props) {
     usersLoading ||
     usersError ||
     form.employee === 'default' ||
+    !hasSelectedWallet ||
+    !Number.isFinite(amountNum) ||
     amountNum <= 0 ||
-    (transferableWallets.length > 1 && form.wallet === 'default') ||
     overLimit;
 
   return (
@@ -154,7 +164,9 @@ export default function TransferForm({ wallets }: Props) {
         name="sum"
         value={form.sum}
         onChange={handleChange}
-        placeholder={`Введите сумму (доступно: ${available})`}
+        placeholder={`Введите сумму (доступно: ${
+          hasSelectedWallet && typeof available === 'number' ? available : '--'
+        })`}
         min="1"
         step="1"
         inputMode="numeric"
