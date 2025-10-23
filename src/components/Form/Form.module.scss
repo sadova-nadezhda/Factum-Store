@@ -183,5 +183,7 @@
   cursor: pointer;
   svg {
     display: block;
+    width: calc(24 * var(--width-multiplier));
+    height: calc(24 * var(--width-multiplier));
   }
 }
