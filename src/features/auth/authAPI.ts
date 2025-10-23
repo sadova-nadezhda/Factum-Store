@@ -3,7 +3,7 @@ import { baseQuery } from '@/shared/baseQuery';
 import { setToken } from './authSlice';
 import { okIfNoError } from '@/shared/rtkValidate';
 
-import { catalogApi } from '@/features/catalog/catalogApi';
+import { catalogApi } from '../catalog/catalogAPI';
 
 import type {
   AuthResponse, LoginDto, User, UpdateMeDto,
