@@ -1,8 +1,0 @@
-.faq {
-  &__container {
-    display: flex;
-    flex-direction: column;
-    gap: calc(40 * var(--width-multiplier));
-    min-height: 70vh;
-  }
-}

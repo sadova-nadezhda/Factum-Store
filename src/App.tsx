@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 import ProtectedRoute from './components/ProtectedRoute'; 
@@ -7,21 +7,21 @@ import Footer from './components/Footer';
 import { ProfileInfo, ProfileHistory, ProfileNotif, ProfileCoins } from './components/Profile';
 import { 
   ForgotPasswordPage, HomePage, LoginPage, NotFoundPage, 
-  ProfilePage, RegisterPage, ResetPasswordPage, CatalogPage 
+  ProfilePage, RegisterPage, ResetPasswordPage, CatalogPage, 
+  EventsPage
 } from './pages';
-import AdminUsersPage from './pages/AdminPage/AdminUsersPage';
 
 import './styles/main.scss';
 
 function App() {
   const location = useLocation();
-  const background = useMemo(() => location.state?.background, [location]);
   return (
     <main>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/catalog" element={<CatalogPage />} />
+        <Route path="/events" element={<EventsPage />} />
 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -35,12 +35,10 @@ function App() {
             <Route path="coins" element={<ProfileCoins />} />
             <Route path="history" element={<ProfileHistory />} />
           </Route>
-          <Route path="/admin/users" element={<AdminUsersPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      <Footer />
     </main>
   );
 }

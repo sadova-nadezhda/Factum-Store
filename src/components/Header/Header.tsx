@@ -33,7 +33,7 @@ export default function Header() {
           <nav className={s.header__nav}>
             <ul className={s.header__menu}>
               <li><Link to="/catalog">Каталог</Link></li>
-              <li><Link to="/">активность</Link></li>
+              <li><Link to="/events">активность</Link></li>
               <li><HashLink smooth to="/#faq">FAQ</HashLink></li>
             </ul>
 

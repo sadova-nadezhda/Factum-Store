@@ -1,0 +1,27 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--width-multiplier));
+  min-height: calc(180 * var(--width-multiplier));
+  padding: calc(30 * var(--width-multiplier));
+  border-radius: calc(30 * var(--width-multiplier));
+  background-color: var(--white);
+  line-height: 1;
+  &__caption {
+    font-size: calc(20 * var(--width-multiplier));
+    font-weight: 600;
+  }
+  &__reward {
+    display: flex;
+    align-items: center;
+    gap: calc(4 * var(--width-multiplier));
+    width: max-content;
+    margin-top: auto;
+    margin-left: auto;
+    padding: calc(16 * var(--width-multiplier)) calc(30 * var(--width-multiplier));
+    border-radius: calc(30 * var(--width-multiplier));
+    color: var(--white);
+    background-color: var(--primary);
+    font-weight: 500;
+  }
+}

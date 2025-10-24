@@ -1,0 +1,19 @@
+.events {
+  position: relative;
+  padding-top: calc(60 * var(--width-multiplier));
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: calc(-60 * var(--width-multiplier));
+    width: calc(458 * var(--width-multiplier));
+    height: calc(726 * var(--width-multiplier));
+    background: url('https://factum-store.netlify.app/assets/img/events-back.png') center / contain no-repeat;
+    z-index: -1;
+  }
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: calc(30 * var(--width-multiplier));
+  }
+}
