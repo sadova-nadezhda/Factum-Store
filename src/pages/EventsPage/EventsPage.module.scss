@@ -11,9 +11,37 @@
     background: url('https://factum-store.netlify.app/assets/img/events-back.png') center / contain no-repeat;
     z-index: -1;
   }
+  &__container {
+    min-height: 70vh;
+  }
   &__cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: calc(30 * var(--width-multiplier));
   }
+}
+
+.tabList {
+  display: flex;
+  align-items: center;
+  gap: calc(30 * var(--width-multiplier));
+  margin-bottom: calc(40 * var(--width-multiplier));
+}
+
+.tab {
+  padding: calc(30 * var(--width-multiplier));
+  border: calc(5 * var(--width-multiplier)) solid rgba(2, 2, 2, 1);
+  border-radius: calc(30 * var(--width-multiplier));
+  background-color: var(--white);
+  font-size: calc(24 * var(--width-multiplier));
+  font-weight: 600;
+  line-height: 1;
+  transition: border-color 0.3s ease-in-out;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.tabSelected {
+  border-color: var(--primary);
 }
