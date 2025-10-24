@@ -1,66 +1,76 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.scss';
 
 import Section from '@/components/Section';
 import { EventsCard } from '@/components/Card';
-
 import s from './EventsPage.module.scss';
 
+import { useGetEventsQuery } from '@/features/events/eventsApi';
+
 export default function EventsPage() {
+  const { data = [], isLoading, isError, error } = useGetEventsQuery();
+
+  const byType = useMemo(() => {
+    return data.reduce<Record<string, typeof data>>( (acc, item) => {
+      (acc[item.type] ||= []).push(item);
+      return acc;
+    }, {});
+  }, [data]);
+
   return (
     <Section className={`${s.events} section-pad section-hidden`}>
       <div className={s.events__container}>
-         <Tabs
+        <Tabs
           selectedTabClassName={s.tabSelected}
           selectedTabPanelClassName={s.tabPanelSelected}
-         >
+        >
           <TabList className={s.tabList}>
             <Tab className={s.tab}>События</Tab>
             <Tab className={s.tab}>Ежемесячные</Tab>
             <Tab className={s.tab}>Годовые / Квартальные</Tab>
           </TabList>
 
+          {/* События */}
           <TabPanel className={s.tabPanel}>
-            <div className={s.events__cards}>
-              <EventsCard 
-                title='Участие в корпоративе или тимбилдинге' 
-                reward={30}
-              />
-              <EventsCard 
-                title='Победа в конкурсе идей' 
-                reward={50}
-              />
-              <EventsCard 
-                title='Фидбэк от клиента (позитивный, подтверждённый)' 
-                reward={40}
-              />
-            </div>
+            {isLoading && <div className={s.skeleton}>Загрузка…</div>}
+            {isError && <div className={s.error}>Ошибка: {(error as any)?.status ?? '—'}</div>}
+            {!isLoading && !isError && (
+              <div className={s.events__cards} data-type="events">
+                {(byType['events'] ?? []).map((it, idx) => (
+                  <EventsCard key={`ev-${idx}`} title={it.title} reward={it.reward} />
+                ))}
+              </div>
+            )}
           </TabPanel>
+
+          {/* Ежемесячные */}
           <TabPanel className={s.tabPanel}>
-            <div className={s.events__cards}>
-              <EventsCard 
-                title='Участие в корпоративе или тимбилдинге' 
-                reward={30}
-              />
-              <EventsCard 
-                title='Победа в конкурсе идей' 
-                reward={50}
-              />
-              
-            </div>
+            {isLoading && <div className={s.skeleton}>Загрузка…</div>}
+            {isError && <div className={s.error}>Ошибка: {(error as any)?.status ?? '—'}</div>}
+            {!isLoading && !isError && (
+              <div className={s.events__cards} data-type="monthly">
+                {(byType['monthly'] ?? []).map((it, idx) => (
+                  <EventsCard key={`mo-${idx}`} title={it.title} reward={it.reward} />
+                ))}
+              </div>
+            )}
           </TabPanel>
+
+          {/* Годовые / Квартальные */}
           <TabPanel className={s.tabPanel}>
-            <div className={s.events__cards}>
-              <EventsCard 
-                title='Участие в корпоративе или тимбилдинге' 
-                reward={30}
-              />
-              
-            </div>
+            {isLoading && <div className={s.skeleton}>Загрузка…</div>}
+            {isError && <div className={s.error}>Ошибка: {(error as any)?.status ?? '—'}</div>}
+            {!isLoading && !isError && (
+              <div className={s.events__cards} data-type="annual">
+                {(byType['annual'] ?? []).map((it, idx) => (
+                  <EventsCard key={`an-${idx}`} title={it.title} reward={it.reward} />
+                ))}
+              </div>
+            )}
           </TabPanel>
         </Tabs>
       </div>
     </Section>
-  )
+  );
 }

@@ -10,6 +10,12 @@
   &__caption {
     font-size: calc(20 * var(--width-multiplier));
     font-weight: 600;
+    @media (max-width: 1024px) {
+      font-size: calc(18 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      font-size: calc(16 * var(--width-multiplier));
+    }
   }
   &__reward {
     display: flex;
@@ -23,5 +29,26 @@
     color: var(--white);
     background-color: var(--primary);
     font-weight: 500;
+    svg {
+      display: block;
+      min-width: calc(18 * var(--width-multiplier));
+      width: calc(18 * var(--width-multiplier));
+      height: calc(18 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      padding: calc(12 * var(--width-multiplier)) calc(20 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      padding: calc(10 * var(--width-multiplier)) calc(16 * var(--width-multiplier));
+    }
+  }
+  @media (max-width: 1024px) {
+    padding: calc(20 * var(--width-multiplier));
+    border-radius: calc(24 * var(--width-multiplier));
+  }
+  @media (max-width: 767px) {
+    min-height: calc(150 * var(--width-multiplier));
+    padding: calc(16 * var(--width-multiplier));
+    border-radius: calc(16 * var(--width-multiplier));
   }
 }
