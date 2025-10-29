@@ -52,4 +52,73 @@
       right: calc(16 * var(--width-multiplier));
     }
   }
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: calc(960 * var(--width-multiplier));
+    margin: 0 auto;
+    padding: calc(60 * var(--width-multiplier)) calc(16 * var(--width-multiplier));
+  }
+  &__img {
+    width: calc(164 * var(--width-multiplier));
+    height: calc(177 * var(--width-multiplier));
+    object-fit: contain;
+    @media (max-width: 767px) {
+      width: calc(144 * var(--width-multiplier));
+      height: calc(157 * var(--width-multiplier));
+    }
+  }
+  &__title {
+    margin-bottom: calc(40 * var(--width-multiplier));
+    text-align: center;
+    @media (max-width: 1024px) {
+      margin-bottom: calc(30 * var(--width-multiplier));
+      font-size: calc(30 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      margin-bottom: calc(20 * var(--width-multiplier));
+      font-size: calc(24 * var(--width-multiplier));
+    }
+  }
+  &__buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(30 * var(--width-multiplier));
+    width: 100%;
+    @media (max-width: 767px) {
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: calc(16 * var(--width-multiplier));
+    }
+  }
+  &__button {
+    flex: 1 1 calc(50% - calc(15 * var(--width-multiplier)));
+    padding: calc(30 * var(--width-multiplier));
+    border-radius: calc(30 * var(--width-multiplier));
+    border: calc(5 * var(--width-multiplier)) solid rgba(2, 2, 2, 1);
+    background-color: var(--white);
+    font-size:  calc(24 * var(--width-multiplier));
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    &:disabled {
+      opacity: 0.4;
+      color: var(--dark);
+    }
+    &:not(:disabled):hover {
+      cursor: pointer;
+    }
+    @media (max-width: 1024px) {
+      padding: calc(20 * var(--width-multiplier));
+      border-radius: calc(20 * var(--width-multiplier));
+    }
+    @media (max-width: 767px) {
+      width: 100%;
+      padding: calc(16 * var(--width-multiplier));
+      border-radius: calc(16 * var(--width-multiplier));
+      font-size:  calc(20 * var(--width-multiplier));
+    }
+  }
 }
