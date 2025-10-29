@@ -54,9 +54,10 @@
     font-weight: 600;
     font-size: calc(24 * var(--width-multiplier));
     svg {
-      min-width: calc(25 * var(--width-multiplier));
-      width: calc(25 * var(--width-multiplier));
-      height: calc(25 * var(--width-multiplier));
+      display: block;
+      min-width: calc(24 * var(--width-multiplier));
+      width: calc(24 * var(--width-multiplier));
+      height: calc(24 * var(--width-multiplier));
     }
     @media (max-width: 767px) {
       font-size: calc(20 * var(--width-multiplier));

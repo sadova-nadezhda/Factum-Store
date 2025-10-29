@@ -102,6 +102,12 @@
     display: flex;
     align-items: center;
     gap: calc(8 * var(--width-multiplier));
+    svg {
+      display: block;
+      min-width: calc(20 * var(--width-multiplier));
+      width: calc(20 * var(--width-multiplier));
+      height: calc(20 * var(--width-multiplier));
+    }
     @media (max-width: 767px) {
       margin-top: calc(80 * var(--width-multiplier));
       padding: calc(16 * var(--width-multiplier)) calc(30 * var(--width-multiplier));
