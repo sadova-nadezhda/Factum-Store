@@ -1,14 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 
-import { useAppSelector } from '../../hooks/store';
+import { StarIcon } from '../Icons';
 
+import { useAppSelector } from '../../hooks/store';
 import { useGetMyWalletsQuery } from '../../features/auth/authAPI';
 
 import s from './Header.module.scss';
-import { StarIcon } from '../Icons';
-
 
 export default function Header() {
   const token = useAppSelector((state) => state.auth.token) || localStorage.getItem('token');
@@ -22,6 +21,46 @@ export default function Header() {
     return main.balance;
   }, [data]);
 
+   useEffect(() => {
+    const link = document.querySelector<HTMLDivElement>('.header__burger');
+    const menu = document.querySelector<HTMLElement>('.header__nav');
+
+    if (!link || !menu) return;
+
+    const onBurgerClick = () => {
+      link.classList.toggle('active');
+      menu.classList.toggle('open');
+    };
+
+    const onScroll = () => {
+      if (menu.classList.contains('open')) {
+        link.classList.remove('active');
+        menu.classList.remove('open');
+      }
+    };
+
+    const onDocClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        !target.classList.contains('header__nav') &&
+        !target.classList.contains('header__burger')
+      ) {
+        link.classList.remove('active');
+        menu.classList.remove('open');
+      }
+    };
+
+    link.addEventListener('click', onBurgerClick, false);
+    window.addEventListener('scroll', onScroll);
+    document.addEventListener('click', onDocClick);
+
+    return () => {
+      link.removeEventListener('click', onBurgerClick, false);
+      window.removeEventListener('scroll', onScroll);
+      document.removeEventListener('click', onDocClick);
+    };
+  }, []);
+
   return (
     <header className={s.header}>
       <div className="container">
@@ -30,12 +69,12 @@ export default function Header() {
             <img src="/assets/img/logo.svg" alt="Логотип" />
           </Link>
 
-          <nav className={s.header__nav}>
-            <ul className={s.header__menu}>
-              <li><Link to="/catalog">Каталог</Link></li>
-              <li><Link to="/events">активность</Link></li>
-              <li><HashLink smooth to="/#faq">FAQ</HashLink></li>
-            </ul>
+          <nav className={`${s.header__nav} header__nav`}>
+            <div className={s.header__menu}>
+              <Link to="/catalog">Каталог</Link>
+              <Link to="/events">активность</Link>
+              <HashLink smooth to="/#faq">FAQ</HashLink>
+            </div>
 
             {token ? (
               <div className={s.header__profile}>
@@ -52,6 +91,12 @@ export default function Header() {
               </div>
             )}
           </nav>
+
+          <div className={`${s.header__burger} header__burger`}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
       </div>
     </header>

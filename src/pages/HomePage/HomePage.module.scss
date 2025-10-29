@@ -12,11 +12,11 @@
     background: url('/assets/img/hero-img-2.png') center / cover no-repeat;
     overflow: hidden;
     @media (max-width: 1024px) {
-      padding: calc(40 * var(--width-multiplier));
+      padding: calc(30 * var(--width-multiplier)) calc(20 * var(--width-multiplier));
     }
     @media (max-width: 767px) {
-      padding: calc(16 * var(--width-multiplier));
-      border-radius: calc(16 * var(--width-multiplier));
+      padding: calc(20 * var(--width-multiplier)) calc(10 * var(--width-multiplier));
+      border-radius: calc(20 * var(--width-multiplier));
     }
   }
   &__title {
@@ -28,10 +28,10 @@
     text-transform: uppercase;
     z-index: 1;
     @media (max-width: 1024px) {
-      font-size: calc(40 * var(--width-multiplier));
+      font-size: calc(30 * var(--width-multiplier));
     }
     @media (max-width: 767px) {
-      font-size: calc(30 * var(--width-multiplier));
+      font-size: calc(20 * var(--width-multiplier));
     }
   }
   &__caption {
@@ -46,7 +46,11 @@
       color: rgba(221, 85, 0, 1);
     }
     @media (max-width: 1024px) {
+      order: -1;
+      margin-top: 0;
+      margin-bottom: calc(24 * var(--width-multiplier));
       font-size: calc(30 * var(--width-multiplier));
+      text-align: center;
     }
     @media (max-width: 767px) {
       font-size: calc(20 * var(--width-multiplier));
