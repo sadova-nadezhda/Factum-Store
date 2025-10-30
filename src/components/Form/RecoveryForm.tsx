@@ -32,7 +32,7 @@ export default function RecoveryForm() {
     if (!token || !values.password) return;
 
     try {
-      await resetPassword({ token, new_password: values.password }).unwrap();
+      await resetPassword({ token, password: values.password }).unwrap();
     } catch (err) {
       console.error(err);
     }

@@ -17,5 +17,5 @@ export type RegisterResponse = { status: 'ok'; message: string };
 export type ForgotDto = { email: string };
 export type ForgotResponse = { status: 'ok' } | { status: 'ok'; message?: string };
 
-export type ResetDto = { token: string; new_password: string };
+export type ResetDto = { token: string; password: string };
 export type ResetResponse = { status: 'ok' };
