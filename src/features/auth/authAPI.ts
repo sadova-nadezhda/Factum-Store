@@ -165,6 +165,26 @@ export const authApi = createApi({
       invalidatesTags: ['Wallets', 'Me'],
     }),
 
+    cancelOrder: builder.mutation<{ status: 'ok' }, { id: number | string }>({
+      query: ({ id }) => ({
+        url: `/orders/${id}/user-cancel`,
+        method: 'PATCH',
+        responseHandler: 'text',
+        validateStatus: (resp, raw) => {
+          try {
+            const parsed = raw ? JSON.parse(String(raw)) : null;
+            return resp.ok && !(parsed as any)?.error;
+          } catch {
+            return resp.ok;
+          }
+        },
+      }),
+      transformResponse: (raw: string) => {
+        if (!raw) return { status: 'ok' as const };
+        try { return JSON.parse(raw); } catch { return { status: 'ok' as const }; }
+      },
+    }),
+
     createTransfer: builder.mutation<CreateTransferResponse, CreateTransferDto>({
       query: (body) => ({
         url: '/transfers',
@@ -255,4 +275,5 @@ export const {
   useActivateUserMutation,
   useGetUsersForTransfersQuery,
   useUploadAvatarMutation,
+  useCancelOrderMutation,
 } = authApi;
