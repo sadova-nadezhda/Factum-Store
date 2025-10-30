@@ -1,6 +1,7 @@
 import React, { type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
+import { toast } from 'react-toastify';
 
 import Input from './parts/Input';
 import Button from '../Button';
@@ -15,12 +16,14 @@ export default function ForgotForm() {
   const [forgot, { isLoading, isSuccess, error }] = useForgotMutation();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await forgot({ email: values.email }).unwrap();
-      alert('Мы отправили письмо со ссылкой для входа/сброса пароля. Проверьте вашу почту.');
+      toast.success('Проверьте почту — мы отправили письмо со ссылкой для входа.');
+      setValues({ email: '' });
     } catch (err) {
+      toast.error('Не удалось отправить письмо. Проверьте e-mail и попробуйте снова.');
       console.error(err);
     }
   };
@@ -29,6 +32,10 @@ export default function ForgotForm() {
     (error as any)?.data?.error ||
     (error as any)?.error ||
     undefined;
+
+  if (apiError) {
+    toast.error(apiError);
+  }
 
   return (
     <form onSubmit={handleSubmit} className={classNames(s.form, s.form__login)}>
@@ -42,9 +49,6 @@ export default function ForgotForm() {
       <Button disabled={isLoading} type="submit" className="button button-full button-orange">
         {isLoading ? 'Отправляю…' : 'Восстановить'}
       </Button>
-
-      {isSuccess && <div className={s.form__ok}>Проверьте почту</div>}
-      {apiError && ( <div className={s.form__error}> {apiError} </div> )}
     </form>
   );
 }
