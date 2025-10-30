@@ -19,7 +19,7 @@ export default function ForgotForm() {
     e.preventDefault();
     try {
       await forgot({ email: values.email }).unwrap();
-      navigate('/reset-password');
+      alert('Мы отправили письмо со ссылкой для входа/сброса пароля. Проверьте вашу почту.');
     } catch (err) {
       console.error(err);
     }
