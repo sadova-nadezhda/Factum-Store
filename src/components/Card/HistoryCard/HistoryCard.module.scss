@@ -20,10 +20,12 @@
   }
   &__img {
     height: calc(150 * var(--width-multiplier));
+    border-radius: calc(16 * var(--width-multiplier));
+    overflow: hidden;
     img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
     }
   }
   &__box {

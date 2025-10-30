@@ -26,9 +26,9 @@ export default function ProfileHistory() {
     );
   }, [data?.orders]);
 
-  // useEffect(() => {
-  //   if (orders.length) console.log('Заказы:', orders);
-  // }, [orders]);
+  useEffect(() => {
+    if (orders.length) console.log('Заказы:', orders);
+  }, [orders]);
 
   if (isLoading) return <div>Загрузка истории…</div>;
   if (isError) return <div>Не удалось загрузить историю</div>;
@@ -50,7 +50,7 @@ export default function ProfileHistory() {
           <HistoryCard
             key={o.id}
             id={o.id}
-            img={o.image?.trim() || '/assets/img/product.jpg'}
+            img={o.product_image?.trim() || '/assets/img/product.jpg'}
             title={o.product_name}
             price={o.price_at_purchase}
             date={formatDate(o.created_at)}
