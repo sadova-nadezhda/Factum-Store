@@ -14,6 +14,14 @@ type Notif =
 export default function ProfileNotif() {
   const { data, isLoading, isError } = useGetMyWalletsQuery();
 
+  function formatDate(iso: string) {
+    const d = new Date(iso);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${dd}.${mm}.${yyyy}`;
+  }
+
   const items: Notif[] = useMemo(() => {
     if (!data) return [];
 
@@ -68,7 +76,7 @@ export default function ProfileNotif() {
               caption={n.caption}
               desc={n.desc}
               amount={n.amount}
-              date={n.date}
+              date={formatDate(n.date)}
             />
           ) : (
             <NotificationsCard
@@ -76,7 +84,7 @@ export default function ProfileNotif() {
               sender={n.sender}
               receiver={n.receiver}
               amount={n.amount}
-              date={n.date}
+              date={formatDate(n.date)}
             />
           )
         )}

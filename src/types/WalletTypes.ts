@@ -10,7 +10,13 @@ export type Wallet = {
 export type WalletsMyResponse = {
   wallets: Wallet[];
   orders: {
-    image: string; id: number; product_id: number; product_name: string; price_at_purchase: number; created_at: string 
+    status: string;
+    product_image: string;
+    id: number; 
+    product_id: number; 
+    product_name: string; 
+    price_at_purchase: number; 
+    created_at: string 
 }[];
   transfers_out: { amount: number; created_at: string; to_user: string }[];
   transfers_in: { amount: number; created_at: string; from_user: string }[];

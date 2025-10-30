@@ -75,9 +75,13 @@
     border-radius: calc(30 * var(--width-multiplier));
     color: rgba(2, 2, 2, 0.5);
     font-size: calc(14 * var(--width-multiplier));
-    &:global(.ready) {
+    &:global(.success) {
       border-color: rgba(69, 166, 60, 1);
       color: rgba(69, 166, 60, 1);
+    }
+    &:global(.returned) {
+      border-color: #dc3545;
+      color: #dc3545;
     }
   }
   &__date {

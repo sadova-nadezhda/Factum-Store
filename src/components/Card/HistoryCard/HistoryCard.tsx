@@ -21,9 +21,28 @@ interface HistoryCardProps {
 export default function HistoryCard({img, id, title, price, date, status} :HistoryCardProps) {
   const confirmModal = useModal();
 
-    const onCancelClick = useCallback(() => {
-      confirmModal.openModal();
-    }, [confirmModal]);
+  const onCancelClick = useCallback(() => {
+    confirmModal.openModal();
+  }, [confirmModal]);
+
+  const badge =
+    status === 'fulfilled'
+      ? 'success'
+      : status === 'pending'
+      ? 'secondary'
+      : status === 'returned'
+      ? 'warning'
+      : status === 'cancelled'
+      ? 'danger'
+      : 'dark';
+
+  const statusText: Record<string, string> = {
+    fulfilled: 'выполнен',
+    pending: 'в обработке',
+    returned: 'возвращен',
+    cancelled: 'отменен',
+    default: 'неизвестен',
+  };
 
   return (
     <>
@@ -32,8 +51,9 @@ export default function HistoryCard({img, id, title, price, date, status} :Histo
         <div className={s.card__box}>
           <div className={s.card__top}>
             <div className={s.card__date}>{date}</div>
-            {/* <div className={classNames(s.card__status, 'ready')}>выполнен</div> */}
-            <div className={classNames(s.card__status)}>в обработке</div>
+            <div className={classNames(s.card__status, badge)}>
+              {statusText[status] || statusText.default}
+            </div>
           </div>
           <div className={s.card__info}>
             <div className={s.card__num}>Заказ №{id}</div>
@@ -44,12 +64,14 @@ export default function HistoryCard({img, id, title, price, date, status} :Histo
             </div>
           </div>
         </div>
-        <Button
+        {status === 'pending' && (
+          <Button
             className={classNames(s.card__button, 'button button-orange')}
             onClick={onCancelClick}
           >
             Отменить заказ
           </Button>
+        )}
       </div>
 
       <ConfirmModal
