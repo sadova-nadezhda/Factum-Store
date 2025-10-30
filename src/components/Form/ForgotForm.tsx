@@ -16,13 +16,10 @@ export default function ForgotForm() {
   const [forgot, { isLoading, isSuccess, error }] = useForgotMutation();
   const navigate = useNavigate();
 
-  const isValidEmail = (email: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!isValidEmail(values.email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
       toast.error('Введите корректный e-mail');
       return;
     }
