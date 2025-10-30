@@ -50,7 +50,6 @@ function App() {
           newestOnTop={false}
           closeOnClick
           pauseOnHover
-          theme="colored"
         />
     </>
   );
