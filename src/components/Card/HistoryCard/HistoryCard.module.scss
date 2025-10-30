@@ -79,7 +79,11 @@
       border-color: rgba(69, 166, 60, 1);
       color: rgba(69, 166, 60, 1);
     }
-    &:global(.danger), &:global(.warning) {
+    &:global(.danger) {
+      border-color: #ffc107;
+      color: #ffc107;
+    }
+    &:global(.warning) {
       border-color: #dc3545;
       color: #dc3545;
     }
