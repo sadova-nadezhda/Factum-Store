@@ -6,7 +6,8 @@ import Basket from '../Basket';
 
 import { useAppDispatch } from '../../hooks/store';
 import type { Product } from '../../types/ProductTypes';
-import { useCreateOrderMutation, authApi } from '../../features/auth/authAPI';
+import { authApi } from '../../features/auth/authAPI';
+import { useCreateOrderMutation } from '@/features/orders/ordersAPI';
 
 type Props = {
   open: boolean;

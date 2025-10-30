@@ -6,10 +6,8 @@ import Input from './parts/Input';
 import Select from './parts/Select';
 import Button from '../Button';
 
-import {
-  useCreateTransferMutation,
-  useGetUsersForTransfersQuery,
-} from '@/features/auth/authAPI';
+import { useGetUsersForTransfersQuery } from '@/features/users/usersAPI';
+import { useCreateTransferMutation } from '@/features/wallets/walletsAPI';
 
 import type { Wallet, WalletType } from '@/types/WalletTypes';
 
@@ -194,7 +192,6 @@ export default function TransferForm({ wallets }: Props) {
         required
       />
 
-      {/* подсказка при оверлимите дублируется тостом, но можно оставить inline */}
       {overLimit && (
         <div className={s.form__error}>
           Недостаточно средств. Доступно: {available}

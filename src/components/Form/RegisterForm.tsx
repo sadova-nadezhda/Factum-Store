@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { Eye, EyeOff } from 'lucide-react';
@@ -8,7 +8,7 @@ import Input from './parts/Input';
 import Button from '../Button';
 
 import { useForm } from '../../hooks/useForm';
-import { useRegisterMutation } from '../../features/auth/authAPI';
+import { useRegisterMutation } from '@/features/auth/authAPI';
 
 import s from './Form.module.scss';
 

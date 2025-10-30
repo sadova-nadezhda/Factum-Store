@@ -1,16 +1,12 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-import { baseQuery } from '@/shared/baseQuery';
+import { rootApi } from '@/shared/rootApi';
+import { okIfNoError } from '@/shared/rtkValidate';
 
 export type FaqItem = { id: string; question: string; answer: string };
 
-export const faqApi = createApi({
-  reducerPath: 'faqApi',
-  baseQuery,
-  tagTypes: ['Faq'],
-  refetchOnMountOrArgChange: false,
+export const faqApi = rootApi.injectEndpoints({
   endpoints: (build) => ({
     getFaq: build.query<FaqItem[], void>({
-      query: () => 'faq',
+      query: () => ({ url: '/faq', method: 'GET', validateStatus: okIfNoError }),
       providesTags: (result) =>
         result?.length
           ? [
@@ -21,6 +17,7 @@ export const faqApi = createApi({
       keepUnusedDataFor: 300,
     }),
   }),
+  overrideExisting: false,
 });
 
 export const { useGetFaqQuery } = faqApi;

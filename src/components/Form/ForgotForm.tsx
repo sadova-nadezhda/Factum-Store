@@ -7,9 +7,10 @@ import Input from './parts/Input';
 import Button from '../Button';
 
 import { useForm } from '../../hooks/useForm';
-import { useForgotMutation } from '../../features/auth/authAPI';
+import { useForgotMutation } from '@/features/auth/authAPI';
 
 import s from './Form.module.scss';
+
 
 export default function ForgotForm() {
   const { values, handleChange, setValues } = useForm({ email: '' });

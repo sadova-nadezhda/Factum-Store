@@ -1,30 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/query';
-import authReducer from '../features/auth/authSlice';
-import { catalogApi } from '../features/catalog/catalogAPI';
-import { faqApi } from '../features/faq/faqAPI';
-import { authApi } from '../features/auth/authAPI';
-import { eventsApi } from '@/features/events/eventsApi';
+import { rootApi } from '@/shared/rootApi';
+import authReducer from '@/features/auth/authSlice';
 
 export const store = configureStore({
   reducer: {
-    [authApi.reducerPath]: authApi.reducer,
+    [rootApi.reducerPath]: rootApi.reducer,
     auth: authReducer,
-    [catalogApi.reducerPath]: catalogApi.reducer,
-    [faqApi.reducerPath]: faqApi.reducer,
-    [eventsApi.reducerPath]: eventsApi.reducer,
   },
   middleware: (getDefault) =>
-    getDefault().concat(
-      authApi.middleware,
-      catalogApi.middleware,
-      faqApi.middleware,
-      eventsApi.middleware
-    ),
-  devTools: import.meta.env.DEV,
+    getDefault().concat(rootApi.middleware),
+  devTools: import.meta.env.MODE !== 'production',
 });
 
-setupListeners(store.dispatch);
-
-export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;

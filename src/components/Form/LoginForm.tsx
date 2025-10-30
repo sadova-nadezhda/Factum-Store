@@ -10,10 +10,11 @@ import Button from '../Button';
 import { useForm } from '../../hooks/useForm';
 import { setToken } from '../../features/auth/authSlice';
 
-import { useLoginMutation } from '../../features/auth/authAPI';
+import { useLoginMutation } from '@/features/auth/authAPI';
 import { useAppDispatch } from '../../hooks/store';
 
 import s from './Form.module.scss';
+
 
 export default function LoginForm() {
   const { values, handleChange } = useForm({ email: '', password: '' });

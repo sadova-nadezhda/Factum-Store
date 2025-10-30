@@ -4,10 +4,9 @@ import Title from '../../Title';
 import { CoinsCard } from '../../Card';
 import TransferForm from '../../Form/TransferForm';
 
-import { useGetMyWalletsQuery } from '../../../features/auth/authAPI';
+import { useGetMyWalletsQuery } from '@/features/wallets/walletsAPI';
 
 import s from './ProfileCoins.module.scss';
-
 
 export default function ProfileCoins() {
   const { data, isLoading, isError } = useGetMyWalletsQuery();

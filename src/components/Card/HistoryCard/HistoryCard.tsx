@@ -6,7 +6,7 @@ import Button from '@/components/Button';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
 import { StarIcon } from '../../Icons';
 import { useModal } from '@/hooks/useModal';
-import { useCancelOrderMutation } from '@/features/auth/authAPI';
+import { useCancelOrderMutation } from '@/features/orders/ordersAPI';
 
 import s from './HistoryCard.module.scss';
 

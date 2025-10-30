@@ -15,7 +15,6 @@ interface ModalProps {
 }
 
 export default function Modal({ onClose, children, isOpen }: ModalProps) {
-  // контейнер под модалки
   let modalRoot = document.getElementById('modals');
   if (!modalRoot) {
     modalRoot = document.createElement('div');

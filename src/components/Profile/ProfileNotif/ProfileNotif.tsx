@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import Title from '../../Title';
 import { NotificationsCard } from '../../Card';
 
-import { useGetMyWalletsQuery } from '../../../features/auth/authAPI';
+import { useGetMyWalletsQuery } from '@/features/wallets/walletsAPI';
 
 import s from './ProfileNotif.module.scss';
 

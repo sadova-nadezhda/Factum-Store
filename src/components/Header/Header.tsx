@@ -5,9 +5,10 @@ import { HashLink } from 'react-router-hash-link';
 import { StarIcon } from '../Icons';
 
 import { useAppSelector } from '../../hooks/store';
-import { useGetMyWalletsQuery } from '../../features/auth/authAPI';
+import { useGetMyWalletsQuery } from '@/features/wallets/walletsAPI';
 
 import s from './Header.module.scss';
+
 
 export default function Header() {
   const token = useAppSelector((state) => state.auth.token) || localStorage.getItem('token');

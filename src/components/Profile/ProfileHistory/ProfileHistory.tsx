@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
+
 import Title from '../../Title';
 import { HistoryCard } from '../../Card';
-import { useGetMyWalletsQuery } from '../../../features/auth/authAPI';
+
+import { useGetMyWalletsQuery } from '@/features/wallets/walletsAPI';
+
 import s from './ProfileHistory.module.scss';
 
 function formatDate(iso: string) {

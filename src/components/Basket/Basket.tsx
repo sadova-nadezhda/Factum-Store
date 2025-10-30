@@ -5,9 +5,10 @@ import Title from '../Title';
 import Button from '../Button';
 import { StarIcon } from '../Icons';
 
-import { useGetMyWalletsQuery } from '../../features/auth/authAPI';
+import { useGetMyWalletsQuery } from '@/features/wallets/walletsAPI';
 
 import s from './Basket.module.scss';
+
 
 type BasketProps = {
   sum: number;

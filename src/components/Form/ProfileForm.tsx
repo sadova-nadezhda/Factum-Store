@@ -7,7 +7,7 @@ import Input from './parts/Input';
 import Title from '../Title';
 import Button from '../Button';
 
-import { useGetMeQuery, useUpdateMeMutation, useUploadAvatarMutation } from '../../features/auth/authAPI';
+import { useGetMeQuery, useUpdateMeMutation, useUploadAvatarMutation } from '@/features/auth/authAPI';
 
 import s from './Form.module.scss';
 

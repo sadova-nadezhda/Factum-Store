@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type FormEvent } from 'react';
+import React, { useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import classNames from 'classnames';
 import { Eye, EyeOff } from 'lucide-react';
@@ -8,7 +8,7 @@ import Input from './parts/Input';
 import Button from '../Button';
 
 import { useForm } from '../../hooks/useForm';
-import { useResetMutation } from '../../features/auth/authAPI';
+import { useResetMutation } from '@/features/auth/authAPI';
 
 import s from './Form.module.scss';
 
