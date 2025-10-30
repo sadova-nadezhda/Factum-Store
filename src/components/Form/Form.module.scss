@@ -167,6 +167,8 @@
   }
   &__ok {
     color: rgb(61, 166, 82);
+    font-size: calc(14 * var(--width-multiplier));
+    text-align: center;
   }
   &__error {
     color: rgba(235, 87, 87, 1);
