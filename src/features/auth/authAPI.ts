@@ -170,14 +170,7 @@ export const authApi = createApi({
         url: `/orders/${id}/user-cancel`,
         method: 'PATCH',
         responseHandler: 'text',
-        validateStatus: (resp, raw) => {
-          try {
-            const parsed = raw ? JSON.parse(String(raw)) : null;
-            return resp.ok && !(parsed as any)?.error;
-          } catch {
-            return resp.ok;
-          }
-        },
+        validateStatus: okIfNoError,
       }),
       transformResponse: (raw: string) => {
         if (!raw) return { status: 'ok' as const };
