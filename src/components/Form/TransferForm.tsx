@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
+import { toast } from 'react-toastify';
 
 import Input from './parts/Input';
 import Select from './parts/Select';
@@ -70,7 +71,7 @@ export default function TransferForm({ wallets }: Props) {
     ];
   }, [transferableWallets]);
 
-  const [createTransfer, { isLoading, error, isSuccess }] = useCreateTransferMutation();
+  const [createTransfer, { isLoading }] = useCreateTransferMutation();
 
   const hasSelectedWallet =
     transferableWallets.length === 1 || form.wallet !== 'default';
@@ -104,29 +105,43 @@ export default function TransferForm({ wallets }: Props) {
         ? (transferableWallets[0]?.type ?? 'main')
         : form.wallet;
 
-    if (!to_user_id || !Number.isFinite(amount) || amount <= 0) return;
-    if (!hasSelectedWallet) return;
-    if (overLimit) return;
+    if (!to_user_id) {
+      toast.error('Выберите сотрудника');
+      return;
+    }
+    if (!hasSelectedWallet) {
+      toast.error('Выберите кошелёк');
+      return;
+    }
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toast.error('Введите корректную сумму');
+      return;
+    }
+    if (overLimit) {
+      toast.error(`Недостаточно средств. Доступно: ${available}`);
+      return;
+    }
 
     try {
       await createTransfer({ to_user_id, amount, from_type }).unwrap();
+
+      toast.success('Перевод выполнен');
+
       setForm({
         sum: '',
         employee: 'default',
         wallet: transferableWallets.length === 1 ? transferableWallets[0].type : 'default',
       });
     } catch (err) {
-      console.error(err);
+      const data = (err as any)?.data || {};
+      const msg = data.error || (err as any)?.error || 'Не удалось выполнить перевод';
+      const suffix =
+        typeof data.limit === 'number' && typeof data.used === 'number'
+          ? ` (лимит: ${data.limit}, использовано: ${data.used})`
+          : '';
+      toast.error(`${msg}${suffix}`);
     }
   };
-
-  const apiError =
-    (error as any)?.data?.error ||
-    (error as any)?.error ||
-    undefined;
-
-  const limit = (error as any)?.data?.limit;
-  const used = (error as any)?.data?.used;
 
   const disabled =
     isLoading ||
@@ -137,6 +152,12 @@ export default function TransferForm({ wallets }: Props) {
     !Number.isFinite(amountNum) ||
     amountNum <= 0 ||
     overLimit;
+
+  useEffect(() => {
+    if (usersError) {
+      toast.error('Не удалось загрузить список сотрудников');
+    }
+  }, [usersError]);
 
   return (
     <form onSubmit={handleSubmit} className={classNames(s.form, s.form__transfer)}>
@@ -173,22 +194,12 @@ export default function TransferForm({ wallets }: Props) {
         required
       />
 
+      {/* подсказка при оверлимите дублируется тостом, но можно оставить inline */}
       {overLimit && (
         <div className={s.form__error}>
           Недостаточно средств. Доступно: {available}
         </div>
       )}
-
-      {apiError && (
-        <div className={s.form__error}>
-          {apiError}
-          {typeof limit === 'number' && typeof used === 'number' && (
-            <> (лимит: {limit}, использовано: {used})</>
-          )}
-        </div>
-      )}
-
-      {isSuccess && <div className={s.form__ok}>Перевод выполнен</div>}
 
       <div className={s.form__footer}>
         <Button

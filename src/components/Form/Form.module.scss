@@ -9,6 +9,7 @@
     }
     @media (max-width: 767px) {
       margin-top: calc(4 * var(--width-multiplier));
+      padding: calc(16 * var(--width-multiplier)) calc(32 * var(--width-multiplier));
     }
   }
   &__profile {

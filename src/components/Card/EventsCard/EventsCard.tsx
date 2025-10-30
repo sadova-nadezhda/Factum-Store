@@ -4,7 +4,12 @@ import { StarIcon } from '@/components/Icons';
 
 import s from './EventsCard.module.scss';
 
-export default function EventsCard({title , reward}) {
+interface EventsCardProps {
+  title: string,
+  reward: number,
+}
+
+export default function EventsCard({title , reward}: EventsCardProps) {
   return (
     <div className={s.card}>
       <div className={s.card__caption}>{title}</div>

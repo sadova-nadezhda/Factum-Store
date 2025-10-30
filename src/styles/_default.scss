@@ -128,3 +128,19 @@ textarea::placeholder {
   color: inherit;
   font-size: inherit;
 }
+
+.Toastify__toast-container {
+  font-size: calc(14 * var(--width-multiplier));
+  width: calc(280 * var(--width-multiplier));
+}
+
+.Toastify__toast {
+  width: calc(280 * var(--width-multiplier));
+}
+
+.Toastify__close-button svg {
+  display: block;
+  min-width: calc(14 * var(--width-multiplier));
+  width: calc(14 * var(--width-multiplier));
+  height: calc(14 * var(--width-multiplier));
+}

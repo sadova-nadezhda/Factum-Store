@@ -13,7 +13,7 @@ import s from './Form.module.scss';
 
 export default function ForgotForm() {
   const { values, handleChange, setValues } = useForm({ email: '' });
-  const [forgot, { isLoading, isSuccess, error }] = useForgotMutation();
+  const [forgot, { isLoading }] = useForgotMutation();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -36,14 +36,6 @@ export default function ForgotForm() {
       toast.error(msg);
     }
   };
-  const apiError =
-    (error as any)?.data?.error ||
-    (error as any)?.error ||
-    undefined;
-
-  if (apiError) {
-    toast.error(apiError);
-  }
 
   return (
     <form onSubmit={handleSubmit} className={classNames(s.form, s.form__login)}>

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.scss';
 
@@ -10,6 +10,10 @@ import { useGetEventsQuery } from '@/features/events/eventsApi';
 
 export default function EventsPage() {
   const { data = [], isLoading, isError, error } = useGetEventsQuery();
+
+  useEffect(() => {
+    if (data.length) console.log('события:', data);
+  }, [data]);
 
   const byType = useMemo(() => {
     return data.reduce<Record<string, typeof data>>( (acc, item) => {
@@ -37,8 +41,8 @@ export default function EventsPage() {
             {isError && <div className={s.error}>Ошибка: {(error as any)?.status ?? '—'}</div>}
             {!isLoading && !isError && (
               <div className={s.events__cards} data-type="events">
-                {(byType['events'] ?? []).map((it, idx) => (
-                  <EventsCard key={`ev-${idx}`} title={it.title} reward={it.reward} />
+                {(byType['events'] ?? []).map((it) => (
+                  <EventsCard key={`ev-${it.id}`} title={it.title} reward={it.reward} />
                 ))}
               </div>
             )}
@@ -50,8 +54,8 @@ export default function EventsPage() {
             {isError && <div className={s.error}>Ошибка: {(error as any)?.status ?? '—'}</div>}
             {!isLoading && !isError && (
               <div className={s.events__cards} data-type="monthly">
-                {(byType['monthly'] ?? []).map((it, idx) => (
-                  <EventsCard key={`mo-${idx}`} title={it.title} reward={it.reward} />
+                {(byType['monthly'] ?? []).map((it) => (
+                  <EventsCard key={`mo-${it.id}`} title={it.title} reward={it.reward} />
                 ))}
               </div>
             )}
@@ -63,8 +67,8 @@ export default function EventsPage() {
             {isError && <div className={s.error}>Ошибка: {(error as any)?.status ?? '—'}</div>}
             {!isLoading && !isError && (
               <div className={s.events__cards} data-type="annual">
-                {(byType['annual'] ?? []).map((it, idx) => (
-                  <EventsCard key={`an-${idx}`} title={it.title} reward={it.reward} />
+                {(byType['annual'] ?? []).map((it) => (
+                  <EventsCard key={`an-${it.id}`} title={it.title} reward={it.reward} />
                 ))}
               </div>
             )}

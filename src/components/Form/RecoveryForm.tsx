@@ -2,6 +2,7 @@ import React, { useEffect, useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import classNames from 'classnames';
 import { Eye, EyeOff } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 import Input from './parts/Input';
 import Button from '../Button';
@@ -18,22 +19,28 @@ export default function RecoveryForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const tokenFromQuery = params.get('token') || '';
-
-  const [resetPassword, { isLoading, isSuccess, error }] = useResetMutation();
-
-  useEffect(() => {
-    if (isSuccess) navigate('/login', { replace: true });
-  }, [isSuccess, navigate]);
+  const [resetPassword, { isLoading }] = useResetMutation();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const token = tokenFromQuery || values.token;
-    if (!token || !values.password) return;
+    if (!token || !values.password) {
+      toast.error('Введите пароль и токен для сброса.');
+      return;
+    }
 
     try {
       await resetPassword({ token, password: values.password }).unwrap();
+
+      toast.success('Пароль успешно обновлён! Теперь войдите в систему.');
+      navigate('/login', { replace: true });
     } catch (err) {
+      const msg =
+        (err as any)?.data?.error ||
+        (err as any)?.error ||
+        'Не удалось обновить пароль. Попробуйте позже.';
+      toast.error(msg);
       console.error(err);
     }
   };
@@ -43,17 +50,11 @@ export default function RecoveryForm() {
     values.password.length < 6 ||
     (!tokenFromQuery && !values.token);
 
-  const apiError =
-    (error as any)?.data?.error ||
-    (error as any)?.error ||
-    undefined;
-
   return (
     <form
       onSubmit={handleSubmit}
       className={classNames(s.form, s.form__login)}
     >
-
       <div className={s.passwordField}>
         <Input
           type={showPassword ? 'text' : 'password'}
@@ -71,7 +72,6 @@ export default function RecoveryForm() {
           {showPassword ? <Eye size={24} /> : <EyeOff size={24} />}
         </button>
       </div>
-      
 
       {/* Если токен пришёл через ссылку — поле можно скрыть */}
       {!tokenFromQuery && (
@@ -83,8 +83,6 @@ export default function RecoveryForm() {
           onChange={handleChange}
         />
       )}
-
-      {apiError && ( <div className={s.form__error}> {apiError} </div> )}
 
       <Button
         type="submit"

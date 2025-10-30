@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Eye, EyeOff } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 import Input from './parts/Input';
 import Title from '../Title';
@@ -106,10 +107,18 @@ export default function ProfileForm() {
         URL.revokeObjectURL(previewUrlRef.current);
         previewUrlRef.current = null;
       }
+
+      toast.success('Изменения сохранены!');
     } catch (err) {
       console.error(err);
+      const msg =
+        (err as any)?.data?.error ||
+        (err as any)?.error ||
+        'Не удалось сохранить изменения.';
+      toast.error(msg);
     }
   };
+
 
   const handleCancel = () => {
     setForm(saved);
