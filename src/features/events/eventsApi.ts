@@ -3,6 +3,7 @@ import { baseQuery } from '@/shared/baseQuery';
 
 
 export type EventItem = {
+  id: any;
   type: 'events' | 'monthly' | 'annual' | string;
   title: string;
   reward: number;

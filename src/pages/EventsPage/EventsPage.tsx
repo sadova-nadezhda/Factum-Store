@@ -11,9 +11,9 @@ import { useGetEventsQuery } from '@/features/events/eventsApi';
 export default function EventsPage() {
   const { data = [], isLoading, isError, error } = useGetEventsQuery();
 
-  useEffect(() => {
-    if (data.length) console.log('события:', data);
-  }, [data]);
+  // useEffect(() => {
+  //   if (data.length) console.log('события:', data);
+  // }, [data]);
 
   const byType = useMemo(() => {
     return data.reduce<Record<string, typeof data>>( (acc, item) => {
