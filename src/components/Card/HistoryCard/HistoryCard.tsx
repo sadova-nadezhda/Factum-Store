@@ -33,7 +33,7 @@ export default function HistoryCard({ img, id, title, price, date, status }: His
       await cancelOrder({ id }).unwrap();
       setLocalStatus('cancelled');
       confirmModal.closeModal();
-      toast.success('Заказ успешно отменён');
+      toast.success('Заказ отправлен на возврат');
     } catch (e: any) {
       const errMsg =
         e?.data?.error ||
