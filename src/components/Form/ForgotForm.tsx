@@ -16,18 +16,29 @@ export default function ForgotForm() {
   const [forgot, { isLoading, isSuccess, error }] = useForgotMutation();
   const navigate = useNavigate();
 
-   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const isValidEmail = (email: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!isValidEmail(values.email)) {
+      toast.error('Введите корректный e-mail');
+      return;
+    }
+
     try {
       await forgot({ email: values.email }).unwrap();
-      toast.success('Проверьте почту — мы отправили письмо со ссылкой для входа.');
+      toast.success('Письмо отправлено. Проверьте почту.');
       setValues({ email: '' });
     } catch (err) {
-      toast.error('Не удалось отправить письмо. Проверьте e-mail и попробуйте снова.');
-      console.error(err);
+      const msg =
+        (err as any)?.data?.error ||
+        (err as any)?.error ||
+        'Ошибка при восстановлении';
+      toast.error(msg);
     }
   };
-
   const apiError =
     (error as any)?.data?.error ||
     (error as any)?.error ||
