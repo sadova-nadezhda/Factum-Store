@@ -26,9 +26,9 @@ export default function ProfileHistory() {
     );
   }, [data?.orders]);
 
-  useEffect(() => {
-    if (orders.length) console.log('Заказы:', orders);
-  }, [orders]);
+  // useEffect(() => {
+  //   if (orders.length) console.log('Заказы:', orders);
+  // }, [orders]);
 
   if (isLoading) return <div>Загрузка истории…</div>;
   if (isError) return <div>Не удалось загрузить историю</div>;
