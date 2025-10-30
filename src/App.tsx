@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ProtectedRoute from './components/ProtectedRoute'; 
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ToastPortal from './components/Modal/ToastPortal';
 import { ProfileInfo, ProfileHistory, ProfileNotif, ProfileCoins } from './components/Profile';
 import { 
   ForgotPasswordPage, HomePage, LoginPage, NotFoundPage, 
@@ -43,14 +44,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
-      <ToastContainer
-          position="top-right"
-          autoClose={4000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          pauseOnHover
-        />
+      <ToastPortal />
     </>
   );
 }

@@ -34,11 +34,13 @@
 }
 
 html {
+  position: relative;
   height: 100%;
   scroll-behavior: smooth;
 }
 
 body {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -143,4 +145,12 @@ textarea::placeholder {
   min-width: calc(14 * var(--width-multiplier));
   width: calc(14 * var(--width-multiplier));
   height: calc(14 * var(--width-multiplier));
+}
+
+.Toastify__toast-container--top-right {
+  @media (max-width: 480px) {
+    left: auto;
+    right: 1em;
+    top: 1em;
+  }
 }
