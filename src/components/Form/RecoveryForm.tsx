@@ -39,7 +39,9 @@ export default function RecoveryForm() {
   };
 
   const disabled =
-    isLoading || !(tokenFromQuery || values.token) || values.password.length < 6;
+    isLoading ||
+    values.password.length < 6 ||
+    (!tokenFromQuery && !values.token);
 
   const apiError =
     (error as any)?.data?.error ||
