@@ -72,9 +72,9 @@ export default function HistoryCard({ img, id, title, price, date, status }: His
         <div className={s.card__box}>
           <div className={s.card__top}>
             <div className={s.card__date}>{date}</div>
-            <div className={classNames(s.card__status, badge)}>
+            {/* <div className={classNames(s.card__status, badge)}>
               {statusText[localStatus] || statusText.default}
-            </div>
+            </div> */}
           </div>
           <div className={s.card__info}>
             <div className={s.card__num}>Заказ №{id}</div>
@@ -86,7 +86,7 @@ export default function HistoryCard({ img, id, title, price, date, status }: His
           </div>
         </div>
 
-        {localStatus === 'pending' && (
+        {/* {localStatus === 'pending' && (
           <Button
             className={classNames(s.card__button, 'button button-orange')}
             onClick={onCancelClick}
@@ -94,15 +94,15 @@ export default function HistoryCard({ img, id, title, price, date, status }: His
           >
             {isLoading ? 'Отменяем…' : 'Отменить заказ'}
           </Button>
-        )}
+        )} */}
       </div>
 
-      <ConfirmModal
+      {/* <ConfirmModal
         open={confirmModal.isModalOpen}
         onClose={confirmModal.closeModal}
         onConfirm={onConfirmCancel}
         isLoading={isLoading}
-      />
+      /> */}
     </>
   );
 }
