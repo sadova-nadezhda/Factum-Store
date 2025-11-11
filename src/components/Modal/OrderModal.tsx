@@ -26,17 +26,17 @@ export default function OrderModal({
 }: Props) {
   const [pending, setPending] = useState(false);
   const [errorText, setErrorText] = useState<string | null>(null);
+  const [ordered, setOrdered] = useState(false);
 
   const [createOrder, { isLoading: buying }] = useCreateOrderMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const safeQty = Math.max(1, Math.floor(qty || 1));
-
-  const sum = useMemo(() => (Number(product.price || 0) * safeQty), [product.price, safeQty]);
+  const sum = useMemo(() => Number(product.price || 0) * safeQty, [product.price, safeQty]);
 
   const handleConfirm = async () => {
-    if (pending || buying) return;
+    if (pending || buying || ordered) return;
     setErrorText(null);
     setPending(true);
     try {
@@ -45,9 +45,11 @@ export default function OrderModal({
         qty: safeQty,
       }).unwrap();
 
+      // Обновим баланс кошельков
       dispatch(authApi.util.invalidateTags(['Wallets']));
 
-      onClose();
+      // Переходим в состояние "заказ оформлен" вместо закрытия модалки
+      setOrdered(true);
     } catch (e: any) {
       const msg: string =
         e?.data?.error ||
@@ -68,20 +70,27 @@ export default function OrderModal({
     }
   };
 
+  const handleGoHistory = () => {
+    onClose();
+    navigate('/profile/history');
+  };
+
   if (!open) return null;
 
   return (
     <Modal isOpen={open} onClose={onClose}>
-      {errorText && (
-        <div style={{
-          background: '#FDECEC',
-          color: '#B00020',
-          padding: '10px 12px',
-          borderRadius: 8,
-          marginBottom: 12,
-          fontSize: 14,
-          lineHeight: 1.3,
-        }}>
+      {errorText && !ordered && (
+        <div
+          style={{
+            background: '#FDECEC',
+            color: '#B00020',
+            padding: '10px 12px',
+            borderRadius: 8,
+            marginBottom: 12,
+            fontSize: 14,
+            lineHeight: 1.3,
+          }}
+        >
           {errorText}
         </div>
       )}
@@ -91,6 +100,8 @@ export default function OrderModal({
         onConfirm={handleConfirm}
         onCancel={onClose}
         confirming={pending || isSubmitting || buying}
+        ordered={ordered}
+        onGoHistory={handleGoHistory}
       />
     </Modal>
   );

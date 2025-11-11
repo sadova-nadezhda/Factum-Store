@@ -22,6 +22,8 @@ import {
 import AuthRequiredRoute from './components/routes/AuthRequiredRoute';
 import GuestOnlyRoute from './components/routes/GuestOnlyRoute';
 
+import ScrollToTop from './ui/ScrollToTop';
+
 import './styles/main.scss';
 
 const App: React.FC = () => {
@@ -29,9 +31,10 @@ const App: React.FC = () => {
 
   return (
     <>
+      
       <main>
         <Header />
-
+        <ScrollToTop />
         <Routes>
           {/* --- Доступно только неавторизованным --- */}
           <Route element={<GuestOnlyRoute />}>

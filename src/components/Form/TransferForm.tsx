@@ -7,7 +7,7 @@ import Select from './parts/Select';
 import Button from '../Button';
 
 import { useGetUsersForTransfersQuery } from '@/features/users/usersAPI';
-import { useCreateTransferMutation } from '@/features/wallets/walletsAPI';
+import { useCreateTransferMutation, useDeductCoinsMutation } from '@/features/wallets/walletsAPI';
 
 import type { Wallet, WalletType } from '@/types/WalletTypes';
 
@@ -26,17 +26,21 @@ export default function TransferForm({ wallets }: Props) {
     sum: string;
     employee: string;
     wallet: 'default' | WalletType;
+    reason: string;
+    instant: boolean;
   }>({
     sum: '',
     employee: 'default',
     wallet: 'default',
+    reason: '',
+    instant: false,
   });
 
   useEffect(() => {
     if (transferableWallets.length === 1 && form.wallet === 'default') {
       setForm((p) => ({ ...p, wallet: transferableWallets[0].type }));
     }
-  }, [transferableWallets.length, transferableWallets, form.wallet]);
+  }, [transferableWallets, form.wallet]);
 
   const {
     data: users = [],
@@ -60,7 +64,11 @@ export default function TransferForm({ wallets }: Props) {
 
   const walletOptions: Opt[] = useMemo(() => {
     const title = (t: WalletType) =>
-      t === 'main' ? 'Кошелёк' : t === 'manager_pool' ? 'Кошелёк Руководителя' : 'Кошелёк HR';
+      t === 'main'
+        ? 'Кошелёк'
+        : t === 'manager_pool'
+        ? 'Кошелёк Руководителя'
+        : 'Кошелёк HR';
 
     const head: Opt[] = [{ value: 'default', label: 'Выберите кошелёк', disabled: true }];
     return [
@@ -69,7 +77,10 @@ export default function TransferForm({ wallets }: Props) {
     ];
   }, [transferableWallets]);
 
-  const [createTransfer, { isLoading }] = useCreateTransferMutation();
+  const [createTransfer, { isLoading: isTransferring }] = useCreateTransferMutation();
+  const [deductCoins, { isLoading: isDeducting }] = useDeductCoinsMutation();
+
+  const isSubmitting = isTransferring || isDeducting;
 
   const hasSelectedWallet =
     transferableWallets.length === 1 || form.wallet !== 'default';
@@ -82,15 +93,27 @@ export default function TransferForm({ wallets }: Props) {
 
   const available = selectedWallet?.balance;
   const amountNum = Number(form.sum);
+
+  const effectiveType: WalletType =
+    form.wallet === 'default'
+      ? (transferableWallets[0]?.type ?? 'main')
+      : form.wallet;
+
+  const requiresReason = effectiveType === 'manager_pool';
+  const isInstantDeduct = requiresReason && form.instant;
+
   const overLimit =
+    !isInstantDeduct &&
     hasSelectedWallet &&
     typeof available === 'number' &&
     Number.isFinite(amountNum) &&
     amountNum > available;
 
-  const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (e) => {
-    const { name, value } = e.target as HTMLInputElement & HTMLSelectElement;
-    setForm((prev) => ({ ...prev, [name]: value }));
+  const handleChange: React.ChangeEventHandler<
+    HTMLInputElement | HTMLSelectElement
+  > = (e) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement;
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
@@ -107,32 +130,63 @@ export default function TransferForm({ wallets }: Props) {
       toast.error('Выберите сотрудника');
       return;
     }
-    if (!hasSelectedWallet) {
-      toast.error('Выберите кошелёк');
-      return;
-    }
     if (!Number.isFinite(amount) || amount <= 0) {
       toast.error('Введите корректную сумму');
       return;
     }
-    if (overLimit) {
-      toast.error(`Недостаточно средств. Доступно: ${available}`);
+
+    if (!isInstantDeduct) {
+      if (!hasSelectedWallet) {
+        toast.error('Выберите кошелёк');
+        return;
+      }
+      if (overLimit) {
+        toast.error(`Недостаточно средств. Доступно: ${available}`);
+        return;
+      }
+    }
+
+    if (from_type === 'manager_pool' && !form.reason.trim()) {
+      toast.error('Укажите причину');
       return;
     }
 
     try {
-      await createTransfer({ to_user_id, amount, from_type }).unwrap();
+      if (isInstantDeduct) {
+        await deductCoins({
+          from_user_id: to_user_id,
+          amount,
+          reason: "manager_deduction",
+        }).unwrap();
+        toast.success('Списание выполнено');
+      } else {
+        const payload: {
+          to_user_id: number;
+          amount: number;
+          from_type: WalletType;
+          reason?: string;
+          instant?: boolean;
+        } = { to_user_id, amount, from_type };
 
-      toast.success('Перевод выполнен');
+        if (from_type === 'manager_pool') {
+          payload.reason = "manager_bonus";
+          if (form.instant) payload.instant = true;
+        }
+
+        await createTransfer(payload).unwrap();
+        toast.success('Перевод выполнен');
+      }
 
       setForm({
         sum: '',
         employee: 'default',
         wallet: transferableWallets.length === 1 ? transferableWallets[0].type : 'default',
+        reason: '',
+        instant: false,
       });
     } catch (err) {
       const data = (err as any)?.data || {};
-      const msg = data.error || (err as any)?.error || 'Не удалось выполнить перевод';
+      const msg = data.error || (err as any)?.error || 'Операция не выполнена';
       const suffix =
         typeof data.limit === 'number' && typeof data.used === 'number'
           ? ` (лимит: ${data.limit}, использовано: ${data.used})`
@@ -142,20 +196,27 @@ export default function TransferForm({ wallets }: Props) {
   };
 
   const disabled =
-    isLoading ||
+    isSubmitting ||
     usersLoading ||
     usersError ||
     form.employee === 'default' ||
-    !hasSelectedWallet ||
     !Number.isFinite(amountNum) ||
     amountNum <= 0 ||
-    overLimit;
+    // блокируем только для обычного перевода (не для списания)
+    (!isInstantDeduct && (!hasSelectedWallet || overLimit)) ||
+    (requiresReason && !form.reason.trim());
 
   useEffect(() => {
     if (usersError) {
       toast.error('Не удалось загрузить список сотрудников');
     }
   }, [usersError]);
+
+  const sumPlaceholder = isInstantDeduct
+    ? 'Введите сумму'
+    : `Введите сумму (доступно: ${
+        hasSelectedWallet && typeof available === 'number' ? available : '--'
+      })`;
 
   return (
     <form onSubmit={handleSubmit} className={classNames(s.form, s.form__transfer)}>
@@ -175,6 +236,7 @@ export default function TransferForm({ wallets }: Props) {
           value={form.wallet}
           onChange={handleChange}
           required
+          disabled={isInstantDeduct} // при списании выбор кошелька не влияет
         />
       )}
 
@@ -183,16 +245,37 @@ export default function TransferForm({ wallets }: Props) {
         name="sum"
         value={form.sum}
         onChange={handleChange}
-        placeholder={`Введите сумму (доступно: ${
-          hasSelectedWallet && typeof available === 'number' ? available : '--'
-        })`}
+        placeholder={sumPlaceholder}
         min="1"
         step="1"
         inputMode="numeric"
+        onWheel={(e: any) => e.currentTarget.blur()}
         required
       />
 
-      {overLimit && (
+      {requiresReason && (
+        <>
+          <Input
+            type="text"
+            name="reason"
+            value={form.reason}
+            onChange={handleChange}
+            placeholder="Причина"
+            required
+          />
+          <label className={s.form__checkbox}>
+            <input
+              type="checkbox"
+              name="instant"
+              checked={form.instant}
+              onChange={handleChange}
+            />
+            <span>Списать коины</span>
+          </label>
+        </>
+      )}
+
+      {!isInstantDeduct && overLimit && (
         <div className={s.form__error}>
           Недостаточно средств. Доступно: {available}
         </div>
@@ -204,7 +287,7 @@ export default function TransferForm({ wallets }: Props) {
           disabled={disabled}
           className={classNames(s.form__button, 'button button-orange')}
         >
-          {isLoading ? 'Отправляю…' : 'Отправить'}
+          {isSubmitting ? 'Обрабатываю…' : isInstantDeduct ? 'Списать' : 'Отправить'}
         </Button>
       </div>
     </form>

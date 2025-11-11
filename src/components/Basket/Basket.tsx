@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
+import { useNavigate } from 'react-router-dom';
 
 import Title from '../Title';
 import Button from '../Button';
@@ -9,12 +10,13 @@ import { useGetMyWalletsQuery } from '@/features/wallets/walletsAPI';
 
 import s from './Basket.module.scss';
 
-
 type BasketProps = {
   sum: number;
   onConfirm: () => void;
   onCancel: () => void;
   confirming?: boolean;
+  ordered?: boolean;
+  onGoHistory?: () => void;
 };
 
 const fmt = (n: number) => new Intl.NumberFormat('ru-RU').format(n);
@@ -24,15 +26,16 @@ export default function Basket({
   onConfirm,
   onCancel,
   confirming = false,
+  ordered = false,
+  onGoHistory,
 }: BasketProps) {
+  const navigate = useNavigate();
+
   const { wallets, isLoading } = useGetMyWalletsQuery(undefined, {
     selectFromResult: ({ data, isLoading }) => ({
       isLoading,
       wallets: data?.wallets ?? [],
     }),
-    // refetchOnFocus: false,
-    // refetchOnReconnect: false,
-    // refetchOnMountOrArgChange: false,
   });
 
   const balance = useMemo(() => {
@@ -50,10 +53,27 @@ export default function Basket({
 
   const enough = balance >= sum;
 
+  const handleGoHistory = () => {
+    if (onGoHistory) return onGoHistory();
+    navigate('/profile/history');
+  };
+
   return (
     <div className={s.basket}>
       <div className={s.basket__container}>
-        {isLoading ? (
+        {ordered ? (
+          <>
+            <img src="/assets/img/amir-1.png" className={s.basket__img} alt="" />
+            <Title as="h2" className={s.basket__title}>
+              Спасибо за заказ!
+            </Title>
+            <div className={s.basket__buttons}>
+              <Button className={s.basket__button} onClick={handleGoHistory}>
+                Перейти в историю
+              </Button>
+            </div>
+          </>
+        ) : isLoading ? (
           <>
             <img src="/assets/img/amir-1.png" className={s.basket__img} alt="" />
             <Title as="h2" className={s.basket__title}>
@@ -103,19 +123,21 @@ export default function Basket({
           </>
         )}
 
-        <div className={s.basket__bottom}>
-          <div className={classNames(s.basket__price, s.basket__num)}>
-            <span>Сумма:</span>
-            {fmt(sum)}
-            <StarIcon />
-          </div>
+        {!ordered && (
+          <div className={s.basket__bottom}>
+            <div className={classNames(s.basket__price, s.basket__num)}>
+              <span>Сумма:</span>
+              {fmt(sum)}
+              <StarIcon />
+            </div>
 
-          <div className={classNames(s.basket__balance, s.basket__num)}>
-            <span>Баланс:</span>
-            {isLoading ? '—' : fmt(balance)}
-            <StarIcon />
+            <div className={classNames(s.basket__balance, s.basket__num)}>
+              <span>Баланс:</span>
+              {isLoading ? '—' : fmt(balance)}
+              <StarIcon />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

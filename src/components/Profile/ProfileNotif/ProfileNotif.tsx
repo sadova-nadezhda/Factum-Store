@@ -9,6 +9,8 @@ import s from './ProfileNotif.module.scss';
 
 type Notif =
   | { kind: 'order'; caption: string; desc?: string; amount: string; date: string }
+  | { kind: 'accrual'; caption: string; desc?: string; amount: string; date: string }
+  | { kind: 'deduction'; caption: string; desc?: string; amount: string; date: string }
   | { kind: 'transfer_in' | 'transfer_out'; sender: string; receiver: string; amount: string; date: string };
 
 export default function ProfileNotif() {
@@ -33,6 +35,22 @@ export default function ProfileNotif() {
       date: o.created_at,
     }));
 
+    const accrualNotifs: Notif[] = (data.accruals || []).map((a: any) => ({
+      kind: 'accrual',
+      caption: 'Вознаграждение',
+      desc: a.reason_text,
+      amount: `+${a.amount}`,
+      date: a.created_at,
+    }));
+
+    const deductionNotifs: Notif[] = ((data as any).deductions || []).map((d: any) => ({
+      kind: 'deduction',
+      caption: 'Списание',
+      desc: d.reason_text ?? d.reason,
+      amount: `-${d.amount}`,
+      date: d.created_at,
+    }));
+
     const inNotifs: Notif[] = (data.transfers_in || []).map(t => ({
       kind: 'transfer_in',
       sender: t.from_user,
@@ -49,7 +67,7 @@ export default function ProfileNotif() {
       date: t.created_at,
     }));
 
-    return [...orderNotifs, ...inNotifs, ...outNotifs].sort(
+    return [...orderNotifs, ...accrualNotifs, ...deductionNotifs, ...inNotifs, ...outNotifs].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
   }, [data]);
@@ -70,9 +88,9 @@ export default function ProfileNotif() {
       <Title as="h4" className={s.notif__caption}>Уведомления</Title>
       <div className={s.notif__cards}>
         {items.map((n, i) =>
-          n.kind === 'order' ? (
+          n.kind === 'order' || n.kind === 'accrual' || n.kind === 'deduction' ? (
             <NotificationsCard
-              key={`order-${i}`}
+              key={`${n.kind}-${i}`}
               caption={n.caption}
               desc={n.desc}
               amount={n.amount}

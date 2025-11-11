@@ -30,7 +30,7 @@ export default function ProfileCoins() {
       </div>
 
       <div className={s.coins__wrap}>
-        <Title as='h4' className={s.coins__title}>Подарить Коины</Title>
+        <Title as='h4' className={s.coins__title}>Перевод Коинов</Title>
         <TransferForm wallets={data.wallets} />
       </div>
     </>
