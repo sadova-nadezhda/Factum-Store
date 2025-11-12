@@ -63,7 +63,7 @@ export default function TransferForm({ wallets }: Props) {
   }, [users]);
 
   const walletOptions: Opt[] = useMemo(() => {
-    const title = (t: WalletType) => (t === 'main' ? 'Кошелёк' : 'Кошелёк HR');
+    const title = (t: WalletType) => (t === 'main' ? 'Кошелек' : 'Кошелек Руководителя');
     const head: Opt[] = [{ value: 'default', label: 'Выберите кошелёк', disabled: true }];
     return [...head, ...transferableWallets.map((w) => ({ value: w.type, label: title(w.type) }))];
   }, [transferableWallets]);

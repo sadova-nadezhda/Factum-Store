@@ -17,6 +17,12 @@ export default function ProfileCoins() {
   const main = data.wallets.find((w) => w.type === 'main');
   const hr = data.wallets.find((w) => w.type === 'manager_pool');
 
+  const walletsForTransfer = data.wallets.filter(
+    (w) => w.type === 'main' || w.type === 'manager_pool'
+  );
+
+  const canTransfer = walletsForTransfer.length > 1;
+
   return (
     <>
       <div className={s.coins__wrap}>
@@ -24,19 +30,19 @@ export default function ProfileCoins() {
           Мои коины
         </Title>
         <div className={s.coins__cards}>
-          {main && <CoinsCard caption="Кошелёк" balance={main.balance} />}
-          {hr && <CoinsCard caption="Кошелёк HR" balance={hr.balance} />}
+          {main && <CoinsCard caption="Кошелек" balance={main.balance} />}
+          {hr && <CoinsCard caption="Кошелек Руководителя" balance={hr.balance} />}
         </div>
       </div>
 
-      <div className={s.coins__wrap}>
-        <Title as="h4" className={s.coins__title}>
-          Перевод коинов
-        </Title>
-        <TransferForm wallets={data.wallets.filter(
-          (w) => w.type === 'main' || w.type === 'manager_pool'
-        )} />
-      </div>
+      {canTransfer && ( 
+        <div className={s.coins__wrap}>
+          <Title as="h4" className={s.coins__title}>
+            Перевод коинов
+          </Title>
+          <TransferForm wallets={walletsForTransfer} />
+        </div>
+      )}
     </>
   );
 }
