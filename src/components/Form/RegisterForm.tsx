@@ -40,14 +40,13 @@ export default function RegisterForm() {
     try {
       await register(payload as any).unwrap();
       toast.success('Регистрация прошла успешно! Теперь войдите в систему.');
-      navigate('/login');
+      setTimeout(() => navigate('/login'), 200);
     } catch (err) {
       const msg =
         (err as any)?.data?.error ||
         (err as any)?.error ||
         'Ошибка при регистрации. Попробуйте позже.';
       toast.error(msg);
-      console.error(err);
     }
   };
 

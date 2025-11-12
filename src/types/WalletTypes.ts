@@ -52,6 +52,7 @@ export type CreateTransferDto = {
   from_type: WalletType;
   reason?: string;
   instant?: boolean;
+  meta?: string;
 };
 
 export type CreateTransferResponse = { status: 'ok' };
@@ -59,7 +60,8 @@ export type CreateTransferResponse = { status: 'ok' };
 export type DeductDto = {
   from_user_id: number;
   amount: number;
-  reason: string;
+  reason?: string;
+  meta?: string;
 };
 
 export type DeductResponse = { status: 'ok' };

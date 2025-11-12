@@ -32,16 +32,14 @@ export default function RecoveryForm() {
 
     try {
       await resetPassword({ token, password: values.password }).unwrap();
-
       toast.success('Пароль успешно обновлён! Теперь войдите в систему.');
-      navigate('/login', { replace: true });
+      setTimeout(() => navigate('/login', { replace: true }), 200);
     } catch (err) {
       const msg =
         (err as any)?.data?.error ||
         (err as any)?.error ||
         'Не удалось обновить пароль. Попробуйте позже.';
       toast.error(msg);
-      console.error(err);
     }
   };
 

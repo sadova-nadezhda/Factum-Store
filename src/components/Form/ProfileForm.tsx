@@ -110,7 +110,6 @@ export default function ProfileForm() {
 
       toast.success('Изменения сохранены!');
     } catch (err) {
-      console.error(err);
       const msg =
         (err as any)?.data?.error ||
         (err as any)?.error ||

@@ -34,14 +34,13 @@ export default function LoginForm() {
 
       dispatch(setToken(res.token));
       toast.success('Вы успешно вошли!');
-      navigate('/profile');
+      setTimeout(() => navigate('/profile'), 200);
     } catch (err) {
       const msg =
         (err as any)?.data?.error ||
         (err as any)?.error ||
         'Ошибка при входе. Проверьте данные и попробуйте снова.';
       toast.error(msg);
-      console.error(err);
     }
   };
 
