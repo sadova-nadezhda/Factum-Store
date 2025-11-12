@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 import Input from './parts/Input';
 import Select from './parts/Select';
@@ -8,7 +9,7 @@ import Button from '../Button';
 
 import { useGetUsersForTransfersQuery } from '@/features/users/usersAPI';
 import { useCreateTransferMutation, useDeductCoinsMutation } from '@/features/wallets/walletsAPI';
-
+import type { RootState } from '@/app/store';
 import type { Wallet, WalletType } from '@/types/WalletTypes';
 
 import s from './Form.module.scss';
@@ -17,6 +18,11 @@ type Props = { wallets: Wallet[] };
 type Opt = { value: string; label: string; disabled?: boolean };
 
 export default function TransferForm({ wallets }: Props) {
+  const currentUserId =
+    useSelector((s: RootState) => s.auth.user?.id) ??
+    Number(localStorage.getItem('user_id')) ??
+    null;
+
   const transferableWallets = useMemo(
     () => wallets.filter((w) => w.transferable && (w.type === 'main' || w.type === 'manager_pool')),
     [wallets]
@@ -76,11 +82,11 @@ export default function TransferForm({ wallets }: Props) {
   const available = selectedWallet?.balance;
   const amountNum = Number(form.sum);
 
-  const from_type: WalletType =
-    form.wallet === 'default' ? (transferableWallets[0]?.type ?? 'main') : form.wallet;
+  const from_type: WalletType = form.wallet === 'default' ? (transferableWallets[0]?.type ?? 'main') : form.wallet;
 
-  const isDeduction = isHRWallet && form.reason === 'manager_deduction';
-  const effectiveReason = isHRWallet ? form.reason : 'manager_bonus';
+  const effectiveReason: 'manager_bonus' | 'manager_deduction' =
+    isHRWallet ? (form.reason || 'manager_bonus') : 'manager_bonus';
+  const isDeduction = effectiveReason === 'manager_deduction';
 
   const overLimit =
     !isDeduction &&
@@ -94,6 +100,15 @@ export default function TransferForm({ wallets }: Props) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const buildMeta = () =>
+    JSON.stringify({
+      type: effectiveReason,
+      description: isHRWallet && effectiveReason === 'manager_bonus'
+        ? (form.meta.trim() || '') 
+        : '',
+      from_manager_id: currentUserId, 
+    });
+
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
@@ -103,22 +118,30 @@ export default function TransferForm({ wallets }: Props) {
     if (!to_user_id) return toast.error('Выберите сотрудника');
     if (!Number.isFinite(amount) || amount <= 0) return toast.error('Введите корректную сумму');
     if (!hasSelectedWallet) return toast.error('Выберите кошелёк');
-
-    if (isHRWallet && !effectiveReason) return toast.error('Выберите действие');
-
+    if (isHRWallet && !form.reason) {
+      return toast.error('Выберите действие');
+    }
     if (!isDeduction && overLimit) return toast.error(`Недостаточно средств. Доступно: ${available}`);
+
+    const metaJson = buildMeta();
 
     try {
       if (isDeduction) {
-        await deductCoins({ from_user_id: to_user_id, amount, reason: 'manager_deduction', meta: '' }).unwrap();
+        await deductCoins({
+          from_user_id: to_user_id,
+          amount,
+          reason: 'manager_deduction',
+          meta: metaJson,
+        }).unwrap();
         toast.success('Списание выполнено');
       } else {
+        // Пополнение
         await createTransfer({
           from_type,
           to_user_id,
           amount,
           reason: 'manager_bonus',
-          meta: isHRWallet ? (form.meta.trim() || '') : '',
+          meta: metaJson,
         }).unwrap();
         toast.success('Пополнение выполнено');
       }
@@ -148,7 +171,7 @@ export default function TransferForm({ wallets }: Props) {
     form.employee === 'default' ||
     !Number.isFinite(amountNum) ||
     amountNum <= 0 ||
-    (!isHRWallet && form.wallet === 'default') ||
+    !hasSelectedWallet ||
     (!isDeduction && overLimit);
 
   useEffect(() => {
@@ -207,13 +230,13 @@ export default function TransferForm({ wallets }: Props) {
         required
       />
 
-      {isHRWallet && form.reason === 'manager_bonus' && (
+      {isHRWallet && effectiveReason === 'manager_bonus' && (
         <Input
           type="text"
           name="meta"
           value={form.meta}
           onChange={handleChange}
-          placeholder="Комментарий"
+          placeholder="Комментарий (описание премии)"
         />
       )}
 
@@ -222,16 +245,8 @@ export default function TransferForm({ wallets }: Props) {
       )}
 
       <div className={s.form__footer}>
-        <Button
-          type="submit"
-          disabled={disabled}
-          className={classNames(s.form__button, 'button button-orange')}
-        >
-          {isSubmitting
-            ? 'Обрабатываю…'
-            : isDeduction
-            ? 'Списать'
-            : 'Отправить'}
+        <Button type="submit" disabled={disabled} className={classNames(s.form__button, 'button button-orange')}>
+          {isSubmitting ? 'Обрабатываю…' : isDeduction ? 'Списать' : 'Отправить'}
         </Button>
       </div>
     </form>

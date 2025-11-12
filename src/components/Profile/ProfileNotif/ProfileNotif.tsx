@@ -24,10 +24,24 @@ export default function ProfileNotif() {
     return `${dd}.${mm}.${yyyy}`;
   }
 
+  // безопасно парсим reason_text (строка или объект)
+  function parseReasonText(rt: any): { type?: string; description?: string; from_manager_id?: number | string } {
+    if (!rt) return {};
+    if (typeof rt === 'object') return rt ?? {};
+    if (typeof rt === 'string') {
+      try {
+        return JSON.parse(rt);
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  }
+
   const items: Notif[] = useMemo(() => {
     if (!data) return [];
 
-    const orderNotifs: Notif[] = (data.orders || []).map(o => ({
+    const orderNotifs: Notif[] = (data.orders || []).map((o: any) => ({
       kind: 'order',
       caption: `Вы купили "${o.product_name}"`,
       desc: 'Поздравляем с покупкой!',
@@ -35,23 +49,29 @@ export default function ProfileNotif() {
       date: o.created_at,
     }));
 
-    const accrualNotifs: Notif[] = (data.accruals || []).map((a: any) => ({
-      kind: 'accrual',
-      caption: 'Вознаграждение',
-      desc: a.reason_text,
-      amount: `+${a.amount}`,
-      date: a.created_at,
-    }));
+    const accrualNotifs: Notif[] = (data.accruals || []).map((a: any) => {
+      const r = parseReasonText(a.reason_text);
+      return {
+        kind: 'accrual',
+        caption: 'Вы получили вознаграждение!',
+        desc: r.description || 'Пополнение баланса',
+        amount: `+${a.amount}`,
+        date: a.created_at,
+      };
+    });
 
-    const deductionNotifs: Notif[] = ((data as any).deductions || []).map((d: any) => ({
-      kind: 'deduction',
-      caption: 'Списание',
-      desc: d.reason_text ?? d.reason,
-      amount: `-${d.amount}`,
-      date: d.created_at,
-    }));
+    const deductionNotifs: Notif[] = ((data as any).deductions || []).map((d: any) => {
+      const r = parseReasonText(d.reason_text);
+      return {
+        kind: 'deduction',
+        caption: 'Руководитель забрал немного коинов…',
+        desc: r.description || d.reason || 'Списание со счёта',
+        amount: `-${d.amount}`,
+        date: d.created_at,
+      };
+    });
 
-    const inNotifs: Notif[] = (data.transfers_in || []).map(t => ({
+    const inNotifs: Notif[] = (data.transfers_in || []).map((t: any) => ({
       kind: 'transfer_in',
       sender: t.from_user,
       receiver: 'Вы',
@@ -59,7 +79,7 @@ export default function ProfileNotif() {
       date: t.created_at,
     }));
 
-    const outNotifs: Notif[] = (data.transfers_out || []).map(t => ({
+    const outNotifs: Notif[] = (data.transfers_out || []).map((t: any) => ({
       kind: 'transfer_out',
       sender: 'Вы',
       receiver: t.to_user,
