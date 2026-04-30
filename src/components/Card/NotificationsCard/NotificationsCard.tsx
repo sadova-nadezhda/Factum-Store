@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { StarIcon } from '../../Icons';
-
 import s from './NotificationsCard.module.scss';
+import { StarIcon } from '@/components/Icons';
 
 interface NotificationsCardProps {
   caption?: string;
@@ -21,34 +20,23 @@ export default function NotificationsCard({
   amount,
   date,
 }: NotificationsCardProps) {
-  const captionText = caption || 'Переводы';
-  const captionClass = caption
-    ? `${s.card__caption} ${s.active}`
-    : s.card__caption;
+  const title = caption || 'Перевод coins';
+  const description = desc || `${sender} → ${receiver}`;
+
   return (
-    <div className={s.card}>
-      <div className={s.card__details}>
-        <div className={captionClass}>{captionText}</div>
+    <article className={s.card}>
+      <div className={s.card__body}>
+        <h3>{title}</h3>
+        <p>{description}</p>
+      </div>
 
-        <div className={s.card__desc}>
-          {desc ? (
-            desc
-          ) : (
-            <>
-              <span>{sender}</span>{' '}
-              <span aria-hidden>➜</span>{' '}
-              <span>{receiver}</span>
-            </>
-          )}
+      <div className={s.card__meta}>
+        <span>{date}</span>
+        <div className={s.card__amount}>
+          {amount}
+          <StarIcon />
         </div>
-
-        <span className={s.card__date}>{date}</span>
       </div>
-
-      <div className={s.card__amount}>
-        <span>{amount}</span>
-        <StarIcon />
-      </div>
-    </div>
+    </article>
   );
 }

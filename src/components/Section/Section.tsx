@@ -1,9 +1,10 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import classNames from 'classnames';
+import type { ReactNode } from 'react';
 
 interface SectionProps {
-  className?: string;
-  id?: string;
+  className?: string | undefined;
+  id?: string | undefined;
   children: ReactNode;
 }
 

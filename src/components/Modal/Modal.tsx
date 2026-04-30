@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useId } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
@@ -12,9 +12,11 @@ interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
   isOpen: boolean;
+  size?: 'default' | 'compact';
 }
 
-export default function Modal({ onClose, children, isOpen }: ModalProps) {
+export default function Modal({ title, onClose, children, isOpen, size = 'default' }: ModalProps) {
+  const titleId = useId();
   let modalRoot = document.getElementById('modals');
   if (!modalRoot) {
     modalRoot = document.createElement('div');
@@ -44,15 +46,42 @@ export default function Modal({ onClose, children, isOpen }: ModalProps) {
   return ReactDOM.createPortal(
     <ModalOverlay onClick={onClose}>
       <div
-        className={classNames(s.modal)}
+        className={classNames(s.modal, size === 'compact' && s.modalCompact)}
         onClick={(e) => e.stopPropagation()}
         data-test="modal"
         role="dialog"
         aria-modal="true"
+        aria-labelledby={title ? titleId : undefined}
       >
         <div className={s.modal__content}>
-          <button className={s.modal__close} onClick={onClose} data-test="modal-close" aria-label="Закрыть"><CloseIcon /></button>
-          <div className={classNames(s.modal__body)}>{children}</div>
+          {title ? (
+            <div className={s.modal__header}>
+              <h2 id={titleId} className={s.modal__title}>
+                {title}
+              </h2>
+              <button
+                className={classNames(s.modal__close, s.modal__closeInline)}
+                onClick={onClose}
+                data-test="modal-close"
+                aria-label="Закрыть"
+                type="button"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+          ) : (
+            <button
+              className={s.modal__close}
+              onClick={onClose}
+              data-test="modal-close"
+              aria-label="Закрыть"
+              type="button"
+            >
+              <CloseIcon />
+            </button>
+          )}
+
+          <div className={s.modal__body}>{children}</div>
         </div>
       </div>
     </ModalOverlay>,

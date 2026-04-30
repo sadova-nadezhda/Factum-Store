@@ -1,132 +1,129 @@
-.profile {
+﻿.profilePage {
   position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: calc(480 * var(--width-multiplier));
-    height: calc(440 * var(--width-multiplier));
-    background: url('https://factum-store.netlify.app/assets/img/profile-back-1.png') center / contain no-repeat;
-    z-index: -1;
+  padding: calc(32 * var(--width-multiplier)) 0;
+  overflow: hidden;
+
+  &__hero,
+  &__tabsWrap,
+  &__panels {
+    position: relative;
+    z-index: 1;
   }
-  &::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: calc(50 * var(--width-multiplier));
-    width: calc(370 * var(--width-multiplier));
-    height: calc(580 * var(--width-multiplier));
-    background: url('https://factum-store.netlify.app/assets/img/profile-back-2.png') center / contain no-repeat;
-    z-index: -1;
-  }
-  &__container {
+
+  &__hero {
     display: flex;
-    flex-direction: column;
-    gap: calc(40 * var(--width-multiplier));
-    max-width: calc(994 * var(--width-multiplier));
-    min-height: 70vh;
-    margin: 0 auto;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: calc(24 * var(--width-multiplier));
+    margin-bottom: calc(30 * var(--width-multiplier));
+
     @media (max-width: 1024px) {
-      gap: calc(30 * var(--width-multiplier));
-    }
-  }
-  &__aside {
-    display: flex;
-    gap: calc(30 * var(--width-multiplier));
-  }
-  &__list {
-    display: flex;
-    gap: calc(30 * var(--width-multiplier));
-    width: 100%;
-    li {
-      flex-grow: 1;
-    }
-    a {
-      display: block;
-      width: 100%;
-      padding: calc(30 * var(--width-multiplier));
-      border-radius: calc(30 * var(--width-multiplier));
-      border: calc(5 * var(--width-multiplier)) solid var(--dark);
-      background-color: var(--white);
-      text-align: center;
-      font-weight: 600;
-      transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
-      &.active {
-        border-color: var(--primary);
-        color: var(--white);
-        background-color: var(--primary);
-        pointer-events: none;
-      }
-      &:not(.active):hover {
-        cursor: pointer;
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-      @media (max-width: 1024px) {
-        padding: calc(20 * var(--width-multiplier));
-        border-radius: calc(16 * var(--width-multiplier));
-        border: calc(3 * var(--width-multiplier)) solid var(--dark);
-      }
-      @media (max-width: 767px) {
-        padding: calc(16 * var(--width-multiplier));
-        border-radius: calc(12 * var(--width-multiplier));
-        border: calc(2 * var(--width-multiplier)) solid var(--dark);
-      }
-    }
-    @media (max-width: 1024px) {
-      gap: calc(20 * var(--width-multiplier));
-    }
-    @media (max-width: 767px) {
       flex-direction: column;
-      gap: calc(16 * var(--width-multiplier));
+      align-items: flex-start;
     }
   }
-  &__logout {
-    display: block;
-    width: 100%;
-    padding: calc(30 * var(--width-multiplier));
-    border-radius: calc(30 * var(--width-multiplier));
-    border: calc(5 * var(--width-multiplier)) solid var(--dark);
-    background-color: var(--white);
-    text-align: center;
-    font-weight: 600;
-    transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
-    &.active {
-      border-color: var(--primary);
-      color: var(--white);
-      background-color: var(--primary);
-      pointer-events: none;
-    }
-    &:not(.active):hover {
-      cursor: pointer;
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-    @media (max-width: 1024px) {
-      padding: calc(20 * var(--width-multiplier));
-      border-radius: calc(16 * var(--width-multiplier));
-      border: calc(3 * var(--width-multiplier)) solid var(--dark);
-    }
-    @media (max-width: 767px) {
-      padding: calc(16 * var(--width-multiplier));
-      border-radius: calc(12 * var(--width-multiplier));
-      border: calc(2 * var(--width-multiplier)) solid var(--dark);
+
+  &__lead {
+    h1 {
+      margin: 0;
+      letter-spacing: -0.045em;
     }
   }
-  &__wrap {
+
+  &__intro {
+    margin: calc(14 * var(--width-multiplier)) 0 0;
+    color: rgba(16, 16, 16, 0.62);
+    line-height: 1.4;
+  }
+
+  &__summary {
     display: flex;
     flex-direction: column;
-    gap: calc(30 * var(--width-multiplier));
-    .buttons {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
+    align-items: flex-start;
+    gap: calc(6 * var(--width-multiplier));
+  }
+
+  &__summaryBalance {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(8 * var(--width-multiplier));
+    margin: 0;
+    font-size: calc(32 * var(--width-multiplier));
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+
+    strong {
+      font-size: inherit;
+      line-height: inherit;
+      font-weight: inherit;
+    }
+
+    img {
+      width: calc(24 * var(--width-multiplier));
+      height: calc(24 * var(--width-multiplier));
+    }
+
+    @media (max-width: 767px) {
+      font-size: calc(24 * var(--width-multiplier));
+    }
+  }
+
+  &__tabsWrap {
+    margin-bottom: calc(30 * var(--width-multiplier));
+
+    @media (max-width: 767px) {
+      margin-bottom: calc(20 * var(--width-multiplier));
     }
   }
 }
 
-.active {
-  color: var(--primary);
-  pointer-events: none;
+.tabs {
+  display: flex;
+  gap: calc(8 * var(--width-multiplier));
+  overflow-y: hidden;
+  overflow-x: auto;
+  padding-bottom: calc(8 * var(--width-multiplier));
+  margin-bottom: calc(16 * var(--width-multiplier));
 }
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(16 * var(--width-multiplier));
+  border: 0;
+  border-radius: calc(12 * var(--width-multiplier));
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--accent-soft);
+    color: var(--primary);
+    transform: translateY(calc(-1 * var(--width-multiplier)));
+  }
+
+  @media (max-width: 767px) {
+    padding: calc(12 * var(--width-multiplier)) calc(16 * var(--width-multiplier));
+    border-radius: calc(8 * var(--width-multiplier));
+  }
+}
+
+.tabActive {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--surface);
+}
+
+.tabGhost {
+  min-width: calc(120 * var(--width-multiplier));
+  cursor: pointer;
+}
+
+

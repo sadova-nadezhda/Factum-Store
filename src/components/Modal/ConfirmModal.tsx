@@ -1,10 +1,8 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import Modal from './Modal';
-import Title from '../Title';
 import Button from '../Button';
-
-import s from './Modal.module.scss';
 
 type Props = {
   open: boolean;
@@ -13,22 +11,28 @@ type Props = {
   isLoading?: boolean;
 };
 
+import s from './Modal.module.scss';
+
 export default function ConfirmModal({ open, onClose, onConfirm, isLoading }: Props) {
   if (!open) return null;
 
+  const imageSrc = '/assets/img/amir-2.png';
+
   return (
-    <Modal isOpen={open} onClose={onClose}>
-      <div className={s.modal__container}>
-        <img src="/assets/img/amir-2.png" className={s.modal__img} alt="" />
-        <Title as="h2" className={s.modal__title}>Вы уверены?</Title>
-        <div className={s.modal__buttons}>
-          <Button className={s.modal__button} onClick={onConfirm} disabled={isLoading}>
-            {isLoading ? 'Отменяем…' : 'Подтвердить'}
-          </Button>
-          <Button className={s.modal__button} onClick={onClose} disabled={isLoading}>
-            Отменить
-          </Button>
+    <Modal isOpen={open} onClose={onClose} size="compact" title="Вы уверены?">
+      <div className={s.confirm__section}>
+        <div className={s.confirm__visual}>
+          <img src={imageSrc} className={s.confirm__img} alt="" />
         </div>
+        <div className={s.confirm__text}>Вы действительно хотите выйти из аккаунта?</div>
+      </div>
+      <div className={s.confirm__actions}>
+        <Button className={classNames(s.confirm__button, s.confirm__buttonPrimary)} onClick={onConfirm} disabled={isLoading}>
+          {isLoading ? 'Отменяем…' : 'Подтвердить'}
+        </Button>
+        <Button className={classNames(s.confirm__button, s.confirm__buttonSecondary)} onClick={onClose} disabled={isLoading}>
+          Отменить
+        </Button>
       </div>
     </Modal>
   );

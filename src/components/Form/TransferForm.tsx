@@ -18,15 +18,13 @@ type Props = { wallets: Wallet[] };
 type Opt = { value: string; label: string; disabled?: boolean };
 
 export default function TransferForm({ wallets }: Props) {
-  const currentUserId =
-    useSelector((s: RootState) => s.auth.user?.id) ??
-    Number(localStorage.getItem('user_id')) ??
-    null;
+  const currentUserId = Number(localStorage.getItem('user_id') || '') || null;
 
   const transferableWallets = useMemo(
     () => wallets.filter((w) => w.transferable && (w.type === 'main' || w.type === 'manager_pool')),
     [wallets]
   );
+  const singleWallet = transferableWallets[0] ?? null;
 
   const [form, setForm] = useState<{
     sum: string;
@@ -43,10 +41,10 @@ export default function TransferForm({ wallets }: Props) {
   });
 
   useEffect(() => {
-    if (transferableWallets.length === 1 && form.wallet === 'default') {
-      setForm((p) => ({ ...p, wallet: transferableWallets[0].type }));
+    if (singleWallet && form.wallet === 'default') {
+      setForm((p) => ({ ...p, wallet: singleWallet.type }));
     }
-  }, [transferableWallets, form.wallet]);
+  }, [singleWallet, form.wallet]);
 
   const { data: users = [], isLoading: usersLoading, isError: usersError } = useGetUsersForTransfersQuery();
 
@@ -82,7 +80,7 @@ export default function TransferForm({ wallets }: Props) {
   const available = selectedWallet?.balance;
   const amountNum = Number(form.sum);
 
-  const from_type: WalletType = form.wallet === 'default' ? (transferableWallets[0]?.type ?? 'main') : form.wallet;
+  const from_type: WalletType = form.wallet === 'default' ? (singleWallet?.type ?? 'main') : form.wallet;
 
   const effectiveReason: 'manager_bonus' | 'manager_deduction' =
     isHRWallet ? (form.reason || 'manager_bonus') : 'manager_bonus';
@@ -149,7 +147,7 @@ export default function TransferForm({ wallets }: Props) {
       setForm({
         sum: '',
         employee: 'default',
-        wallet: transferableWallets.length === 1 ? transferableWallets[0].type : 'default',
+        wallet: singleWallet ? singleWallet.type : 'default',
         reason: '',
         meta: '',
       });

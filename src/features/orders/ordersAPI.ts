@@ -25,17 +25,20 @@ export const ordersApi = rootApi.injectEndpoints({
       async onQueryStarted({ product_id, qty }, { dispatch, queryFulfilled }) {
         const productId = String(product_id);
         const patches: { undo: () => void }[] = [];
+        const updateQueryData = rootApi.util.updateQueryData as any;
 
         const p1 = dispatch(
-          rootApi.util.updateQueryData('getProducts' as any, undefined, (draft: any[]) => {
-            const item = draft?.find?.((x: any) => String(x.id) === productId);
+          updateQueryData('getProducts', undefined, (draft: any[]) => {
+            const item = Array.isArray(draft)
+              ? draft.find((entry: any) => String(entry.id) === productId)
+              : undefined;
             if (item && typeof item.stock === 'number') item.stock = Math.max(0, item.stock - qty);
           })
         );
         patches.push(p1);
 
         const p2 = dispatch(
-          rootApi.util.updateQueryData('getProduct' as any, productId, (draft: any) => {
+          updateQueryData('getProduct', productId, (draft: any) => {
             if (draft && typeof draft.stock === 'number') draft.stock = Math.max(0, draft.stock - qty);
           })
         );

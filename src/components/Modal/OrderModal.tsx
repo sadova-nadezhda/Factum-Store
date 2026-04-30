@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Modal from './Modal';
@@ -35,26 +35,30 @@ export default function OrderModal({
   const safeQty = Math.max(1, Math.floor(qty || 1));
   const sum = useMemo(() => Number(product.price || 0) * safeQty, [product.price, safeQty]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    setPending(false);
+    setErrorText(null);
+    setOrdered(false);
+  }, [open, product.id]);
+
   const handleConfirm = async () => {
     if (pending || buying || ordered) return;
     setErrorText(null);
     setPending(true);
+
     try {
       await createOrder({
         product_id: product.id,
         qty: safeQty,
       }).unwrap();
 
-      // Обновим баланс кошельков
       dispatch(authApi.util.invalidateTags(['Wallets']));
-
-      // Переходим в состояние "заказ оформлен" вместо закрытия модалки
       setOrdered(true);
     } catch (e: any) {
       const msg: string =
-        e?.data?.error ||
-        e?.error ||
-        (typeof e?.message === 'string' ? e.message : 'Не удалось оформить заказ');
+        e?.data?.error || e?.error || (typeof e?.message === 'string' ? e.message : 'Не удалось оформить заказ');
 
       const status: number | undefined = e?.status;
       if (status === 401 || status === 403) {
@@ -78,30 +82,21 @@ export default function OrderModal({
   if (!open) return null;
 
   return (
-    <Modal isOpen={open} onClose={onClose}>
-      {errorText && !ordered && (
-        <div
-          style={{
-            background: '#FDECEC',
-            color: '#B00020',
-            padding: '10px 12px',
-            borderRadius: 8,
-            marginBottom: 12,
-            fontSize: 14,
-            lineHeight: 1.3,
-          }}
-        >
-          {errorText}
-        </div>
-      )}
-
+    <Modal
+      isOpen={open}
+      onClose={onClose}
+      size="compact"
+      title={ordered ? 'Заказ оформлен' : 'Подтвердить покупку?'}
+    >
       <Basket
+        product={product}
         sum={sum}
         onConfirm={handleConfirm}
         onCancel={onClose}
         confirming={pending || isSubmitting || buying}
         ordered={ordered}
         onGoHistory={handleGoHistory}
+        errorText={errorText}
       />
     </Modal>
   );

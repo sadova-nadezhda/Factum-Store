@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
+
 import s from './Accordion.module.scss';
 
 export interface AccordionItem {
@@ -19,22 +20,18 @@ export default function Accordion({
   className,
 }: AccordionProps) {
   const [openIndexes, setOpenIndexes] = useState<number[]>([]);
-  const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const toggleItem = (index: number) => {
-    setOpenIndexes((prev) =>
+    setOpenIndexes((previous) =>
       allowMultiple
-        ? prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-        : prev.includes(index) ? [] : [index]
+        ? previous.includes(index)
+          ? previous.filter((item) => item !== index)
+          : [...previous, index]
+        : previous.includes(index)
+          ? []
+          : [index]
     );
   };
-
-  useEffect(() => {
-    openIndexes.forEach((index) => {
-      const el = contentRefs.current[index];
-      if (el) el.style.maxHeight = el.scrollHeight + 'px';
-    });
-  }, [openIndexes]);
 
   return (
     <div className={classNames(s.accordion, className)}>
@@ -42,25 +39,25 @@ export default function Accordion({
         const isOpen = openIndexes.includes(index);
 
         return (
-          <div key={index} className={classNames(s.accordionItem, { [s.open]: isOpen })}>
+          <div key={index} className={classNames(s.item, isOpen && s.open)}>
             <button
               type="button"
-              className={classNames(s.accordionHeader, { [s.active]: isOpen })}
+              className={s.header}
               onClick={() => toggleItem(index)}
               aria-expanded={isOpen}
             >
-              {item.title}
+              <span>{item.title}</span>
+              <span className={s.icon} aria-hidden="true">
+                +
+              </span>
             </button>
 
             <div
-              ref={(el) => (contentRefs.current[index] = el)}
-              className={s.accordionBody}
-              style={{
-                maxHeight: isOpen ? `${contentRefs.current[index]?.scrollHeight || 0}px` : '0px',
-                opacity: isOpen ? 1 : 0,
-              }}
+              className={s.body}
             >
-              <div className={s.accordionContent}>{item.content}</div>
+              <div className={s.content}>
+                <div className={s.contentInner}>{item.content}</div>
+              </div>
             </div>
           </div>
         );

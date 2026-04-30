@@ -7,9 +7,10 @@ export default function Footer() {
     <footer className={s.footer}>
       <div className="container">
         <div className={s.footer__container}>
-          <span>© Factum | Все права защищены</span>
+          <span>Factum Merch</span>
+          <p>Корпоративный магазин бонусов и мерча.</p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

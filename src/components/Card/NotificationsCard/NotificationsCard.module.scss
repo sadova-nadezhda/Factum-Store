@@ -1,56 +1,66 @@
- .card {
+﻿.card {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: calc(16 * var(--width-multiplier));
-  padding: calc(30 * var(--width-multiplier));
-  border-radius: calc(30 * var(--width-multiplier));
-  background-color: var(--white);
-  font-size: calc(20 * var(--width-multiplier));
-  line-height: 1;
-  @media (max-width: 1024px) {
-    padding: calc(20 * var(--width-multiplier));
-    border-radius: calc(16 * var(--width-multiplier));
-    font-size: calc(18 * var(--width-multiplier));
-  }
+  padding: calc(24 * var(--width-multiplier));
+  border-radius: calc(12 * var(--width-multiplier));
+  background: var(--surface);
+  box-shadow: inset 0 0 0 calc(1 * var(--width-multiplier)) rgba(16, 16, 16, 0.08);
+
   @media (max-width: 767px) {
     flex-direction: column;
-    align-items: flex-start;
+    gap: calc(12 * var(--width-multiplier));
     padding: calc(16 * var(--width-multiplier));
-    border-radius: calc(12 * var(--width-multiplier));
-    font-size: calc(16 * var(--width-multiplier));
   }
-  &__caption {
-    font-family: Onest;
-    font-weight: 600;
+
+  &__body {
+    h3 {
+      margin: 0;
+      font-size: calc(20 * var(--width-multiplier));
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      font-weight: 500;
+    }
+
+    p {
+      margin: calc(8 * var(--width-multiplier)) 0 0;
+      color: rgba(16, 16, 16, 0.55);
+      line-height: 1.4;
+    }
   }
-  &__details {
+
+  &__meta {
     display: flex;
     flex-direction: column;
-    gap: calc(16 * var(--width-multiplier));
-  }
-  &__date {
-    color: rgba(2, 2, 2, 0.5);
-  }
-  &__amount {
-    display: flex;
-    align-items: center;
-    gap: calc(8 * var(--width-multiplier));
+    align-items: flex-end;
+    gap: calc(10 * var(--width-multiplier));
+
     span {
-      margin-top: calc(3 * var(--width-multiplier));
+      color: rgba(16, 16, 16, 0.5);
+      font-size: calc(14 * var(--width-multiplier));
+      line-height: 1;
     }
+
+    @media (max-width: 767px) {
+      align-items: baseline;
+      justify-content: space-between;
+      flex-direction: row;
+      width: 100%;
+    }
+  }
+
+  &__amount {
+    display: inline-flex;
+    align-items: flex-end;
+    line-height: 1;
+    font-weight: 500;
+
     svg {
-      display: block;
-      min-width: calc(24 * var(--width-multiplier));
       width: calc(24 * var(--width-multiplier));
       height: calc(24 * var(--width-multiplier));
-    }
-    @media (max-width: 767px) {
-      margin-left: auto;
     }
   }
 }
 
-.active {
-  color: var(--primary);
-}
+

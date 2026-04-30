@@ -161,6 +161,7 @@
   &__login {
     input {
       padding: calc(20 * var(--width-multiplier));
+      border-radius: calc(12 * var(--width-multiplier));
       @media (max-width: 767px) {
         padding: calc(16 * var(--width-multiplier));
       }

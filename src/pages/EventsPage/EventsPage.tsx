@@ -23,8 +23,13 @@ export default function EventsPage() {
   }, [data]);
 
   return (
-    <Section className={`${s.events} section-pad section-hidden`}>
+    <Section className={s.events}>
       <div className={s.events__container}>
+        <div className={s.events__hero}>
+          <h1>Активность</h1>
+          <p>Следите за задачами, регулярными активностями и годовыми целями команды.</p>
+        </div>
+
         <Tabs
           selectedTabClassName={s.tabSelected}
           selectedTabPanelClassName={s.tabPanelSelected}

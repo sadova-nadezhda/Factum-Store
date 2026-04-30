@@ -81,38 +81,39 @@
 
 
 
-  h1, h2 {
-    font: 700 calc(64 * var(--width-multiplier))/1 Unbounded;
+  h1 {
+    font: 500 calc(42 * var(--width-multiplier))/1 Onest;
     @media (max-width: 1024px) {
-      font-size: calc(48 * var(--width-multiplier));
-    }
-    @media (max-width: 767px) {
       font-size: calc(32 * var(--width-multiplier));
+    }
+		@media (max-width: 1024px) {
+      font-size: calc(24 * var(--width-multiplier));
+    }
+  }
+
+	h2 {
+    font: 500 calc(32 * var(--width-multiplier))/1 Onest;
+    @media (max-width: 1024px) {
+      font-size: calc(24 * var(--width-multiplier));
     }
   }
   
   h3 {
-    font: 700 calc(30 * var(--width-multiplier))/1 Unbounded;
+    font: 500 calc(24 * var(--width-multiplier))/1 Onest;
     @media (max-width: 1024px) {
-      font-size: calc(24 * var(--width-multiplier));
-    }
-    @media (max-width: 767px) {
-      font-size: calc(22 * var(--width-multiplier));
-    }
-  }
-  
-  h4 {
-    font: 700 calc(24 * var(--width-multiplier))/1 Unbounded;
-    @media (max-width: 1024px) {
-      font-size: calc(22 * var(--width-multiplier));
-    }
-    @media (max-width: 767px) {
       font-size: calc(20 * var(--width-multiplier));
     }
   }
   
+  h4 {
+    font: 500 calc(20 * var(--width-multiplier))/1 Onest;
+    @media (max-width: 767px) {
+      font-size: calc(18 * var(--width-multiplier));
+    }
+  }
+  
   h5, h6 {
-    font-family: Unbounded;
-    font-weight: 700;
+    font-family: Onest;
+    font-weight: 500;
 		line-height: 1;
   }

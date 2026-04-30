@@ -3,13 +3,11 @@ import classNames from 'classnames';
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import Input from './parts/Input';
-import Title from '../Title';
 import Button from '../Button';
 
 import { useGetMeQuery, useUpdateMeMutation, useUploadAvatarMutation } from '@/features/auth/authAPI';
 
-import s from './Form.module.scss';
+import s from './ProfileForm.module.scss';
 
 export default function ProfileForm() {
   const { data: me, isLoading, isError } = useGetMeQuery(undefined, {
@@ -22,7 +20,7 @@ export default function ProfileForm() {
     full_name: '',
     email: '',
     password: '',
-    avatar: 'assets/img/avatar.jpg',
+    avatar: '/assets/img/avatar.jpg',
   });
   const [saved, setSaved] = useState(form);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -32,38 +30,41 @@ export default function ProfileForm() {
 
   useEffect(() => {
     if (!me) return;
+
     const next = {
       full_name: me.full_name ?? '',
       email: me.email ?? '',
       password: '',
-      avatar: me.avatar || 'assets/img/avatar.jpg',
+      avatar: me.avatar || '/assets/img/design/avatar-crop.png',
     };
+
     setForm(next);
     setSaved(next);
     setAvatarFile(null);
+
     if (previewUrlRef.current) {
       URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = null;
     }
   }, [me?.id]);
 
-  const isChanged = useMemo(() => {
-    return (
+  const isChanged = useMemo(
+    () =>
       !!avatarFile ||
       form.full_name !== saved.full_name ||
       form.email !== saved.email ||
       form.avatar !== saved.avatar ||
-      form.password.length > 0
-    );
-  }, [avatarFile, form.full_name, form.email, form.avatar, form.password, saved.full_name, saved.email, saved.avatar]);
+      form.password.length > 0,
+    [avatarFile, form.avatar, form.email, form.full_name, form.password, saved.avatar, saved.email, saved.full_name]
+  );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((p) => ({ ...p, [name]: value }));
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setForm((previous) => ({ ...previous, [name]: value }));
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
     if (previewUrlRef.current) {
@@ -73,20 +74,19 @@ export default function ProfileForm() {
 
     const preview = URL.createObjectURL(file);
     previewUrlRef.current = preview;
-
     setAvatarFile(file);
-    setForm((p) => ({ ...p, avatar: preview }));
+    setForm((previous) => ({ ...previous, avatar: preview }));
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSave = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     try {
       let finalAvatar = form.avatar;
 
       if (avatarFile) {
-        const res = await uploadAvatar({ file: avatarFile }).unwrap();
-        finalAvatar = res.avatar;
+        const response = await uploadAvatar({ file: avatarFile }).unwrap();
+        finalAvatar = response.avatar;
       }
 
       const payload: { email?: string; full_name?: string; password?: string } = {};
@@ -100,7 +100,7 @@ export default function ProfileForm() {
 
       const nextSaved = { ...form, password: '', avatar: finalAvatar };
       setSaved(nextSaved);
-      setForm((p) => ({ ...p, password: '', avatar: finalAvatar }));
+      setForm((previous) => ({ ...previous, password: '', avatar: finalAvatar }));
       setAvatarFile(null);
 
       if (previewUrlRef.current) {
@@ -108,16 +108,15 @@ export default function ProfileForm() {
         previewUrlRef.current = null;
       }
 
-      toast.success('Изменения сохранены!');
-    } catch (err) {
-      const msg =
-        (err as any)?.data?.error ||
-        (err as any)?.error ||
+      toast.success('Изменения сохранены.');
+    } catch (error) {
+      const message =
+        (error as any)?.data?.error ||
+        (error as any)?.error ||
         'Не удалось сохранить изменения.';
-      toast.error(msg);
+      toast.error(message);
     }
   };
-
 
   const handleCancel = () => {
     setForm(saved);
@@ -138,84 +137,95 @@ export default function ProfileForm() {
     };
   }, []);
 
-  if (isLoading) return <div>Загрузка…</div>;
+  if (isLoading) return <div>Загрузка...</div>;
   if (isError) return <div>Не удалось загрузить профиль</div>;
   if (!me) return <div>Профиль пуст</div>;
 
   return (
-    <form onSubmit={handleSave} className={s.form__profile}>
-      <div className={s.form__avatar}>
-        <img src={form.avatar} alt="Аватар" />
-        <div className={s.form__file}>
+    <form onSubmit={handleSave} className={s.form}>
+      <div className={s.form__avatarCard}>
+        <img src={form.avatar} alt="Аватар пользователя" />
+        <div className={s.form__avatarOverlay}>
           <input
             id="avatar-upload"
             type="file"
             accept="image/*"
             onChange={handleAvatarChange}
-            style={{ display: 'none' }}
+            className={s.form__avatarInput}
           />
-          <label htmlFor="avatar-upload">
-            {savingAvatar ? 'Загружаю…' : 'Загрузить фото'}
+          <label htmlFor="avatar-upload" className={s.form__avatarButton}>
+            {savingAvatar ? 'Загружаю...' : 'Обновить фото'}
           </label>
         </div>
       </div>
 
-      <div className={s.form__wrap}>
-        <div className={s.form__top}>
-          <Title as="h4" className={s.form__caption}>Мой профиль</Title>
+      <div className={s.form__panel}>
+        <div className={s.form__heading}>
+          <h2>Мой профиль</h2>
+          <p>Основные данные аккаунта и быстрый доступ к обновлению пароля.</p>
         </div>
 
-        <div className={s.form__box}>
-          <div className={s.form__fields}>
-            <Input
+        <div className={s.form__fields}>
+          <label className={s.form__field}>
+            <span>Имя</span>
+            <input
               name="full_name"
               type="text"
-              placeholder="ФИО"
               value={form.full_name}
               onChange={handleChange}
+              placeholder="Введите имя"
+              autoComplete="name"
             />
-            <Input
+          </label>
+
+          <label className={s.form__field}>
+            <span>Email</span>
+            <input
               name="email"
               type="email"
-              placeholder="Email"
               value={form.email}
               onChange={handleChange}
+              placeholder="Введите email"
+              autoComplete="email"
             />
-            <div className={s.passwordField}>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                placeholder="Пароль (новый)"
-                value={form.password}
-                onChange={handleChange}
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                className={s.eyeBtn}
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
-              >
-                {showPassword ? <Eye size={24} /> : <EyeOff size={24} />}
-              </button>
-            </div>
-          </div>
+          </label>
 
-          {isChanged && (
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16, marginTop: 16 }}>
-              <Button type="button" className={classNames('button button-border')} onClick={handleCancel}>
-                Отмена
-              </Button>
-              <Button
-                type="submit"
-                disabled={savingInfo || savingAvatar}
-                className={classNames('button button-orange')}
-              >
-                {savingInfo || savingAvatar ? 'Сохраняю…' : 'Сохранить'}
-              </Button>
-            </div>
-          )}
+          <label className={classNames(s.form__field, s.form__fieldPassword)}>
+            <span>Пароль (новый)</span>
+            <input
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              value={form.password}
+              onChange={handleChange}
+              placeholder="Введите новый пароль"
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              className={s.form__passwordToggle}
+              onClick={() => setShowPassword((value) => !value)}
+              aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+              aria-pressed={showPassword}
+            >
+              {showPassword ? <Eye size={22} /> : <EyeOff size={22} />}
+            </button>
+          </label>
         </div>
+
+        {isChanged && (
+          <div className={s.form__actions}>
+            <Button type="button" className="button button-border" onClick={handleCancel}>
+              Отмена
+            </Button>
+            <Button
+              type="submit"
+              disabled={savingInfo || savingAvatar}
+              className="button button-orange"
+            >
+              {savingInfo || savingAvatar ? 'Сохраняю...' : 'Сохранить'}
+            </Button>
+          </div>
+        )}
       </div>
     </form>
   );

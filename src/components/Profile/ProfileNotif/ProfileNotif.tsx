@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 
-import Title from '../../Title';
 import { NotificationsCard } from '../../Card';
 
 import { useGetMyWalletsQuery } from '@/features/wallets/walletsAPI';
@@ -17,20 +16,18 @@ export default function ProfileNotif() {
   const { data, isLoading, isError } = useGetMyWalletsQuery();
 
   function formatDate(iso: string) {
-    const d = new Date(iso);
-    const dd = String(d.getDate()).padStart(2, '0');
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const yyyy = d.getFullYear();
-    return `${dd}.${mm}.${yyyy}`;
+    return new Date(iso).toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: 'long',
+    });
   }
 
-  // безопасно парсим reason_text (строка или объект)
-  function parseReasonText(rt: any): { type?: string; description?: string; from_manager_id?: number | string } {
-    if (!rt) return {};
-    if (typeof rt === 'object') return rt ?? {};
-    if (typeof rt === 'string') {
+  function parseReasonText(value: unknown): { description?: string } {
+    if (!value) return {};
+    if (typeof value === 'object') return (value as { description?: string }) ?? {};
+    if (typeof value === 'string') {
       try {
-        return JSON.parse(rt);
+        return JSON.parse(value);
       } catch {
         return {};
       }
@@ -41,92 +38,92 @@ export default function ProfileNotif() {
   const items: Notif[] = useMemo(() => {
     if (!data) return [];
 
-    const orderNotifs: Notif[] = (data.orders || []).map((o: any) => ({
+    const orderNotifs: Notif[] = (data.orders || []).map((order: any) => ({
       kind: 'order',
-      caption: `Вы купили "${o.product_name}"`,
-      desc: 'Поздравляем с покупкой!',
-      amount: `-${o.price_at_purchase}`,
-      date: o.created_at,
+      caption: `Покупка: ${order.product_name}`,
+      desc: 'Поздравляем с новой покупкой в factum merch.',
+      amount: `-${order.price_at_purchase}`,
+      date: order.created_at,
     }));
 
-    const accrualNotifs: Notif[] = (data.accruals || []).map((a: any) => {
-      const r = parseReasonText(a.reason_text);
+    const accrualNotifs: Notif[] = (data.accruals || []).map((item: any) => {
+      const parsed = parseReasonText(item.reason_text);
       return {
         kind: 'accrual',
-        caption: 'Вы получили вознаграждение!',
-        desc: r.description || 'Пополнение баланса',
-        amount: `+${a.amount}`,
-        date: a.created_at,
+        caption: 'Баланс пополнен',
+        desc: parsed.description || 'На счет зачислены новые bonus coins.',
+        amount: `+${item.amount}`,
+        date: item.created_at,
       };
     });
 
-    const deductionNotifs: Notif[] = ((data as any).deductions || []).map((d: any) => {
-      const r = parseReasonText(d.reason_text);
+    const deductionNotifs: Notif[] = ((data as any).deductions || []).map((item: any) => {
+      const parsed = parseReasonText(item.reason_text);
       return {
         kind: 'deduction',
-        caption: 'Руководитель забрал немного коинов…',
-        desc: r.description || d.reason || 'Списание со счёта',
-        amount: `-${d.amount}`,
-        date: d.created_at,
+        caption: 'Списание с баланса',
+        desc: parsed.description || item.reason || 'Со счета были списаны coins.',
+        amount: `-${item.amount}`,
+        date: item.created_at,
       };
     });
 
-    const inNotifs: Notif[] = (data.transfers_in || []).map((t: any) => ({
+    const inNotifs: Notif[] = (data.transfers_in || []).map((item: any) => ({
       kind: 'transfer_in',
-      sender: t.from_user,
+      sender: item.from_user,
       receiver: 'Вы',
-      amount: `+${t.amount}`,
-      date: t.created_at,
+      amount: `+${item.amount}`,
+      date: item.created_at,
     }));
 
-    const outNotifs: Notif[] = (data.transfers_out || []).map((t: any) => ({
+    const outNotifs: Notif[] = (data.transfers_out || []).map((item: any) => ({
       kind: 'transfer_out',
       sender: 'Вы',
-      receiver: t.to_user,
-      amount: `-${t.amount}`,
-      date: t.created_at,
+      receiver: item.to_user,
+      amount: `-${item.amount}`,
+      date: item.created_at,
     }));
 
     return [...orderNotifs, ...accrualNotifs, ...deductionNotifs, ...inNotifs, ...outNotifs].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      (left, right) => new Date(right.date).getTime() - new Date(left.date).getTime()
     );
   }, [data]);
 
-  if (isLoading) return <div>Загрузка уведомлений…</div>;
+  if (isLoading) return <div>Загрузка уведомлений...</div>;
   if (isError) return <div>Не удалось загрузить уведомления</div>;
-  if (!items.length) {
-    return (
-      <>
-        <Title as="h4" className={s.notif__caption}>Уведомления</Title>
-        <div className={s.notif__empty}>Пока нет уведомлений</div>
-      </>
-    );
-  }
 
   return (
-    <>
-      <Title as="h4" className={s.notif__caption}>Уведомления</Title>
-      <div className={s.notif__cards}>
-        {items.map((n, i) =>
-          n.kind === 'order' || n.kind === 'accrual' || n.kind === 'deduction' ? (
-            <NotificationsCard
-              key={`${n.kind}-${i}`}
-              caption={n.caption}
-              desc={n.desc}
-              amount={n.amount}
-              date={formatDate(n.date)}
-            />
-          ) : (
-            <NotificationsCard
-              key={`${n.kind}-${i}`}
-              sender={n.sender}
-              receiver={n.receiver}
-              amount={n.amount}
-              date={formatDate(n.date)}
-            />
-          )
-        )}
+    <section className={s.notif}>
+      <div className={s.notif__heading}>
+        <h2>Уведомления</h2>
+        <p>Важные события по аккаунту, каталогу и заказам.</p>
       </div>
-    </>
+
+      {items.length ? (
+        <div className={s.notif__cards}>
+          {items.map((item, index) =>
+            item.kind === 'order' || item.kind === 'accrual' || item.kind === 'deduction' ? (
+              <NotificationsCard
+                key={`${item.kind}-${index}`}
+                caption={item.caption}
+                desc={item.desc}
+                amount={item.amount}
+                date={formatDate(item.date)}
+              />
+            ) : (
+              <NotificationsCard
+                key={`${item.kind}-${index}`}
+                sender={item.sender}
+                receiver={item.receiver}
+                amount={item.amount}
+                date={formatDate(item.date)}
+              />
+            )
+          )}
+        </div>
+      ) : (
+        <div className={s.notif__empty}>Пока нет уведомлений.</div>
+      )}
+    </section>
   );
 }

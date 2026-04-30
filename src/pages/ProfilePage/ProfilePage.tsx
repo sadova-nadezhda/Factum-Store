@@ -1,84 +1,105 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 
 import Section from '../../components/Section';
+import ConfirmModal from '../../components/Modal/ConfirmModal';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/store';
+import { useAppDispatch } from '../../hooks/store';
+import { useModal } from '../../hooks/useModal';
 
 import { logout } from '@/features/auth/authSlice';
+import { authApi } from '@/features/auth/authAPI';
 import { catalogApi } from '@/features/catalog/catalogAPI';
 import { faqApi } from '@/features/faq/faqAPI';
-import { authApi } from '@/features/auth/authAPI';
+import { useGetMyWalletsQuery } from '@/features/wallets/walletsAPI';
 
 import s from './ProfilePage.module.scss';
-import Button from '@/components/Button';
-
 
 export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { data } = useGetMyWalletsQuery();
+  const logoutModal = useModal();
 
-const onLogout = () => {
+  const balance = useMemo(() => {
+    const mainWallet = data?.wallets.find((wallet) => wallet.type === 'main');
+    return mainWallet?.balance ?? 0;
+  }, [data?.wallets]);
+
+  const performLogout = () => {
+    logoutModal.closeModal();
     dispatch(logout());
-
     dispatch(authApi.util.resetApiState());
     dispatch(catalogApi.util.resetApiState());
     dispatch(faqApi.util.resetApiState());
-
     navigate('/login', { replace: true });
   };
 
   return (
-    <Section className={`${s.profile} section-pad section-hidden`}>
-      <div className={s.profile__container}>
-        <div className={s.profile__aside}>
-          <ul className={s.profile__list}>
-            <li>
-              <NavLink
-                to="/profile"
-                className={({ isActive }) => classNames({ [s.active]: isActive })}
-                end
-              >
-                Профиль
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/profile/coins"
-                className={({ isActive }) => classNames({ [s.active]: isActive })}
-                end
-              >
-                Мои коины
-              </NavLink>
-            </li>
-            <li>              
-              <NavLink
-                to="/profile/notifications"
-                className={({ isActive }) => classNames({ [s.active]: isActive })}
-                end
-              >
-                Уведомления
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/profile/history"
-                className={({ isActive }) => classNames({ [s.active]: isActive })}
-                end
-              >
-                История
-              </NavLink>
-            </li>
-            <li>
-              <Button onClick={onLogout} className={s.profile__logout}>Выйти</Button>
-            </li>
-          </ul>
+    <Section className={s.profilePage}>
+      <section className={s.profilePage__hero}>
+        <div className={s.profilePage__lead}>
+          <h1>Профиль</h1>
+          <p className={s.profilePage__intro}>
+            Управляйте данными аккаунта, следите за балансом и историей активности в одном месте.
+          </p>
         </div>
-        <div className={s.profile__wrap}>
-          <Outlet /> 
+
+        <div className={s.profilePage__summary}>
+          <p className={s.profilePage__summaryBalance}>
+            Баланс:
+            <strong>{balance}</strong>
+            <img src="/assets/img/icon/ico-coin.png" alt="" aria-hidden="true" />
+          </p>
         </div>
-      </div>
+      </section>
+
+      <section className={s.profilePage__tabsWrap} aria-label="Разделы профиля">
+        <div className={s.tabs}>
+          <NavLink
+            to="/profile"
+            end
+            className={({ isActive }) => classNames(s.tab, isActive && s.tabActive)}
+          >
+            Профиль
+          </NavLink>
+          <NavLink
+            to="/profile/coins"
+            end
+            className={({ isActive }) => classNames(s.tab, isActive && s.tabActive)}
+          >
+            Мои коины
+          </NavLink>
+          <NavLink
+            to="/profile/notifications"
+            end
+            className={({ isActive }) => classNames(s.tab, isActive && s.tabActive)}
+          >
+            Уведомления
+          </NavLink>
+          <NavLink
+            to="/profile/history"
+            end
+            className={({ isActive }) => classNames(s.tab, isActive && s.tabActive)}
+          >
+            История
+          </NavLink>
+          <button type="button" className={classNames(s.tab, s.tabGhost)} onClick={() => logoutModal.openModal()}>
+            Выйти
+          </button>
+        </div>
+      </section>
+
+      <section className={s.profilePage__panels}>
+        <Outlet />
+      </section>
+
+      <ConfirmModal
+        open={logoutModal.isModalOpen}
+        onClose={logoutModal.closeModal}
+        onConfirm={performLogout}
+      />
     </Section>
   );
 }

@@ -1,22 +1,21 @@
 import React from 'react';
 
+import s from './EventsCard.module.scss';
 import { StarIcon } from '@/components/Icons';
 
-import s from './EventsCard.module.scss';
-
 interface EventsCardProps {
-  title: string,
-  reward: number,
+  title: string;
+  reward: number;
 }
 
-export default function EventsCard({title , reward}: EventsCardProps) {
+export default function EventsCard({ title, reward }: EventsCardProps) {
   return (
-    <div className={s.card}>
+    <article className={s.card}>
       <div className={s.card__caption}>{title}</div>
       <div className={s.card__reward}>
-        Награда: {reward}
+        <span>Награда: {reward}</span>
         <StarIcon />
       </div>
-    </div>
-  )
+    </article>
+  );
 }

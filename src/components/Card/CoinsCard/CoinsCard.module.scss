@@ -1,32 +1,30 @@
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: calc(12 * var(--width-multiplier));
-  padding: calc(30 * var(--width-multiplier));
-  border-radius: calc(30 * var(--width-multiplier));
-  background-color: var(--white);
-  @media (max-width: 1024px) {
-    padding: calc(20 * var(--width-multiplier));
-    border-radius: calc(16 * var(--width-multiplier));
+﻿.card {
+  padding: calc(16 * var(--width-multiplier));
+  border-radius: calc(12 * var(--width-multiplier));
+  background: var(--surface);
+  box-shadow: inset 0 0 0 calc(1 * var(--width-multiplier)) rgba(16, 16, 16, 0.08);
+
+  span {
+    display: block;
+    color: rgba(16, 16, 16, 0.5);
+    font-size: calc(14 * var(--width-multiplier));
+    line-height: 1.2;
   }
-  @media (max-width: 767px) {
-    padding: calc(16 * var(--width-multiplier));
-    border-radius: calc(12 * var(--width-multiplier));
+
+  strong {
+    display: block;
+    margin-top: calc(12 * var(--width-multiplier));
+    font-size: calc(24 * var(--width-multiplier));
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-weight: 500;
   }
-  &__caption {
-    font-family: Onest;
-    font-weight: 600;
-  }
-  &__balance {
-    display: flex;
-    align-items: center;
-    gap: calc(8 * var(--width-multiplier));
-    font-size: calc(20 * var(--width-multiplier));
-    svg {
-      display: block;
-      min-width: calc(24 * var(--width-multiplier));
-      width: calc(24 * var(--width-multiplier));
-      height: calc(24 * var(--width-multiplier));
-    }
+
+  p {
+    margin: calc(12 * var(--width-multiplier)) 0 0;
+    color: rgba(16, 16, 16, 0.55);
+    font-size: calc(14 * var(--width-multiplier));
+    line-height: 1.4;
   }
 }
+

@@ -1,6 +1,6 @@
 import { rootApi } from '@/shared/rootApi';
 import { okIfNoError } from '@/shared/rtkValidate';
-import type { AdminUser, GetUsersParams, OkResponse } from '@/types/AdminUserTypes';
+import type { AdminUser, GetUsersParams, OkResponse, UpdateUserDto } from '@/types/AdminUserTypes';
 
 import type { UserLite } from '@/types/UserLite';
 

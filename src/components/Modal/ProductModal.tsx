@@ -21,9 +21,9 @@ export default function ProductModal({ open, onClose, product, isAuth, onAddToCa
       {product && (
         <ProductInfo
           product={product}
-          isAuth={isAuth}
-          onAddToCart={onAddToCart}
-          onOpenOrder={onOpenOrder}
+          isAuth={Boolean(isAuth)}
+          {...(onAddToCart ? { onAddToCart } : {})}
+          {...(onOpenOrder ? { onOpenOrder } : {})}
         />
       )}
     </Modal>

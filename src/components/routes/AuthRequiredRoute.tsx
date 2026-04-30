@@ -10,7 +10,7 @@ const AuthRequiredRoute: React.FC = () => {
     localStorage.getItem('token');
 
   if (!token) {
-    return <Navigate to="/register" replace state={{ from: location }} />;
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
   return <Outlet />;

@@ -1,10 +1,31 @@
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: calc(16 * var(--width-multiplier));
-  background-color: rgba(2, 2, 2, 0.4);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: calc(24 * var(--width-multiplier));
+  background: rgba(16, 16, 16, 0.28);
+  backdrop-filter: blur(calc(6 * var(--width-multiplier)));
   z-index: 99;
+  animation: overlayFadeIn 0.24s ease both;
+
+  @media (max-width: 767px) {
+    padding: calc(12 * var(--width-multiplier));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    animation: none;
+  }
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

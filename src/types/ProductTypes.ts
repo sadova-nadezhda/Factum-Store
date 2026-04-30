@@ -6,6 +6,7 @@ export type Product = {
   price: number;
   stock: number;
   category?: string | null;
+  category_name?: string | null;
 };
 
 export type CatalogResponse = {

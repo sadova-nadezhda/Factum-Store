@@ -1,4 +1,5 @@
-import React, { createElement, CSSProperties, JSX } from 'react';
+import React, { createElement } from 'react';
+import type { CSSProperties, JSX } from 'react';
 
 type BaseTitleProps = {
   component?: keyof JSX.IntrinsicElements;

@@ -1,13 +1,37 @@
-.notif {
-  &__cards {
-    display: flex;
-    flex-direction: column;
-    gap: calc(20 * var(--width-multiplier));
+﻿.notif {
+  padding: calc(24 * var(--width-multiplier));
+  border-radius: calc(12 * var(--width-multiplier));
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: inset 0 0 0 calc(1 * var(--width-multiplier)) rgba(16, 16, 16, 0.1);
+  backdrop-filter: blur(calc(10 * var(--width-multiplier)));
+
+  @media (max-width: 767px) {
+    padding: calc(16 * var(--width-multiplier));
   }
-  &__caption {
-    font-size: calc(24 * var(--width-multiplier));
-    font-family: Onest;
-    font-weight: 600;
-    line-height: 1;
+
+  &__heading {
+    margin-bottom: calc(24 * var(--width-multiplier));
+
+    h2 {
+      margin: 0;
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      margin: calc(10 * var(--width-multiplier)) 0 0;
+      color: rgba(16, 16, 16, 0.56);
+    }
+  }
+
+  &__cards {
+    display: grid;
+    gap: calc(12 * var(--width-multiplier));
+  }
+
+  &__empty {
+    color: rgba(16, 16, 16, 0.56);
+    font-size: calc(14 * var(--width-multiplier));
   }
 }
+
+

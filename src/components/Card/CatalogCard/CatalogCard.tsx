@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,68 +13,101 @@ import s from './CatalogCard.module.scss';
 
 type CardProps = Product & { isAuth: boolean };
 
-function CatalogCardBase({ id, image, name, price, description, stock, isAuth }: CardProps) {
+function CatalogCardBase({ id, image, name, price, description, stock, category, isAuth }: CardProps) {
   const navigate = useNavigate();
-
   const productModal = useModal<Product>();
   const orderModal = useModal<Product>();
 
-  const product: Product = { id, image, name, price, stock, description };
+  const product: Product = {
+    id,
+    image,
+    name,
+    price,
+    stock,
+    description,
+    ...(category !== undefined ? { category } : {}),
+  };
 
-  const onCardClick = useCallback(() => {
+  const cartLabel = !stock ? 'Нет в наличии' : !isAuth ? 'Войти, чтобы купить' : 'Купить';
+
+  const onDetailsClick = useCallback(() => {
     productModal.openModal(product);
   }, [productModal, product]);
 
   const onCartClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+
       if (!stock) return;
       if (!isAuth) {
         navigate('/login');
         return;
       }
+
       orderModal.openModal(product);
     },
-    [stock, isAuth, orderModal, product, navigate]
+    [isAuth, navigate, orderModal, product, stock]
+  );
+
+  const onKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        onDetailsClick();
+      }
+    },
+    [onDetailsClick]
   );
 
   return (
     <>
-      <div
+      <article
         id={id}
-        className={s.card}
-        onClick={onCardClick}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ' ? onCardClick() : null)}
+        className={classNames(s.card, !stock && s.unavailable, stock > 0 && !isAuth && s.locked)}
       >
-        <div className={s.card__img}>
-          <img src={image} alt={name} />
-        </div>
-
-        <div className={s.card__box}>
-          <div className={s.card__info}>
-            <h4 className={s.card__caption}>{name}</h4>
+        <div
+          className={s.card__panel}
+          onClick={onDetailsClick}
+          onKeyDown={onKeyDown}
+          role="button"
+          tabIndex={0}
+          aria-label={`Подробнее: ${name}`}
+        >
+          <div className={s.card__header}>
+            <h3 className={s.card__title}>{name}</h3>
             <div className={s.card__price}>
-              {price}
               <StarIcon />
+              <span>{price}</span>
             </div>
           </div>
 
-          <div className={s.card__right}>
-            <button
-              className={classNames(s.card__button, {
-                [s.disabled]: !stock || !isAuth,
-              })}
-              disabled={!stock || !isAuth}
-              onClick={onCartClick}
-              aria-label="Добавить в корзину"
-            >
-              <CartIcon />
-            </button>
+          <div className={s.card__media}>
+            <img className={s.card__image} src={image} alt={name} />
           </div>
         </div>
-      </div>
+
+        <div className={s.card__actions}>
+          <button
+            className={s.card__details}
+            type="button"
+            onClick={onDetailsClick}
+            aria-label={`Подробнее: ${name}`}
+          >
+            Подробнее
+          </button>
+
+          <button
+            className={s.card__cart}
+            type="button"
+            onClick={onCartClick}
+            disabled={!stock}
+            aria-label={`${cartLabel}: ${name}`}
+            title={cartLabel}
+          >
+            <CartIcon />
+          </button>
+        </div>
+      </article>
 
       <ProductModal
         open={productModal.isModalOpen}

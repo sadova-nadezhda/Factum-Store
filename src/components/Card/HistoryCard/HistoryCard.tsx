@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
-import classNames from 'classnames';
-import { toast } from 'react-toastify';
 
-import Button from '@/components/Button';
-import ConfirmModal from '@/components/Modal/ConfirmModal';
-import { StarIcon } from '../../Icons';
+import { toast } from 'react-toastify';
+import classNames from 'classnames';
 import { useModal } from '@/hooks/useModal';
+import { StarIcon } from '@/components/Icons';
+import Button from '@/components/Button';
+import CanselModal from '@/components/Modal/CanselModal';
 import { useCancelOrderMutation } from '@/features/orders/ordersAPI';
 
 import s from './HistoryCard.module.scss';
@@ -56,37 +56,29 @@ export default function HistoryCard({ img, id, title, price, date, status }: His
       : 'dark';
 
   const statusText: Record<string, string> = {
-    fulfilled: 'выполнен',
-    pending: 'в обработке',
-    returned: 'возвращен',
-    cancelled: 'отменен',
-    default: 'неизвестен',
+    fulfilled: 'Заказ выполнен и готов к выдаче.',
+    pending: 'Заказ оформлен и находится в обработке.',
+    returned: 'Заказ возвращен в систему.',
+    cancelled: 'Заказ был отменен.',
   };
 
   return (
-    <>
-      <div className={s.card}>
-        <div className={s.card__img}>
-          <img src={img} alt="" />
-        </div>
-        <div className={s.card__box}>
-          <div className={s.card__top}>
-            <div className={s.card__date}>{date}</div>
-            {/* <div className={classNames(s.card__status, badge)}>
-              {statusText[localStatus] || statusText.default}
-            </div> */}
-          </div>
-          <div className={s.card__info}>
-            <div className={s.card__num}>Заказ №{id}</div>
-            <div className={s.card__title}>{title}</div>
-            <div className={s.card__price}>
-              Сумма: {price}
-              <StarIcon />
-            </div>
-          </div>
-        </div>
+    <article className={s.card}>
+      <div className={s.card__thumb}>
+        <img src={img} alt={title} />
+      </div>
 
-        {/* {localStatus === 'pending' && (
+      <div className={s.card__body}>
+        <h3>{title}</h3>
+        <p>{statusText[status] || 'Статус заказа обновляется.'}</p>
+        <span>Заказ #{id} · {date}</span>
+      </div>
+
+      <div className={s.card__price}>
+        <StarIcon />
+        <span>{price}</span>
+      </div>
+      {localStatus === 'pending' && (
           <Button
             className={classNames(s.card__button, 'button button-orange')}
             onClick={onCancelClick}
@@ -94,15 +86,14 @@ export default function HistoryCard({ img, id, title, price, date, status }: His
           >
             {isLoading ? 'Отменяем…' : 'Отменить заказ'}
           </Button>
-        )} */}
-      </div>
+        )}
 
-      {/* <ConfirmModal
-        open={confirmModal.isModalOpen}
-        onClose={confirmModal.closeModal}
-        onConfirm={onConfirmCancel}
-        isLoading={isLoading}
-      /> */}
-    </>
+        <CanselModal
+          open={confirmModal.isModalOpen}
+          onClose={confirmModal.closeModal}
+          onConfirm={onConfirmCancel}
+          isLoading={isLoading}
+        />
+    </article>
   );
 }

@@ -1,54 +1,50 @@
-.card {
+﻿.card {
   display: flex;
   flex-direction: column;
-  gap: calc(10 * var(--width-multiplier));
-  min-height: calc(180 * var(--width-multiplier));
-  padding: calc(30 * var(--width-multiplier));
-  border-radius: calc(30 * var(--width-multiplier));
-  background-color: var(--white);
+  gap: calc(12 * var(--width-multiplier));
+  min-height: calc(190 * var(--width-multiplier));
+  padding: calc(24 * var(--width-multiplier));
+  border-radius: calc(12 * var(--width-multiplier));
+  background: #ffffff;
+  box-shadow: inset 0 0 0 calc(1 * var(--width-multiplier)) rgba(16, 16, 16, 0.08);
   line-height: 1;
+
   &__caption {
     font-size: calc(20 * var(--width-multiplier));
-    font-weight: 600;
-    @media (max-width: 1024px) {
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+    @media (max-width: 767px) {
       font-size: calc(18 * var(--width-multiplier));
     }
-    @media (max-width: 767px) {
-      font-size: calc(16 * var(--width-multiplier));
-    }
   }
+
   &__reward {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: calc(4 * var(--width-multiplier));
     width: max-content;
     margin-top: auto;
-    margin-left: auto;
-    padding: calc(16 * var(--width-multiplier)) calc(30 * var(--width-multiplier));
-    border-radius: calc(30 * var(--width-multiplier));
-    color: var(--white);
-    background-color: var(--primary);
+    padding: calc(4 * var(--width-multiplier));
+    padding-left: calc(8 * var(--width-multiplier));
+    border-radius: calc(8 * var(--width-multiplier));
+    background: #f4f5f8;
+    color: var(--text);
     font-weight: 500;
+    line-height: 1;
+
     svg {
-      display: block;
-      min-width: calc(18 * var(--width-multiplier));
-      width: calc(18 * var(--width-multiplier));
-      height: calc(18 * var(--width-multiplier));
-    }
-    @media (max-width: 767px) {
-      padding: calc(12 * var(--width-multiplier)) calc(20 * var(--width-multiplier));
-    }
-    @media (max-width: 767px) {
-      padding: calc(10 * var(--width-multiplier)) calc(16 * var(--width-multiplier));
+      width: calc(24 * var(--width-multiplier));
+      height: calc(24 * var(--width-multiplier));
+      border-radius: calc(4 * var(--width-multiplier));
+      background-color: #ffffff;
     }
   }
-  @media (max-width: 1024px) {
-    padding: calc(20 * var(--width-multiplier));
-    border-radius: calc(24 * var(--width-multiplier));
-  }
+
   @media (max-width: 767px) {
-    min-height: calc(150 * var(--width-multiplier));
+    min-height: calc(160 * var(--width-multiplier));
     padding: calc(16 * var(--width-multiplier));
-    border-radius: calc(16 * var(--width-multiplier));
   }
 }
+
+

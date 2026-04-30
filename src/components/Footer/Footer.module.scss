@@ -1,10 +1,25 @@
-.footer {
+﻿.footer {
   margin-top: auto;
-  color: var(--white);
-  background-color: #DD5500;
+  padding: calc(20 * var(--width-multiplier)) 0 calc(32 * var(--width-multiplier));
+
   &__container {
     display: flex;
-    justify-content: end;
-    padding: calc(20 * var(--width-multiplier)) 0;
+    flex-direction: column;
+    gap: calc(4 * var(--width-multiplier));
+    color: rgba(16, 16, 16, 0.56);
+
+    span {
+      font-size: calc(14 * var(--width-multiplier));
+      line-height: 1;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    p {
+      margin: 0;
+      font-size: calc(14 * var(--width-multiplier));
+      line-height: 1.4;
+    }
   }
 }
+
