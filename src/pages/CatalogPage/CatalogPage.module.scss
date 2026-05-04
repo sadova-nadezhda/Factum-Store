@@ -131,8 +131,8 @@
       right: calc(12 * var(--width-multiplier));
       width: calc(10 * var(--width-multiplier));
       height: calc(10 * var(--width-multiplier));
-      border-right: calc(1.5 * var(--width-multiplier)) solid currentColor;
-      border-bottom: calc(1.5 * var(--width-multiplier)) solid currentColor;
+      border-right: calc(1.5 * var(--width-multiplier)) solid var(--text);
+      border-bottom: calc(1.5 * var(--width-multiplier)) solid var(--text);
       transform: translateY(-60%) rotate(45deg);
       pointer-events: none;
     }

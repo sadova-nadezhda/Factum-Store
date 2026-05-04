@@ -10,10 +10,17 @@ export type Wallet = {
 export type Accrual = {
   amount: number;
   created_at: string;
-  reason: string;
+  operation_type: string;
   reason_text: string;
-  from_manager_id: string;
-  from_manager_name: string;
+  from_manager_id: string | null;
+};
+
+export type Deduction = {
+  amount: number;
+  created_at: string;
+  operation_type: string;
+  reason_text: string;
+  from_manager_id: string | null;
 };
 
 export type Order = {
@@ -41,6 +48,7 @@ export type TransferIn = {
 export type WalletsMyResponse = {
   wallets: Wallet[];
   accruals: Accrual[];
+  deductions: Deduction[];
   orders: Order[];
   transfers_out: TransferOut[];
   transfers_in: TransferIn[];

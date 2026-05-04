@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 
 import { NotificationsCard } from '../../Card';
 
@@ -41,7 +41,7 @@ export default function ProfileNotif() {
     const orderNotifs: Notif[] = (data.orders || []).map((order: any) => ({
       kind: 'order',
       caption: `Покупка: ${order.product_name}`,
-      desc: 'Поздравляем с новой покупкой в factum merch.',
+      desc: 'Поздравляем с новой покупкой в factum merch',
       amount: `-${order.price_at_purchase}`,
       date: order.created_at,
     }));
@@ -51,7 +51,7 @@ export default function ProfileNotif() {
       return {
         kind: 'accrual',
         caption: 'Баланс пополнен',
-        desc: parsed.description || 'На счет зачислены новые bonus coins.',
+        desc: parsed.description || 'На счет зачислены новые factum coins',
         amount: `+${item.amount}`,
         date: item.created_at,
       };
@@ -62,7 +62,7 @@ export default function ProfileNotif() {
       return {
         kind: 'deduction',
         caption: 'Списание с баланса',
-        desc: parsed.description || item.reason || 'Со счета были списаны coins.',
+        desc: parsed.description || item.reason || 'Со счета были списаны factum coins',
         amount: `-${item.amount}`,
         date: item.created_at,
       };

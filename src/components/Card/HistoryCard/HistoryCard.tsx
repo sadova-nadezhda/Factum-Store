@@ -38,7 +38,7 @@ export default function HistoryCard({ img, id, title, price, date, status }: His
       const errMsg =
         e?.data?.error ||
         e?.error ||
-        'Не удалось отменить заказ. Попробуйте ещё раз.';
+        'Не удалось отменить заказ. Попробуйте ещё раз';
       toast.error(errMsg);
       console.error(e);
     }
@@ -56,10 +56,10 @@ export default function HistoryCard({ img, id, title, price, date, status }: His
       : 'dark';
 
   const statusText: Record<string, string> = {
-    fulfilled: 'Заказ выполнен и готов к выдаче.',
-    pending: 'Заказ оформлен и находится в обработке.',
-    returned: 'Заказ возвращен в систему.',
-    cancelled: 'Заказ был отменен.',
+    fulfilled: 'Заказ выполнен и готов к выдаче',
+    pending: 'Заказ оформлен и находится в обработке',
+    returned: 'Заказ возвращен',
+    cancelled: 'Заказ был отменен',
   };
 
   return (

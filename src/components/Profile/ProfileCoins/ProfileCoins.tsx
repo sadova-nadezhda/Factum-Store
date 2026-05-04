@@ -15,6 +15,18 @@ function formatDate(iso: string) {
   });
 }
 
+function parseReasonText(raw: string): string {
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed.description && typeof parsed.description === 'string' && parsed.description.trim()) {
+      return parsed.description.trim();
+    }
+  } catch {
+    // not JSON
+  }
+  return '';
+}
+
 export default function ProfileCoins() {
   const { data, isLoading, isError } = useGetMyWalletsQuery();
 
@@ -32,13 +44,22 @@ export default function ProfileCoins() {
       })
       .reduce((sum, item) => sum + item.amount, 0);
 
+    const monthlyDeduction = data.deductions
+      .filter((item) => {
+        const created = new Date(item.created_at);
+        return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
+      })
+      .reduce((sum, item) => sum + item.amount, 0);
+
+    const monthlyNet = monthlyAccrual - monthlyDeduction;
+
     const activeOrders = data.orders.filter((order) => order.status === 'pending').length;
 
     return {
       mainBalance: mainWallet?.balance ?? 0,
       extraBalance: extraWallet?.balance ?? 0,
       extraCaption: extraWallet?.type === 'manager_pool' ? 'Резерв руководителя' : 'Резервный кошелек',
-      monthlyAccrual,
+      monthlyNet,
       activeOrders,
     };
   }, [data]);
@@ -92,8 +113,8 @@ export default function ProfileCoins() {
         </div>
 
         <div className={s.coins__stats}>
-          <CoinsCard caption="Доступно сейчас" balance={`${stats.mainBalance} coins`} note="Основной баланс" />
-          <CoinsCard caption="Начислено за месяц" balance={`+${stats.monthlyAccrual} coins`} note="Текущий месяц" />
+          <CoinsCard caption="Основной баланс" balance={`${stats.mainBalance} coins`} note="Доступно сейчас" />
+          <CoinsCard caption="За текущий месяц" balance={`${stats.monthlyNet >= 0 ? '+' : ''}${stats.monthlyNet} coins`} note="Начислено" />
           <CoinsCard caption="Активных заказов" balance={`${stats.activeOrders}`} note={stats.extraBalance ? `${stats.extraCaption}: ${stats.extraBalance}` : 'Статус покупок'} />
         </div>
 

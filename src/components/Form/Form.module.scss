@@ -110,8 +110,8 @@
     display: flex;
     flex-direction: column;
     gap: calc(16 * var(--width-multiplier));
-    padding: calc(30 * var(--width-multiplier));
-    border-radius: calc(30 * var(--width-multiplier));
+    padding: calc(24 * var(--width-multiplier));
+    border-radius: calc(24 * var(--width-multiplier));
     border: calc(1 * var(--width-multiplier)) solid #020202;
     background-color: var(--white);
     input {
@@ -154,13 +154,25 @@
     margin-left: auto;
   }
   &__transfer {
-    select {
+    select, input {
       width: 100%;
+      padding: calc(24 * var(--width-multiplier));
+      border-radius: calc(12 * var(--width-multiplier));
+      background: var(--surface);
+      box-shadow: inset 0 0 0 calc(1 * var(--width-multiplier)) rgba(16, 16, 16, 0.08);
+      @media (max-width: 767px) {
+        padding: calc(16 * var(--width-multiplier));
+      }
+    }
+    select {
+      position: relative;
+      background: url(/assets/img/select-arrow.svg) calc(100% - calc(12 * var(--width-multiplier))) 50% / calc(12 * var(--width-multiplier)) no-repeat;
+      cursor: pointer;
     }
   }
   &__login {
     input {
-      padding: calc(20 * var(--width-multiplier));
+      padding: calc(24 * var(--width-multiplier));
       border-radius: calc(12 * var(--width-multiplier));
       @media (max-width: 767px) {
         padding: calc(16 * var(--width-multiplier));

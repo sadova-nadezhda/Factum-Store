@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import Section from '../../components/Section';
 import Accordion from '../../components/Accordion';
@@ -18,11 +18,18 @@ const heroSlides = [
 ] as const;
 
 export default function HomePage() {
+  const location = useLocation();
   const [activeSlide, setActiveSlide] = useState(0);
   const [sort, setSort] = useState<'default' | 'price_asc' | 'price_desc' | 'title_asc'>('default');
 
   const { data: products = [], isLoading: catalogLoading, isError: catalogError } = useGetProductsQuery();
   const { data: faq = [], isLoading: faqLoading, isError: faqError } = useGetFaqQuery();
+
+  useEffect(() => {
+    if (!catalogLoading && location.hash === '#faq') {
+      document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [catalogLoading]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
